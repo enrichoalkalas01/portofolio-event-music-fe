@@ -39,12 +39,12 @@ ingress:
     className: ingress-endlessapp
     annotations:
         nginx.ingress.kubernetes.io/use-regex: "true"
+        kubernetes.io/ingress.allow-http: "true"
     hosts:
         - host: ""
           paths:
               - path: /
                 pathType: Prefix
-    tls: []
 
 # Health Check / Probes
 probe:
