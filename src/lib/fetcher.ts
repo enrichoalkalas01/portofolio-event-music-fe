@@ -12,7 +12,7 @@ export type FetchOptions = {
 
 export const fetcher = async <T>(
     url: string,
-    options?: FetchOptions
+    options?: FetchOptions,
 ): Promise<T> => {
     try {
         // Tambahkan query params jika ada
@@ -21,7 +21,7 @@ export const fetcher = async <T>(
             options?.queryParams
                 ? "?" +
                   new URLSearchParams(
-                      options.queryParams as Record<string, string>
+                      options.queryParams as Record<string, string>,
                   ).toString()
                 : "";
         }
@@ -46,7 +46,7 @@ export const fetcher = async <T>(
                 throw new Error(
                     `Error ${response.status}: ${response.statusText} - ${
                         errorBody?.message || "Unknown Error"
-                    }`
+                    }`,
                 );
             }
 
@@ -60,7 +60,7 @@ export const fetcher = async <T>(
                 [`fetch-${requestUrl}`],
                 {
                     revalidate: options.cache, // Cache di server selama waktu tertentu
-                }
+                },
             );
 
             return cachedFetcher();
