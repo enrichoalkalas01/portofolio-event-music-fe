@@ -3,7 +3,7 @@ import axios from "axios";
 // Setup
 const expiredTokenTime = 24 * 60 * 60;
 const BaseURL =
-    process.env.NEXT_PUBLIC_API_BASE_URL || `http://localhost:5550/api/v1`;
+    process.env.NEXT_PUBLIC_URL_API || `http://localhost:5800/api/v1`;
 
 interface ILoginResponseAxios {
     data: {
@@ -35,8 +35,6 @@ interface IToken {
     type: string;
 }
 
-console.log(BaseURL);
-
 export const LoginOld = async ({
     username,
     password,
@@ -57,25 +55,16 @@ export const LoginOld = async ({
             }),
         };
 
-        console.log(config);
-        const response: ILoginResponseAxios = await axios(config);
-        const DataPassing: ILoginResponse = {
+        const response: any = await axios(config);
+        const DataPassing: any = {
             id: response?.data.data._id || "",
-            username: response?.data.data.username,
-            firstname: response?.data.data.firstname,
-            lastname: response?.data.data.lastname,
-            fullname: response?.data.data.fullname,
+            username: response?.data.data.username || "",
+            firstname: response?.data.data.firstname || "",
+            lastname: response?.data.data.lastname || "",
+            fullname: response?.data.data.fullname || "",
             phonenumber: response?.data.data.phonenumber,
             email: response?.data.data.email,
-            token: {
-                access_token: response?.data.data.token.access_token,
-                refresh_token: response?.data.data.token.refresh_token,
-                session_token: response?.data.data.token.session_token,
-                sso_refresh_token: response?.data.data.token.sso_refresh_token,
-                expired_rf: response?.data.data.token.expired_rf,
-                expired: response?.data.data.token.expired,
-                type: response?.data.data.token.type,
-            },
+            token: response?.data?.data?.token,
         };
 
         return DataPassing;
@@ -158,7 +147,7 @@ export const VerifySSOSession = async (sessionToken: string) => {
 
 export const RefreshAccessToken = async (
     refreshToken: string,
-    sessionToken?: string
+    sessionToken?: string,
 ) => {
     try {
         const config = {
@@ -184,7 +173,7 @@ export const RefreshAccessToken = async (
     } catch (error: any) {
         console.error(
             "Failed to refresh token:",
-            error?.response?.data || error?.message
+            error?.response?.data || error?.message,
         );
         return null;
     }

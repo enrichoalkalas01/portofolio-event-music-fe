@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { GalleryVerticalEnd } from "lucide-react";
 
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { LoginForm } from "@/components/pages/authentication/login-form";
+import { RegisterForm } from "@/components/pages/authentication/register-form";
 
 export default async function Page() {
     const session = await getServerSession(authOptions);
@@ -24,12 +24,12 @@ export default async function Page() {
                         <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
                             <GalleryVerticalEnd className="size-4" />
                         </div>
-                        Endless Event Musics App
+                        Endless Event Music App
                     </Link>
                 </div>
                 <div className="flex flex-1 items-center justify-center">
                     <div className="w-full max-w-xs">
-                        <LoginForm />
+                        <RegisterForm />
                     </div>
                 </div>
             </div>

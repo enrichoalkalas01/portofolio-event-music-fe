@@ -31,6 +31,7 @@ declare module "next-auth" {
         lastname: string;
         fullname: string;
         phonenumber: string;
+        avatar?: string;
         token: IToken;
     }
 
@@ -47,7 +48,6 @@ declare module "next-auth" {
         error: string | null;
     }
 }
-
 declare module "next-auth/jwt" {
     interface JWT {
         id: string;
@@ -57,6 +57,7 @@ declare module "next-auth/jwt" {
         fullname: string;
         phonenumber: string;
         email: string;
+        avatar?: string;
         token: IToken;
         accessToken: string;
         isValid: boolean;
@@ -69,8 +70,8 @@ export const authOptions: NextAuthOptions = {
         CredentialsProvider({
             name: "Credentials",
             credentials: {
-                username: { label: "Username", type: "text" },
-                password: { label: "Password", type: "password" },
+                username: { label: "username", type: "text" },
+                password: { label: "password", type: "password" },
             },
             async authorize(credentials) {
                 if (!credentials?.username || !credentials?.password) {
@@ -83,7 +84,7 @@ export const authOptions: NextAuthOptions = {
                         password: credentials.password,
                     });
 
-                    return null;
+                    return response;
                 } catch (error: any) {
                     console.error(
                         "Login error:",
@@ -101,10 +102,25 @@ export const authOptions: NextAuthOptions = {
             if (user) {
                 token.id = user.id;
                 token.username = user.username;
+                token.firstname = user.firstname;
+                token.lastname = user.lastname;
+                token.fullname = user.fullname;
+                token.phonenumber = user.phonenumber;
+                token.email = user.email;
+                token.avatar = user.avatar ?? "";
+                token.token = user.token;
             }
 
-            if (token) {
-                console.log(token);
+            if (trigger === "update" && session) {
+                token.id = session.id;
+                token.username = session.username;
+                token.firstname = session.firstname;
+                token.lastname = session.lastname;
+                token.fullname = session.fullname;
+                token.phonenumber = session.phonenumber;
+                token.email = session.email;
+                token.avatar = session?.avatar || "";
+                token.token = session.token;
             }
 
             return token;
@@ -114,16 +130,20 @@ export const authOptions: NextAuthOptions = {
             // Struktur session sesuai yang Anda inginkan
             return {
                 ...session,
+                id: token.id,
                 user: {
                     name: token.fullname || token.username,
                     email: token.email,
-                    image: null,
+                    image: token.avatar,
+                    id: token.id,
+                    username: token.username,
+                    firstname: token.firstname,
+                    lastname: token.lastname,
+                    fullname: token.fullname,
+                    phonenumber: token.phonenumber,
+                    avatar: token.avatar ?? "",
+                    token: token.token,
                 },
-                id: token.id,
-                token: token.token,
-                accessToken: token.accessToken,
-                isValid: token.isValid,
-                error: token.error,
             };
         },
     },
