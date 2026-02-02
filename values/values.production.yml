@@ -74,7 +74,10 @@ autoscaling:
     targetMemoryUtilizationPercentage: 80
 
 # Environment Variables
-env: []
+# env: []
+env:
+    - name: NEXTAUTH_SECRET
+      value: "K7gNU3sdo+OL0wNhqoVWhr3g6s1xYv72ol/pe/Unols="
 
 # Environment from ConfigMap/Secret
 envFrom: []
