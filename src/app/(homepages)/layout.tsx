@@ -9,7 +9,7 @@ export default function LayoutHomepages({
     return (
         <>
             <Headers />
-            {children}
+                {children}
             <Footers />
         </>
     );

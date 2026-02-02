@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import ProvidersNextAuth from "@/lib/providers/providers-next-auth";
+import ProvidersTanstackQuery from "@/lib/providers/providers-react-query";
+import ProvidersToaster from "@/lib/providers/providers-toaster";
+import { ThemeProvider } from "next-themes";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -27,7 +31,21 @@ export default function RootLayout({
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
-                {children}
+                <ProvidersNextAuth>
+                    <ProvidersTanstackQuery>
+                        <ProvidersToaster>
+                            {/* <ThemeProvider
+                                attribute="class"
+                                defaultTheme="light"
+                                // defaultTheme="light"
+                                enableSystem
+                                disableTransitionOnChange
+                            > */}
+                            {children}
+                            {/* </ThemeProvider> */}
+                        </ProvidersToaster>
+                    </ProvidersTanstackQuery>
+                </ProvidersNextAuth>
             </body>
         </html>
     );
