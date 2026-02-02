@@ -60,7 +60,7 @@ export default function FileAvatar({
         (file: File): string | null => {
             if (file.size > maxFileSize) {
                 return `File size must be less than ${Math.round(
-                    maxFileSize / (1024 * 1024)
+                    maxFileSize / (1024 * 1024),
                 )}MB`;
             }
 
@@ -77,7 +77,7 @@ export default function FileAvatar({
 
             return null;
         },
-        [maxFileSize, allowedTypes]
+        [maxFileSize, allowedTypes],
     );
 
     // Generate URL variations for fallback (handles CORS and encoding issues)
@@ -94,7 +94,7 @@ export default function FileAvatar({
 
             return [...new Set(variations)]; // Remove duplicates
         },
-        []
+        [],
     );
 
     // Handle files change with validation
@@ -120,12 +120,12 @@ export default function FileAvatar({
                 } catch (error) {
                     console.error("Error in file change handler:", error);
                     setValidationError(
-                        "An error occurred while processing the file"
+                        "An error occurred while processing the file",
                     );
                 }
             });
         },
-        [onAvatarChange, validateFile]
+        [onAvatarChange, validateFile],
     );
 
     // Initialize file upload hook
@@ -237,7 +237,7 @@ export default function FileAvatar({
                 removeFile(fileId);
             }
         },
-        [fileId, disabled, removeFile]
+        [fileId, disabled, removeFile],
     );
 
     const handleUploadClick = useCallback(
@@ -248,7 +248,7 @@ export default function FileAvatar({
                 openFileDialog();
             }
         },
-        [disabled, openFileDialog]
+        [disabled, openFileDialog],
     );
 
     // Computed states
@@ -276,7 +276,7 @@ export default function FileAvatar({
                                 ? "border-destructive border-2"
                                 : ""
                         }`,
-                        classNameButton
+                        classNameButton,
                     )}
                     onClick={handleUploadClick}
                     aria-label={
@@ -295,7 +295,7 @@ export default function FileAvatar({
                             <img
                                 className={cn(
                                     "size-full object-cover",
-                                    classNameImage
+                                    classNameImage,
                                 )}
                                 src={currentImageUrl}
                                 alt="Preview of uploaded image"
@@ -310,7 +310,7 @@ export default function FileAvatar({
                         </>
                     ) : (
                         /* Placeholder Icon */
-                        (<div
+                        <div
                             aria-hidden="true"
                             className="flex items-center justify-center size-full"
                         >
@@ -319,7 +319,7 @@ export default function FileAvatar({
                             ) : (
                                 <CircleUserRoundIcon className="size-4 opacity-60" />
                             )}
-                        </div>)
+                        </div>
                     )}
                 </Button>
 
