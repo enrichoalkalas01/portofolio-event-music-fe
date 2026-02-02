@@ -76,8 +76,14 @@ autoscaling:
 # Environment Variables
 # env: []
 env:
+    - name: PORT
+      value: "3000"
     - name: NEXTAUTH_SECRET
       value: "K7gNU3sdo+OL0wNhqoVWhr3g6s1xYv72ol/pe/Unols="
+    - name: NEXTAUTH_URL
+      value: "https://endlessapp.my.id/"
+    - name: NEXT_PUBLIC_URL_API
+      value: "https://endlessapp.my.id/server-api/portofolio-event-music-be/api/v1"
 
 # Environment from ConfigMap/Secret
 envFrom: []
