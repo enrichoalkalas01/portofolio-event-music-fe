@@ -1,32 +1,79 @@
 "use client";
 
+import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/shadcn/ui/button";
-import {
-    Field,
-    FieldDescription,
-    FieldGroup,
-    FieldLabel,
-    FieldSeparator,
-} from "@/components/shadcn/ui/field";
-import { Input } from "@/components/shadcn/ui/input";
-import { useForm } from "react-hook-form";
 import { WrapperForms } from "../../generals/wrapper/wrapper-forms";
 import { FormRegularInput } from "../../generals/forms/form-regular-input";
-import Link from "next/link";
+import { toast } from "sonner";
+
+const schemaLogin = z.object({
+    username: z.string().nonempty("Username must be filled!"),
+    password: z.string().nonempty("Password must be filled!"),
+    firstname: z.string().nonempty("Firstname must be filled!"),
+    lastname: z.string().nonempty("Lastname must be filled!"),
+    email: z.string().nonempty("Email must be filled!").email(),
+});
 
 export function RegisterForm() {
+    const route = useRouter();
+
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
     const form = useForm({
+        resolver: zodResolver(schemaLogin),
         defaultValues: {
             username: "",
             password: "",
             firstname: "",
             lastname: "",
+            email: "",
         },
     });
 
-    const handleSubmitData = (data: any) => {
-        console.log(data);
+    const handleSubmitData = async (data: any) => {
+        setIsLoading(true);
+        try {
+            const config = {
+                url: `${process.env.NEXT_PUBLIC_URL_API}/authentication/register`,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                data: JSON.stringify({
+                    username: data?.username,
+                    password: data?.password,
+                    email: data?.email,
+                    firstname: data?.firstname,
+                    lastname: data?.lastname,
+                }),
+            };
+
+            const response = await axios(config);
+            toast.success(
+                response?.data?.message || "Successfull to register.",
+                {
+                    position: "top-right",
+                },
+            );
+
+            // setTimeout(() => {
+            //     route.push("/login");
+            // }, 1000);
+        } catch (error: any) {
+            toast.error(error?.response?.data?.message || error?.message, {
+                position: "top-right",
+            });
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -75,6 +122,17 @@ export function RegisterForm() {
                 <div className="w-full">
                     <FormRegularInput
                         form={form}
+                        name="email"
+                        labelName={"Email"}
+                        type={"email"}
+                        placeholder={"e.g doe"}
+                        className={cn("text-xs")}
+                    />
+                </div>
+
+                <div className="w-full">
+                    <FormRegularInput
+                        form={form}
                         name="password"
                         labelName={"Password"}
                         placeholder={"******"}
@@ -84,7 +142,11 @@ export function RegisterForm() {
                 </div>
             </div>
             <div className="w-full flex-col flex gap-3 text-sm text-center mt-4">
-                <Button type="submit" className="cursor-pointer">
+                <Button
+                    type="submit"
+                    className="cursor-pointer"
+                    disabled={isLoading}
+                >
                     Register
                 </Button>
                 <span>
