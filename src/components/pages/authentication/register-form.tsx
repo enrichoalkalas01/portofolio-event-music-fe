@@ -13,6 +13,7 @@ import { Button } from "@/components/shadcn/ui/button";
 import { WrapperForms } from "../../generals/wrapper/wrapper-forms";
 import { FormRegularInput } from "../../generals/forms/form-regular-input";
 import { toast } from "sonner";
+import { LoadingComponent } from "@/components/generals/loading/loading";
 
 const schemaLogin = z.object({
     username: z.string().nonempty("Username must be filled!"),
@@ -64,15 +65,15 @@ export function RegisterForm() {
                 },
             );
 
-            // setTimeout(() => {
-            //     route.push("/login");
-            // }, 1000);
+            route.push("/login");
         } catch (error: any) {
             toast.error(error?.response?.data?.message || error?.message, {
                 position: "top-right",
             });
         } finally {
-            setIsLoading(false);
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 1000);
         }
     };
 
@@ -147,7 +148,11 @@ export function RegisterForm() {
                     className="cursor-pointer"
                     disabled={isLoading}
                 >
-                    Register
+                    {isLoading ? (
+                        <LoadingComponent type="icon" />
+                    ) : (
+                        <span>Register</span>
+                    )}
                 </Button>
                 <span>
                     Do you have an account?{" "}

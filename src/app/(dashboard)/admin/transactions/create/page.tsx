@@ -1,7 +1,7 @@
 export default function Page() {
-    return(
+    return (
         <section>
             <span>asd</span>
         </section>
-    )
+    );
 }

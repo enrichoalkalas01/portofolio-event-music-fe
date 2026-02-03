@@ -115,7 +115,7 @@ export function FormRegularSelect({
                         </FormLabel>
 
                         <FormControl {...propsFormControl}>
-                            <div className="*:not-first:mt-2">
+                            <div className="*:not-first:mt-2 w-full">
                                 <Select
                                     // {...field}
                                     // disabled={disable}
@@ -139,6 +139,7 @@ export function FormRegularSelect({
                                 >
                                     <SelectTrigger
                                         id={id}
+                                        className="w-full"
                                         {...propsSelectTrigger}
                                     >
                                         <SelectValue
@@ -154,7 +155,7 @@ export function FormRegularSelect({
                                         {...propsSelectContent}
                                         className={cn(
                                             "[&_*[role=option]]:ps-2 [&_*[role=option]]:pe-8 [&_*[role=option]>span]:start-auto [&_*[role=option]>span]:end-2",
-                                            propsSelectContent?.className
+                                            propsSelectContent?.className,
                                         )}
                                     >
                                         {data?.length > 0 &&

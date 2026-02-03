@@ -14,6 +14,7 @@ import { FormRegularInput } from "../../generals/forms/form-regular-input";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { LoadingComponent } from "@/components/generals/loading/loading";
 
 const schemaLogin = z.object({
     username: z.string().nonempty("Username must be filled!"),
@@ -41,19 +42,16 @@ export function LoginForm() {
                 redirect: false,
                 ...data,
             });
-
             if (!response?.ok) {
                 let error;
                 if (JSON.parse(`${response?.error}`)) {
                     error = JSON.parse(`${response?.error}`);
                 }
-
                 throw {
                     status: error?.status || 400,
                     message: error?.message || "Failed to sign in user.",
                 };
             }
-
             toast.success("Successfull to sign in.", { position: "top-right" });
             route.push("/");
             setIsLoading(false);
@@ -62,7 +60,9 @@ export function LoginForm() {
                 position: "top-right",
             });
         } finally {
-            setIsLoading(false);
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 1000);
         }
     };
 
@@ -101,8 +101,16 @@ export function LoginForm() {
                 </div>
             </div>
             <div className="w-full flex-col flex gap-3 text-sm text-center mt-4">
-                <Button type="submit" className="cursor-pointer">
-                    Login
+                <Button
+                    type="submit"
+                    className="cursor-pointer"
+                    disabled={isLoading}
+                >
+                    {isLoading ? (
+                        <LoadingComponent type="icon" />
+                    ) : (
+                        <span>Login</span>
+                    )}
                 </Button>
                 <span>
                     Don&apos;t have an account?{" "}

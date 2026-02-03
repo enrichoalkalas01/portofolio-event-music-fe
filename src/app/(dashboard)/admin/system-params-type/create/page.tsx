@@ -6,29 +6,63 @@ import { LoadingComponent } from "@/components/generals/loading/loading";
 import { WrapperCard } from "@/components/generals/wrapper/wrapper-card";
 import { WrapperForms } from "@/components/generals/wrapper/wrapper-forms";
 import { Button } from "@/components/shadcn/ui/button";
+import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+
+const schemaForm = z.object({
+    paramsLabel: z.string().nonempty(),
+    paramsValue: z.string().nonempty(),
+    paramsDescription: z.string().optional(),
+});
 
 export default function Page() {
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const router = useRouter();
+    const [IsDisable, setIsDisable] = useState<boolean>(false);
 
     const form = useForm({
+        resolver: zodResolver(schemaForm),
         defaultValues: {
             paramsLabel: "",
             paramsValue: "",
-            paramsType: "",
             paramsDescription: "",
         },
     });
 
     const handleSubmit = async (data: any) => {
-        setIsLoading(true);
+        setIsDisable(true);
         try {
+            const config = {
+                url: `${process.env.NEXT_PUBLIC_URL_API}/system-params-type`,
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer`,
+                    "Content-Type": "application/json",
+                },
+                data: JSON.stringify({
+                    ...data,
+                }),
+            };
+
+            const response = await axios(config);
+            toast.success(
+                response?.data?.message || "Successfull to register.",
+                {
+                    position: "top-right",
+                },
+            );
+            router.push(`/admin/system-params-type`);
         } catch (error: any) {
-            console.log(error);
+            toast.error(error?.response?.data?.message || error?.message, {
+                position: "top-right",
+            });
         } finally {
             setTimeout(() => {
-                setIsLoading(false);
+                setIsDisable(false);
             }, 1000);
         }
     };
@@ -46,7 +80,7 @@ export default function Page() {
                         <div className="w-full">
                             <FormRegularInput
                                 form={form}
-                                disable={isLoading}
+                                disable={IsDisable}
                                 name="paramsLabel"
                                 labelName={"Params Label"}
                             />
@@ -55,42 +89,40 @@ export default function Page() {
                         <div className="w-full">
                             <FormRegularInput
                                 form={form}
-                                disable={isLoading}
+                                disable={IsDisable}
                                 name="paramsValue"
                                 labelName={"Params Value"}
                             />
                         </div>
 
                         <div className="w-full">
-                            <FormRegularSelect
-                                form={form}
-                                disable={isLoading}
-                                name="paramsType"
-                                labelName={"Params Type"}
-                                defaultValue={[{ label: "1", value: "1" }]}
-                            />
-                        </div>
-
-                        <div className="w-full">
                             <FormRegularInput
                                 form={form}
-                                disable={isLoading}
+                                disable={IsDisable}
                                 name="paramsDescription"
                                 labelName={"Params Description"}
                             />
                         </div>
 
-                        <div className="w-full">
+                        <div className="w-full flex gap-2">
                             <Button
-                                className="w-full cursor-pointer"
-                                disabled={isLoading}
+                                className="cursor-pointer"
+                                disabled={IsDisable}
                                 type="submit"
                             >
-                                {isLoading ? (
+                                {IsDisable ? (
                                     <LoadingComponent type="icon" />
                                 ) : (
                                     <span>Submit</span>
                                 )}
+                            </Button>
+                            <Button
+                                className="cursor-pointer"
+                                variant={"ghost"}
+                                type="button"
+                                onClick={() => router.back()}
+                            >
+                                Back
                             </Button>
                         </div>
                     </div>
