@@ -252,10 +252,11 @@ export default function ShowMultiProductImages({
     // console.log(form.watch(fieldName));
 
     return (
-        <div className="w-full space-y-4">
+        <div className="w-full space-y-4 relative">
             {/* Dialog untuk select images */}
             <Dialog open={openModal} onOpenChange={setOpenModal}>
-                <DialogContent className="max-w-[75%] max-h-[85vh] overflow-hidden flex flex-col">
+                {/* <DialogContent className="max-w-[75%] max-h-[85vh] overflow-hidden flex flex-col"> */}
+                <DialogContent className="w-[500px] overflow-hidden flex flex-col">
                     <DialogHeader>
                         <DialogTitle>Select {title}</DialogTitle>
                         <DialogDescription>

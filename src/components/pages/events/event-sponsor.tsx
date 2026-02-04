@@ -28,14 +28,14 @@ export default function EventSponsor({
             const mappedData = e?.data?.map((x: any) => {
                 return {
                     label: x?.paramsLabel,
-                    value: x?._id,
+                    value: x?.paramsValue,
                 };
             });
             return mappedData;
         },
     });
 
-    console.log(data, error, isLoading);
+    // console.log(data, error, isLoading);
 
     return (
         <FormMultipleSelect

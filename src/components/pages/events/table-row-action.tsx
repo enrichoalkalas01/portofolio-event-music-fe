@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 
 export default function TableRowAction({
     table,
@@ -24,23 +25,25 @@ export default function TableRowAction({
     row: any;
 }) {
     const router = useRouter();
+    const session: any = useSession();
+    const accessToken = session?.data?.user?.token?.access_token;
     const queryClient = useQueryClient();
 
     const id = row?.original?._id;
     const handleDelete = async () => {
         try {
             const config = {
-                url: `${process.env.NEXT_PUBLIC_URL_API}/system-params/${id}`,
+                url: `${process.env.NEXT_PUBLIC_URL_API}/events/${id}`,
                 method: "DELETE",
                 headers: {
-                    Authorization: `Bearer `,
+                    Authorization: `Bearer ${accessToken}`,
                     "Content-Type": "application/json",
                 },
             };
 
             const response = await axios(config);
             queryClient.invalidateQueries({
-                queryKey: ["admin-system-params-list"],
+                queryKey: ["admin-events-list"],
             });
 
             setTimeout(() => {
@@ -56,11 +59,11 @@ export default function TableRowAction({
     };
 
     const handleEdit = () => {
-        router.push(`/admin/system-params/${id}/update`);
+        router.push(`/admin/events/${id}/update`);
     };
 
     const handleView = () => {
-        router.push(`/admin/system-params/${id}`);
+        router.push(`/admin/events/${id}`);
     };
 
     return (

@@ -20,6 +20,7 @@ import EventCategories from "@/components/pages/events/event-categories";
 import EventVendor from "@/components/pages/events/event-vendor";
 import EventStatus from "@/components/pages/events/event-status";
 import ShowMultiProductImages from "@/components/generals/show-multi-product-images";
+import { useSession } from "next-auth/react";
 
 const schemaForm = z.object({
     title: z.string().nonempty(),
@@ -34,12 +35,15 @@ const schemaForm = z.object({
     images: z.any().optional(),
     categories: z.any().optional(),
     status: z.string().optional(),
-    max_participants: z.number().optional(),
-    price: z.number().optional(),
+    max_participants: z.string().optional(),
+    price: z.string().optional(),
 });
 
 export default function Page() {
     const router = useRouter();
+    const session: any = useSession();
+    const accessToken = session?.data?.user?.token?.access_token;
+
     const [IsDisable, setIsDisable] = useState<boolean>(false);
 
     const form = useForm({
@@ -57,23 +61,40 @@ export default function Page() {
             images: [],
             categories: null,
             status: "",
-            max_participants: 0,
-            price: 0,
+            max_participants: "0",
+            price: "0",
         },
     });
 
     const handleSubmit = async (data: any) => {
+        console.log(data);
         setIsDisable(true);
         try {
+            const DataPassing = {
+                title: data?.title || "",
+                excerpt: data?.excerpt || "",
+                description: data?.description || "",
+                event_date_start: data?.event_date_start || "",
+                event_date_end: data?.event_date_end || "",
+                location: data?.location || "",
+                vendor: data?.vendor || "",
+                sponsor: data?.sponsor || [],
+                thumbnail: data?.title || "",
+                images: data?.images || [],
+                status: data?.status || "Draft",
+                max_participants: Number(data?.max_participants) || 0,
+                price: Number(data?.price) || 0,
+            };
+
             const config = {
-                url: `${process.env.NEXT_PUBLIC_URL_API}/system-params`,
+                url: `${process.env.NEXT_PUBLIC_URL_API}/events`,
                 method: "POST",
                 headers: {
-                    Authorization: `Bearer`,
+                    Authorization: `Bearer ${accessToken}`,
                     "Content-Type": "application/json",
                 },
                 data: JSON.stringify({
-                    ...data,
+                    ...DataPassing,
                 }),
             };
 
@@ -84,7 +105,7 @@ export default function Page() {
                     position: "top-right",
                 },
             );
-            router.push(`/admin/system-params`);
+            router.push(`/admin/events`);
         } catch (error: any) {
             toast.error(error?.response?.data?.message || error?.message, {
                 position: "top-right",
@@ -106,16 +127,6 @@ export default function Page() {
             >
                 <WrapperForms form={form} onSubmitFunction={handleSubmit}>
                     <div className="w-full flex flex-col gap-4">
-                        <div className="w-full">
-                            <ShowMultiProductImages
-                                form={form}
-                                isDisable={IsDisable}
-                                fieldName="thumbnail"
-                                title="Thumbnail"
-                                maxSelection={1}
-                            />
-                        </div>
-
                         <div className="w-full">
                             <FormRegularInput
                                 form={form}
@@ -187,6 +198,16 @@ export default function Page() {
                                 propsFormControl={{ className: "w-full" }}
                                 name="max_participants"
                                 labelName={"max_participants"}
+                            />
+                        </div>
+
+                        <div className="w-full">
+                            <ShowMultiProductImages
+                                form={form}
+                                isDisable={IsDisable}
+                                fieldName="thumbnail"
+                                title="Thumbnail"
+                                maxSelection={1}
                             />
                         </div>
 

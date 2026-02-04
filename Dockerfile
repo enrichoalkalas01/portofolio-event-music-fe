@@ -24,6 +24,11 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copy source code
 COPY . .
 
+ENV PORT=${PORT}
+ENV NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+ENV NEXTAUTH_URL=${NEXTAUTH_URL}
+ENV NEXT_PUBLIC_URL_API=${NEXT_PUBLIC_URL_API}
+
 # Build the application
 RUN pnpm build
 
@@ -52,10 +57,7 @@ USER nextjs
 
 # Use ARG to allow build-time port configuration
 ARG PORT=3000
-ENV PORT=${PORT}
-ENV NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
-ENV NEXTAUTH_URL=${NEXTAUTH_URL}
-ENV NEXT_PUBLIC_URL_API=${NEXT_PUBLIC_URL_API}
+
 
 # Expose the port dynamically
 EXPOSE ${PORT}
