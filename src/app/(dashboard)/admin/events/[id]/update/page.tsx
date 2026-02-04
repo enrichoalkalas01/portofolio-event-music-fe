@@ -122,7 +122,7 @@ export default function Page() {
                 vendor: data?.vendor || "",
                 sponsor: data?.sponsor || [],
                 categories: data?.categories || [],
-                thumbnail: data?.title || "",
+                thumbnail: data?.thumbnail || "",
                 images: data?.images || [],
                 status: data?.status || "Draft",
                 max_participants: Number(data?.max_participants) || 0,
