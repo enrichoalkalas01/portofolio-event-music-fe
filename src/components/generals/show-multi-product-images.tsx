@@ -92,7 +92,7 @@ export default function ShowMultiProductImages({
         queryFn: async () => {
             try {
                 const response = await fetcher<any>(
-                    `${process.env.NEXT_PUBLIC_API_BASE_URL}/images?size=${size}&page=${page}&search=${search}`,
+                    `${process.env.NEXT_PUBLIC_URL_API}/images?size=${size}&page=${page}&search=${search}`,
                 );
 
                 const totalData = (response.data as { total: number }).total;

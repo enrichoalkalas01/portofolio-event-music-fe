@@ -19,6 +19,7 @@ import EventSponsor from "@/components/pages/events/event-sponsor";
 import EventCategories from "@/components/pages/events/event-categories";
 import EventVendor from "@/components/pages/events/event-vendor";
 import EventStatus from "@/components/pages/events/event-status";
+import ShowMultiProductImages from "@/components/generals/show-multi-product-images";
 
 const schemaForm = z.object({
     title: z.string().nonempty(),
@@ -29,8 +30,8 @@ const schemaForm = z.object({
     location: z.string().optional(),
     vendor: z.string().optional(),
     sponsor: z.any().optional(),
-    thumbnail: z.string().optional(),
-    images: z.string().optional(),
+    thumbnail: z.any().optional(),
+    images: z.any().optional(),
     categories: z.any().optional(),
     status: z.string().optional(),
     max_participants: z.number().optional(),
@@ -52,8 +53,8 @@ export default function Page() {
             location: "",
             vendor: "",
             sponsor: null,
-            thumbnail: "",
-            images: "",
+            thumbnail: [],
+            images: [],
             categories: null,
             status: "",
             max_participants: 0,
@@ -105,6 +106,16 @@ export default function Page() {
             >
                 <WrapperForms form={form} onSubmitFunction={handleSubmit}>
                     <div className="w-full flex flex-col gap-4">
+                        <div className="w-full">
+                            <ShowMultiProductImages
+                                form={form}
+                                isDisable={IsDisable}
+                                fieldName="thumbnail"
+                                title="Thumbnail"
+                                maxSelection={1}
+                            />
+                        </div>
+
                         <div className="w-full">
                             <FormRegularInput
                                 form={form}
@@ -194,6 +205,16 @@ export default function Page() {
                                 disable={IsDisable}
                                 name="location"
                                 labelName={"location"}
+                            />
+                        </div>
+
+                        <div className="w-full">
+                            <ShowMultiProductImages
+                                form={form}
+                                isDisable={IsDisable}
+                                fieldName="images"
+                                title="Images"
+                                maxSelection={5}
                             />
                         </div>
 
