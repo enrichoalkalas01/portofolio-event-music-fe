@@ -24,6 +24,12 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copy source code
 COPY . .
 
+# Use ARG to allow build-time port configuration
+ARG PORT=3000
+ARG NEXTAUTH_SECRET
+ARG NEXTAUTH_URL
+ARG NEXT_PUBLIC_URL_API
+
 ENV PORT=${PORT}
 ENV NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
 ENV NEXTAUTH_URL=${NEXTAUTH_URL}
@@ -54,10 +60,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
 USER nextjs
-
-# Use ARG to allow build-time port configuration
-ARG PORT=3000
-
 
 # Expose the port dynamically
 EXPOSE ${PORT}
