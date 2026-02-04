@@ -41,7 +41,7 @@ export default function ShowFiles() {
         queryFn: async () => {
             setIsSubmit(false);
             const response = await fetcher<DataResponse>(
-                `${process.env.NEXT_PUBLIC_URL_API}/images?size=${Size}&page=${Page}&search=${Search}`,
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}/images?size=${Size}&page=${Page}&search=${Search}`
             );
             const totalData = (response.data as { totalData: number })
                 .totalData;
@@ -123,7 +123,7 @@ export default function ShowFiles() {
                         className={cn(
                             "w-full h-auto",
                             isLoading ??
-                                "h-[500px] flex justify-center items-center pb-8",
+                                "h-[500px] flex justify-center items-center pb-8"
                         )}
                     >
                         <LoadingComponent
