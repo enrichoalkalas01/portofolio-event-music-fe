@@ -7,14 +7,12 @@ import { WrapperCard } from "@/components/generals/wrapper/wrapper-card";
 import { WrapperForms } from "@/components/generals/wrapper/wrapper-forms";
 import { Button } from "@/components/shadcn/ui/button";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
 
 const schemaForm = z.object({
     paramsLabel: z.string().nonempty(),
@@ -24,7 +22,6 @@ const schemaForm = z.object({
 
 export default function Page() {
     const router = useRouter();
-    const params = useParams();
     const [IsDisable, setIsDisable] = useState<boolean>(false);
 
     const form = useForm({
@@ -36,37 +33,12 @@ export default function Page() {
         },
     });
 
-    const { data, error, isLoading } = useQuery({
-        queryKey: ["admin-system-params-type-detail"],
-        queryFn: async () =>
-            (
-                await fetch(
-                    `${process.env.NEXT_PUBLIC_URL_API}/system-params-type/${params?.id}`,
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    },
-                )
-            ).json(),
-    });
-
-    console.log(data, error, isLoading);
-
-    useEffect(() => {
-        if (data?.data) {
-            form.setValue("paramsLabel", data?.data?.paramsLabel);
-            form.setValue("paramsValue", data?.data?.paramsValue);
-            form.setValue("paramsDescription", data?.data?.paramsDescription);
-        }
-    }, [data, form]);
-
     const handleSubmit = async (data: any) => {
         setIsDisable(true);
         try {
             const config = {
-                url: `${process.env.NEXT_PUBLIC_URL_API}/system-params-type/${params?.id}`,
-                method: "PUT",
+                url: `${process.env.NEXT_PUBLIC_URL_API}/system-params-type`,
+                method: "POST",
                 headers: {
                     Authorization: `Bearer`,
                     "Content-Type": "application/json",
@@ -146,7 +118,7 @@ export default function Page() {
                             </Button>
                             <Button
                                 className="cursor-pointer"
-                                variant={"outline"}
+                                variant={"ghost"}
                                 type="button"
                                 onClick={() => router.back()}
                             >

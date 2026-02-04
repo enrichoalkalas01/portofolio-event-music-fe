@@ -13,33 +13,62 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 
 const schemaForm = z.object({
     paramsLabel: z.string().nonempty(),
     paramsValue: z.string().nonempty(),
-    paramsType: z.string().optional(),
     paramsDescription: z.string().optional(),
+    paramsType: z.string().nonempty(),
 });
 
 export default function Page() {
     const router = useRouter();
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [IsDisable, setIsDisable] = useState<boolean>(false);
 
     const form = useForm({
         resolver: zodResolver(schemaForm),
         defaultValues: {
             paramsLabel: "",
             paramsValue: "",
-            paramsType: "",
             paramsDescription: "",
+            paramsType: "",
+        },
+    });
+
+    const {
+        data: dataParamsType,
+        error: errorParamsType,
+        isLoading: isLoadingParamsType,
+    } = useQuery({
+        queryKey: ["admin-system-params-type-list-1"],
+        queryFn: async () =>
+            (
+                await fetch(
+                    `${process.env.NEXT_PUBLIC_URL_API}/system-params-type`,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    },
+                )
+            ).json(),
+        select: (e: any) => {
+            const mappedData = e?.data?.map((x: any) => {
+                return {
+                    label: x?.paramsLabel,
+                    value: x?._id,
+                };
+            });
+            return mappedData;
         },
     });
 
     const handleSubmit = async (data: any) => {
-        setIsLoading(true);
+        setIsDisable(true);
         try {
             const config = {
-                url: ``,
+                url: `${process.env.NEXT_PUBLIC_URL_API}/system-params`,
                 method: "POST",
                 headers: {
                     Authorization: `Bearer`,
@@ -50,20 +79,21 @@ export default function Page() {
                 }),
             };
 
-            // const response = await axios(config)
-            // toast.success(
-            //     response?.data?.message || "Successfull to register.",
-            //     {
-            //         position: "top-right",
-            //     },
-            // );
+            const response = await axios(config);
+            toast.success(
+                response?.data?.message || "Successfull to register.",
+                {
+                    position: "top-right",
+                },
+            );
+            router.push(`/admin/system-params`);
         } catch (error: any) {
             toast.error(error?.response?.data?.message || error?.message, {
                 position: "top-right",
             });
         } finally {
             setTimeout(() => {
-                setIsLoading(false);
+                setIsDisable(false);
             }, 1000);
         }
     };
@@ -81,7 +111,7 @@ export default function Page() {
                         <div className="w-full">
                             <FormRegularInput
                                 form={form}
-                                disable={isLoading}
+                                disable={IsDisable}
                                 name="paramsLabel"
                                 labelName={"Params Label"}
                             />
@@ -90,38 +120,38 @@ export default function Page() {
                         <div className="w-full">
                             <FormRegularInput
                                 form={form}
-                                disable={isLoading}
+                                disable={IsDisable}
                                 name="paramsValue"
                                 labelName={"Params Value"}
                             />
                         </div>
 
                         <div className="w-full">
-                            <FormRegularSelect
+                            <FormRegularInput
                                 form={form}
-                                disable={isLoading}
-                                name="paramsType"
-                                labelName={"Params Type"}
-                                defaultValue={[{ label: "1", value: "1" }]}
+                                disable={IsDisable}
+                                name="paramsDescription"
+                                labelName={"Params Description"}
                             />
                         </div>
 
                         <div className="w-full">
-                            <FormRegularInput
+                            <FormRegularSelect
                                 form={form}
-                                disable={isLoading}
-                                name="paramsDescription"
-                                labelName={"Params Description"}
+                                disable={IsDisable}
+                                name="paramsType"
+                                labelName={"Params Type"}
+                                defaultValue={dataParamsType || []}
                             />
                         </div>
 
                         <div className="w-full flex gap-2">
                             <Button
                                 className="cursor-pointer"
-                                disabled={isLoading}
+                                disabled={IsDisable}
                                 type="submit"
                             >
-                                {isLoading ? (
+                                {IsDisable ? (
                                     <LoadingComponent type="icon" />
                                 ) : (
                                     <span>Submit</span>

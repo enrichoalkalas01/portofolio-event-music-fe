@@ -26,6 +26,13 @@ export const columns: ColumnDef<any>[] = [
         },
     },
     {
+        accessorKey: "paramsType",
+        header: () => <div className="">Params Type</div>,
+        cell: ({ row }) => {
+            return <div className="">{row.getValue("paramsType")}</div>;
+        },
+    },
+    {
         accessorKey: "paramsDescription",
         header: () => <div className="">Params Description</div>,
         cell: ({ row }) => {

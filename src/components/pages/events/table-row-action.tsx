@@ -30,7 +30,7 @@ export default function TableRowAction({
     const handleDelete = async () => {
         try {
             const config = {
-                url: `${process.env.NEXT_PUBLIC_URL_API}/system-params-type/${id}`,
+                url: `${process.env.NEXT_PUBLIC_URL_API}/system-params/${id}`,
                 method: "DELETE",
                 headers: {
                     Authorization: `Bearer `,
@@ -40,7 +40,7 @@ export default function TableRowAction({
 
             const response = await axios(config);
             queryClient.invalidateQueries({
-                queryKey: ["admin-system-params-type-list"],
+                queryKey: ["admin-system-params-list"],
             });
 
             setTimeout(() => {
@@ -56,11 +56,11 @@ export default function TableRowAction({
     };
 
     const handleEdit = () => {
-        router.push(`/admin/system-params-type/${id}/update`);
+        router.push(`/admin/system-params/${id}/update`);
     };
 
     const handleView = () => {
-        router.push(`/admin/system-params-type/${id}`);
+        router.push(`/admin/system-params/${id}`);
     };
 
     return (

@@ -6,11 +6,11 @@ import { DataTable } from "./table-data";
 
 export default function TablePageSystemParamsType() {
     const { data, error, isLoading } = useQuery({
-        queryKey: ["admin-system-params-type-list"],
+        queryKey: ["admin-system-params-list"],
         queryFn: async () =>
             (
                 await fetch(
-                    `${process.env.NEXT_PUBLIC_URL_API}/system-params-type`,
+                    `${process.env.NEXT_PUBLIC_URL_API}/system-params`,
                     {
                         headers: {
                             "Content-Type": "application/json",
