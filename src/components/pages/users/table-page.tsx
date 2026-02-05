@@ -4,12 +4,12 @@ import { useQuery } from "@tanstack/react-query";
 import { columns } from "./table-columns";
 import { DataTable } from "./table-data";
 
-export default function TablePageEvents() {
+export default function TablePageSystemParamsType() {
     const { data, error, isLoading } = useQuery({
-        queryKey: ["admin-events-list"],
+        queryKey: ["admin-users-list"],
         queryFn: async () =>
             (
-                await fetch(`${process.env.NEXT_PUBLIC_URL_API}/events`, {
+                await fetch(`${process.env.NEXT_PUBLIC_URL_API}/users`, {
                     headers: {
                         "Content-Type": "application/json",
                     },

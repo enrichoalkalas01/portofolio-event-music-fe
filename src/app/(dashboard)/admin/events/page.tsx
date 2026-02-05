@@ -1,5 +1,5 @@
 import { WrapperCard } from "@/components/generals/wrapper/wrapper-card";
-import TablePageSystemParams from "@/components/pages/events/table-page";
+import TablePageEvents from "@/components/pages/events/table-page";
 import { Button } from "@/components/shadcn/ui/button";
 import Link from "next/link";
 
@@ -19,7 +19,7 @@ export default function Page() {
                     </div>
                 }
             >
-                <TablePageSystemParams />
+                <TablePageEvents />
             </WrapperCard>
         </section>
     );
