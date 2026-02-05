@@ -15,8 +15,8 @@ import { Button } from "@/components/shadcn/ui/button";
 
 export default function Headers() {
     return (
-        <div className="w-full max-w-full bg-foreground/90 relative">
-            <div className="w-full md:max-w-5xl lg:max-w-7xl items-center py-4 px-4 text-background flex gap-4 mx-auto">
+        <div className="w-full max-w-full relative">
+            <div className="w-full md:max-w-5xl lg:max-w-7xl items-center py-4 px-4 flex gap-4 mx-auto">
                 <div className="logo w-1/4 text-md">
                     <h1>Event Nations</h1>
                 </div>
@@ -27,7 +27,7 @@ export default function Headers() {
                                 <NavigationMenuLink asChild>
                                     <Link
                                         href={""}
-                                        className="px-4 py-2 text-sm font-medium text-background transition-colors duration-200 uppercase text-xs"
+                                        className="px-4 py-2 text-sm font-medium transition-colors duration-200 uppercase text-xs"
                                     >
                                         Events
                                     </Link>
@@ -38,7 +38,7 @@ export default function Headers() {
                                 <NavigationMenuLink asChild>
                                     <Link
                                         href={""}
-                                        className="px-4 py-2 text-sm font-medium text-background transition-colors duration-200 uppercase text-xs"
+                                        className="px-4 py-2 text-sm font-medium transition-colors duration-200 uppercase text-xs"
                                     >
                                         Coming Soon
                                     </Link>
@@ -49,7 +49,7 @@ export default function Headers() {
                                 <NavigationMenuLink asChild>
                                     <Link
                                         href={""}
-                                        className="px-4 py-2 text-sm font-medium text-background transition-colors duration-200 uppercase text-xs"
+                                        className="px-4 py-2 text-sm font-medium transition-colors duration-200 uppercase text-xs"
                                     >
                                         About Us
                                     </Link>
@@ -60,7 +60,7 @@ export default function Headers() {
                                 <NavigationMenuLink asChild>
                                     <Link
                                         href={""}
-                                        className="px-4 py-2 text-sm font-medium text-background transition-colors duration-200 uppercase text-xs"
+                                        className="px-4 py-2 text-sm font-medium transition-colors duration-200 uppercase text-xs"
                                     >
                                         Contact Us
                                     </Link>
