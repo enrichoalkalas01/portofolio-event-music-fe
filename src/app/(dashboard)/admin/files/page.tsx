@@ -22,7 +22,7 @@ export default function Page() {
     const router = useRouter();
 
     const handlerButtonComponent = () => {
-        router.push("/admin/settings/files/uploads");
+        router.push("/admin/files/upload");
     };
 
     return (
@@ -31,7 +31,12 @@ export default function Page() {
             headerTitle="List Of Files"
             headerSubTitle=""
             buttonUrlComponent={
-                <Button onClick={handlerButtonComponent}>Upload FIles</Button>
+                <Button
+                    className="cursor-pointer"
+                    onClick={handlerButtonComponent}
+                >
+                    Upload FIles
+                </Button>
             }
         >
             <ShowFiles />

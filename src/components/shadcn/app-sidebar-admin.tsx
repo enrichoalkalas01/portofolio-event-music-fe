@@ -8,6 +8,7 @@ import {
     BanknoteArrowUp,
     FastForward,
     Music,
+    File,
 } from "lucide-react";
 
 import { NavMain } from "@/components/shadcn/nav-main";
@@ -56,6 +57,11 @@ const data = {
             name: "Users",
             url: "/admin/users",
             icon: Users,
+        },
+        {
+            name: "Files",
+            url: "/admin/files",
+            icon: File,
         },
         {
             name: "System Params",
