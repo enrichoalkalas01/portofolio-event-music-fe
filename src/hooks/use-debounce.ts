@@ -19,3 +19,19 @@ export const useDebounce = (value: any, delay = 300) => {
 
     return debouncedValue;
 };
+
+export const useDebounceT = <T>(value: T, delay = 300): T => {
+    const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [value, delay]);
+
+    return debouncedValue;
+};
