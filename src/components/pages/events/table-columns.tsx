@@ -23,7 +23,7 @@ export const columns: ColumnDef<any>[] = [
 
     {
         accessorKey: "max_participants",
-        header: () => <div className="">max_participants</div>,
+        header: () => <div className="">max participants</div>,
         cell: ({ row }) => {
             return <div className="">{row.getValue("max_participants")}</div>;
         },
