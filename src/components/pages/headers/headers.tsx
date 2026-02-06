@@ -35,7 +35,15 @@ export default function Headers() {
         <div className="w-full max-w-full relative">
             <div className="w-full md:max-w-5xl lg:max-w-7xl items-center py-4 px-4 flex gap-4 mx-auto">
                 <div className="logo w-1/4 text-md">
-                    <h1>Event Nations</h1>
+                    <Link href={"/"}>
+                        <img
+                            width={35}
+                            height={35}
+                            src="/logo.png"
+                            className="brightness-0 invert"
+                            alt="logo"
+                        />
+                    </Link>
                 </div>
                 <div className="menus w-full text-xl">
                     <NavigationMenu className="mx-auto">
@@ -54,7 +62,7 @@ export default function Headers() {
                             <NavigationMenuItem>
                                 <NavigationMenuLink asChild>
                                     <Link
-                                        href={"/coming-soon"}
+                                        href={"/events/coming-soon"}
                                         className="px-4 py-2 text-sm font-medium transition-colors duration-200 uppercase text-xs"
                                     >
                                         Coming Soon
