@@ -1,6 +1,6 @@
 "use client";
 
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { ChevronsUpDown, LogOut } from "lucide-react";
 
 import {
@@ -30,8 +30,10 @@ export function NavUser({
         avatar: string;
     };
 }) {
+    const session: any = useSession();
     const { isMobile } = useSidebar();
 
+    console.log("Session User : ", session?.data?.user);
     return (
         <SidebarMenu>
             <SidebarMenuItem>
@@ -52,10 +54,10 @@ export function NavUser({
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-medium">
-                                    {user.name}
+                                    {session?.data?.user?.username}
                                 </span>
                                 <span className="truncate text-xs">
-                                    {user.email}
+                                    {session?.data?.user?.email}
                                 </span>
                             </div>
                             <ChevronsUpDown className="ml-auto size-4" />
