@@ -24,6 +24,8 @@ import TransactionSkeletonCheckout from "@/components/transaction/transaction-sk
 // Others
 import { fetcher } from "@/lib/fetcher";
 import { WrapperForms } from "@/components/generals/wrapper/wrapper-forms";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const checkoutFormSchema = z.object({
     // States
@@ -74,6 +76,7 @@ const checkoutFormSchema = z.object({
 });
 
 export default function Page() {
+    const router = useRouter();
     const params = useParams();
     const session: any = useSession();
     const accessToken: any = session?.data?.user?.token?.access_token;
@@ -116,10 +119,10 @@ export default function Page() {
     });
 
     const { data, isLoading, error } = useQuery<any>({
-        queryKey: ["events-data"],
+        queryKey: ["transactions-data"],
         queryFn: () =>
             fetcher<any>(
-                `${process.env.NEXT_PUBLIC_URL_API}/events/${params?.transaction_id}`,
+                `${process.env.NEXT_PUBLIC_URL_API}/transactions/${params?.transaction_id}`,
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -129,10 +132,49 @@ export default function Page() {
             ),
     });
 
-    console.log(data?.data);
+    if (error) {
+        toast.error("Transaction not found.", {
+            position: "top-right",
+        });
+
+        setTimeout(() => {
+            router.back();
+        }, 500);
+    }
+
     useEffect(() => {
-        if (data?.data) {
-            form.setValue("subtotal", Number(data?.data?.price || 0));
+        if (data?.data && data?.data?.status_transaction === "checkout") {
+            form.setValue("subtotal", Number(data?.data?.event?.price || 0));
+        } else {
+            if (
+                data?.data?.status_transaction === "cancelled" ||
+                data?.data?.status_transaction === "failed"
+            ) {
+                toast.error(
+                    `Transaction with id ${data?.data?._id} is cancelled.`,
+                    {
+                        position: "top-right",
+                    },
+                );
+            } else if (data?.data?.status_transaction === "pending") {
+                toast.info(
+                    `Transaction with id ${data?.data?._id} is in progress`,
+                    {
+                        position: "top-right",
+                    },
+                );
+            } else if (data?.data?.status_transaction === "success") {
+                toast.success(
+                    `Transaction with id ${data?.data?._id} is success`,
+                    {
+                        position: "top-right",
+                    },
+                );
+            }
+
+            setTimeout(() => {
+                router.push("/");
+            }, 1000);
         }
     }, [data]);
 

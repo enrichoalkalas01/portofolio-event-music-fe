@@ -9,6 +9,9 @@ import { parseEventDate } from "@/lib/parsed-date";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { LoadingComponent } from "@/components/generals/loading/loading";
+import { useSession } from "next-auth/react";
+import { toast } from "sonner";
+import axios from "axios";
 
 const BaseUrlImage =
     process.env.NEXT_PUBLIC_URL_IMAGE ||
@@ -16,6 +19,8 @@ const BaseUrlImage =
 
 export default function EventsItem({ data }: { data: any }) {
     const router = useRouter();
+    const session: any = useSession();
+    const accessToken: any = session?.data?.user?.token?.access_token;
 
     const dateParsed = parseEventDate(data?.eventDate, { lang: "en" });
     const thumbnail = !data?.thumbnail?.[0]
@@ -25,8 +30,33 @@ export default function EventsItem({ data }: { data: any }) {
     const [isLoadingTicket, setIsLoadingTicket] = useState(false);
     const [isLoadingMoreInfo, setIsLoadingMoreInfo] = useState(false);
 
-    const handleBuyTicket = () => {
-        router.push(`/checkout/${data?._id}`);
+    const handleBuyTicket = async () => {
+        setIsLoadingTicket(true);
+        try {
+            if (!accessToken) {
+                throw {
+                    message: "You must login first for buy tickets.",
+                };
+            }
+
+            const config = {
+                url: `${process.env.NEXT_PUBLIC_URL_API}/transactions/${data?._id}`,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            };
+
+            const response = await axios(config);
+            router.push(`/checkout/${response?.data?.data?._id}`);
+        } catch (error: any) {
+            toast.error(error?.response?.message || error?.message, {
+                position: "top-right",
+            });
+        } finally {
+            setIsLoadingTicket(false);
+        }
     };
 
     const handleMoreDetail = () => {

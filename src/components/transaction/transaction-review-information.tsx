@@ -132,7 +132,7 @@ export default function TransactionReviewInformmation({
         try {
             const config = {
                 url: `${process.env.NEXT_PUBLIC_URL_API}/transactions/${transactionID}`,
-                method: "POST",
+                method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${accessToken}`,
@@ -154,9 +154,8 @@ export default function TransactionReviewInformmation({
                 }),
             };
 
-            console.log(config);
-
             const response = await axios(config);
+            window.location.href = response?.data?.data?.redirect_url;
         } catch (error) {
             console.log(error);
         } finally {
@@ -191,6 +190,10 @@ export default function TransactionReviewInformmation({
 
                             <p>Postal Code : {watchedValue?.zip_code}</p>
                             <p>Email : {watchedValue?.email}</p>
+
+                            <br />
+
+                            <p>Total Ticket : 1</p>
                         </div>
                     </div>
 
