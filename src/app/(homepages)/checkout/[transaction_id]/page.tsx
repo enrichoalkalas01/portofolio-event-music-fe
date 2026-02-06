@@ -143,7 +143,11 @@ export default function Page() {
     }
 
     useEffect(() => {
-        if (data?.data && data?.data?.status_transaction === "checkout") {
+        if (
+            data?.data &&
+            (data?.data?.status_transaction === "checkout" ||
+                data?.data?.status_transaction === "no_transaction")
+        ) {
             form.setValue("subtotal", Number(data?.data?.event?.price || 0));
         } else {
             if (
@@ -156,6 +160,10 @@ export default function Page() {
                         position: "top-right",
                     },
                 );
+
+                setTimeout(() => {
+                    router.push("/");
+                }, 1000);
             } else if (data?.data?.status_transaction === "pending") {
                 toast.info(
                     `Transaction with id ${data?.data?._id} is in progress`,
@@ -163,6 +171,10 @@ export default function Page() {
                         position: "top-right",
                     },
                 );
+
+                setTimeout(() => {
+                    router.push("/");
+                }, 1000);
             } else if (data?.data?.status_transaction === "success") {
                 toast.success(
                     `Transaction with id ${data?.data?._id} is success`,
@@ -170,11 +182,11 @@ export default function Page() {
                         position: "top-right",
                     },
                 );
-            }
 
-            setTimeout(() => {
-                router.push("/");
-            }, 1000);
+                setTimeout(() => {
+                    router.push("/");
+                }, 1000);
+            }
         }
     }, [data]);
 
