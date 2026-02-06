@@ -131,12 +131,11 @@ export default function TransactionReviewInformmation({
         setIsLoading(true);
         try {
             const config = {
-                url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions/${transactionID}`,
+                url: `${process.env.NEXT_PUBLIC_URL_API}/transactions/${transactionID}`,
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${accessToken}`,
-                    "X-GROUP-ID": "SWARNA_TACTICAL",
                 },
                 data: JSON.stringify({
                     email: watchedValue?.email,
@@ -154,6 +153,8 @@ export default function TransactionReviewInformmation({
                     total_payment: watchedValue?.total_payment,
                 }),
             };
+
+            console.log(config);
 
             const response = await axios(config);
         } catch (error) {
@@ -175,26 +176,21 @@ export default function TransactionReviewInformmation({
                     </h2>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-6">
-                    {/* Shipping Address Review */}
+                    {/* Address Review */}
                     <div className="flex flex-col gap-2">
-                        <h3 className="font-medium">Shipping Address</h3>
+                        <h3 className="font-medium">Information</h3>
                         <div className="text-sm text-muted-foreground p-3 bg-accent rounded-ele">
                             <p>
-                                {watchedValue?.firstname}
+                                User : {watchedValue?.firstname}
                                 {watchedValue?.lastName}
                             </p>
-                            <p>{watchedValue?.address}</p>
                             <p>
+                                Address : {watchedValue?.address},{" "}
                                 {watchedValue?.state}, {watchedValue?.city}
                             </p>
-                            <p>
-                                {
-                                    watchedValue?.area_data
-                                        ?.administrative_division_level_3_name
-                                }
-                                , {watchedValue?.zip_code}
-                            </p>
-                            <p>{watchedValue?.email}</p>
+
+                            <p>Postal Code : {watchedValue?.zip_code}</p>
+                            <p>Email : {watchedValue?.email}</p>
                         </div>
                     </div>
 
