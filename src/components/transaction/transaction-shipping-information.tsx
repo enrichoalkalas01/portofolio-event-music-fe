@@ -136,40 +136,35 @@ export default function TransactionShippingInformmation({
         setSelectedShipping(e?.shippingId);
     };
 
-    const watchedFields = form.watch([
-        "firstname",
-        "lastname",
-        "email",
-        "phonenumber",
-        "address",
-        "city",
-        "state",
-        "zip_code",
-    ]);
+    const watchedFields = useWatch({ control: form.control });
     useEffect(() => {
-        const validateFields = async () => {
-            const isValid = await form.trigger([
-                "firstname",
-                "lastname",
-                "email",
-                "phonenumber",
-                "address",
-                "city",
-                "state",
-                "zip_code",
-            ]);
-
-            setIsDisableNextButton(!isValid || !selectedShipping);
-        };
-
-        validateFields();
-    }, [watchedFields, selectedShipping]);
+        const {
+            firstname,
+            lastname,
+            email,
+            phonenumber,
+            address,
+            city,
+            state,
+            zip_code,
+        } = watchedFields;
+        if (
+            firstname &&
+            lastname &&
+            email &&
+            phonenumber &&
+            address &&
+            city &&
+            state &&
+            zip_code
+        ) {
+            setIsDisableNextButton(false);
+        }
+    }, [watchedFields]);
 
     // console.log("Debounced:", debouncedZipCode);
     // console.log("Data:", data?.data);
-    // console.log(form.watch("zip_code"));
-
-    console.log("Selected Shipping : ", selectedShipping);
+    // console.log(form.watch("zip_code"))
 
     return (
         <div className="">
@@ -177,7 +172,7 @@ export default function TransactionShippingInformmation({
                 <CardHeader>
                     <h2 className="text-xl font-semibold flex items-center gap-2">
                         <MapPin className="h-5 w-5" />
-                        Shipping Information
+                        Checkout Information
                     </h2>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
@@ -252,93 +247,6 @@ export default function TransactionShippingInformmation({
                                 form={form}
                                 disable={isDisable}
                             />
-                        </div>
-                    </div>
-
-                    {/* Shipping Methods */}
-                    <div className="flex flex-col gap-3 border-t pt-4">
-                        <Label>Shipping Method</Label>
-                        <div className="flex flex-col gap-4">
-                            {ratesData?.pricing?.map(
-                                (method: any, index: number) => {
-                                    const shippingId = `${method.courier_code}_${method.type}`;
-
-                                    return (
-                                        <button
-                                            type="button"
-                                            key={shippingId}
-                                            aria-pressed={
-                                                selectedShipping === shippingId
-                                            }
-                                            className={cn(
-                                                "p-3 border rounded-ele cursor-pointer transition-colors text-left",
-                                                selectedShipping === shippingId
-                                                    ? "border-primary bg-primary/5"
-                                                    : "border-border hover:bg-accent",
-                                            )}
-                                            onClick={() =>
-                                                handleShipping({
-                                                    shippingId: shippingId,
-                                                    data: method,
-                                                })
-                                            }
-                                        >
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex items-center gap-3">
-                                                    <div
-                                                        className={cn(
-                                                            "w-4 h-4 rounded-full border-2 transition-colors",
-                                                            selectedShipping ===
-                                                                shippingId
-                                                                ? "border-primary bg-primary"
-                                                                : "border-border",
-                                                        )}
-                                                    />
-                                                    <div>
-                                                        <div className="font-medium">
-                                                            {
-                                                                method.courier_name
-                                                            }
-                                                        </div>
-                                                        <div className="text-sm text-muted-foreground flex gap-2">
-                                                            <Badge className="rounded-md">
-                                                                {
-                                                                    method.duration
-                                                                }
-                                                            </Badge>
-                                                            <Badge
-                                                                variant={
-                                                                    "outline"
-                                                                }
-                                                                className="rounded-md"
-                                                            >
-                                                                {
-                                                                    method.courier_service_name
-                                                                }
-                                                            </Badge>
-                                                            <Badge
-                                                                variant={
-                                                                    "outline"
-                                                                }
-                                                                className="rounded-md"
-                                                            >
-                                                                {
-                                                                    method.description
-                                                                }
-                                                            </Badge>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="font-semibold">
-                                                    {ConverterCurrency({
-                                                        amount: method.price,
-                                                    })}
-                                                </div>
-                                            </div>
-                                        </button>
-                                    );
-                                },
-                            )}
                         </div>
                     </div>
                 </CardContent>

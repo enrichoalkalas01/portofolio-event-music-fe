@@ -145,9 +145,6 @@ export default function TransactionReviewInformmation({
                     phonenumber: watchedValue?.phonenumber,
                     address: watchedValue?.address,
 
-                    area_data: watchedValue?.area_data,
-                    shipment_data: watchedValue?.selectedShipment,
-
                     state: watchedValue?.state,
                     city: watchedValue?.city,
 

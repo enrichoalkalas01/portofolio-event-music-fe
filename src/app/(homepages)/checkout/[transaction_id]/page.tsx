@@ -8,7 +8,7 @@ import { useParams } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { CreditCard, Truck, Check } from "lucide-react";
+import { CreditCard, Truck, Check, User } from "lucide-react";
 
 import { Skeleton } from "@/components/shadcn/ui/skeleton";
 
@@ -79,7 +79,7 @@ export default function Page() {
     const accessToken: any = session?.data?.user?.token?.access_token;
 
     const [crumb, setCrumb] = useState([
-        { step: 1, label: "Shipping", icon: Truck },
+        { step: 1, label: "User Information", icon: User },
         // { step: 2, label: "Payment", icon: CreditCard },
         { step: 3, label: "Review", icon: Check },
     ]);
@@ -116,38 +116,25 @@ export default function Page() {
     });
 
     const { data, isLoading, error } = useQuery<any>({
-        enabled: !!accessToken && !!params?.transaction_id,
-        queryKey: ["transaction-data"],
+        queryKey: ["events-data"],
         queryFn: () =>
             fetcher<any>(
-                `${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions/${params?.transaction_id}`,
+                `${process.env.NEXT_PUBLIC_URL_API}/events/${params?.transaction_id}`,
                 {
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${accessToken}`,
-                        "X-GROUP-ID": "SWARNA_TACTICAL",
                     },
                 },
             ),
     });
 
+    console.log(data?.data);
     useEffect(() => {
-        if (data) {
-            console.log("Full data:", data?.data);
-
-            const totalPrice = data?.data?.total_price || 0;
-            const shipmentPrice = data?.data?.shipments?.shipment_price || 0;
-            const taxRate = data?.data?.calculated_price?.tax || 11;
-            const taxTotal = Math.round((totalPrice * taxRate) / 100);
-            const totalPayment = totalPrice + shipmentPrice + taxTotal;
-
-            form.setValue("subtotal", totalPrice);
-            form.setValue("shipping_total", shipmentPrice);
-            form.setValue("tax_total", taxTotal);
-            form.setValue("total_payment", totalPayment);
-            form.setValue("fulldata", data?.data);
+        if (data?.data) {
+            form.setValue("subtotal", Number(data?.data?.price || 0));
         }
-    }, [data, form]);
+    }, [data]);
 
     useEffect(() => {
         if (!isLoading) {

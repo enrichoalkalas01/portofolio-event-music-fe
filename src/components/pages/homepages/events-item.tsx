@@ -25,7 +25,9 @@ export default function EventsItem({ data }: { data: any }) {
     const [isLoadingTicket, setIsLoadingTicket] = useState(false);
     const [isLoadingMoreInfo, setIsLoadingMoreInfo] = useState(false);
 
-    const handleBuyTicket = () => {};
+    const handleBuyTicket = () => {
+        router.push(`/checkout/${data?._id}`);
+    };
 
     const handleMoreDetail = () => {
         router.push(`/events/${data?._id || data?.id}`);

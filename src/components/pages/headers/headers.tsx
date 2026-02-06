@@ -43,7 +43,7 @@ export default function Headers() {
                             <NavigationMenuItem>
                                 <NavigationMenuLink asChild>
                                     <Link
-                                        href={""}
+                                        href={"/events"}
                                         className="px-4 py-2 text-sm font-medium transition-colors duration-200 uppercase text-xs"
                                     >
                                         Events
@@ -54,7 +54,7 @@ export default function Headers() {
                             <NavigationMenuItem>
                                 <NavigationMenuLink asChild>
                                     <Link
-                                        href={""}
+                                        href={"/coming-soon"}
                                         className="px-4 py-2 text-sm font-medium transition-colors duration-200 uppercase text-xs"
                                     >
                                         Coming Soon
@@ -65,7 +65,7 @@ export default function Headers() {
                             <NavigationMenuItem>
                                 <NavigationMenuLink asChild>
                                     <Link
-                                        href={""}
+                                        href={"/about-us"}
                                         className="px-4 py-2 text-sm font-medium transition-colors duration-200 uppercase text-xs"
                                     >
                                         About Us
@@ -76,7 +76,7 @@ export default function Headers() {
                             <NavigationMenuItem>
                                 <NavigationMenuLink asChild>
                                     <Link
-                                        href={""}
+                                        href={"/contact-us"}
                                         className="px-4 py-2 text-sm font-medium transition-colors duration-200 uppercase text-xs"
                                     >
                                         Contact Us

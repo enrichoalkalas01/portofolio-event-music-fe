@@ -21,10 +21,6 @@ export default function TransactionOrderSummary({
     readonly form: UseFormReturn<any>;
 }) {
     const subtotal = useWatch({ control: form.control, name: "subtotal" });
-    const shippingTotal = useWatch({
-        control: form.control,
-        name: "shipping_total",
-    });
     const taxTotal = useWatch({ control: form.control, name: "tax_total" });
     const totalPayment = useWatch({
         control: form.control,
@@ -32,8 +28,13 @@ export default function TransactionOrderSummary({
     });
 
     useEffect(() => {
-        form.setValue("total_payment", subtotal + shippingTotal + taxTotal);
-    }, [shippingTotal]);
+        if (subtotal) {
+            const tax = 11;
+            const taxCalculated = (tax * subtotal) / 100;
+            form.setValue("tax_total", taxCalculated);
+            form.setValue("total_payment", taxCalculated + subtotal);
+        }
+    }, [subtotal]);
 
     const OrderSummaryCard = ({
         data,
@@ -117,20 +118,6 @@ export default function TransactionOrderSummary({
                             <span>
                                 {ConverterCurrency({
                                     amount: subtotal,
-                                })}
-                            </span>
-                        </div>
-                        {/* {summary?.discount > 0 && (
-                            <div className="flex justify-between text-sm text-green-600">
-                                <span>Discount</span>
-                                <span>-${summary?.discount.toFixed(2)}</span>
-                            </div>
-                        )} */}
-                        <div className="flex justify-between text-sm">
-                            <span>Shipping</span>
-                            <span>
-                                {ConverterCurrency({
-                                    amount: shippingTotal,
                                 })}
                             </span>
                         </div>
