@@ -12,6 +12,7 @@ import { LoadingComponent } from "@/components/generals/loading/loading";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import axios from "axios";
+import Link from "next/link";
 
 const BaseUrlImage =
     process.env.NEXT_PUBLIC_URL_IMAGE ||
@@ -91,7 +92,9 @@ export default function EventsItem({ data }: { data: any }) {
 
             {/* Content Section */}
             <div className="flex-1 flex flex-col justify-center gap-2 min-w-0">
-                <h1 className="text-xl font-bold text-white">{data?.title}</h1>
+                <h1 className="text-xl font-bold text-white hover:text-primary">
+                    <Link href={`/events/${data?._id}`}>{data?.title}</Link>
+                </h1>
 
                 <div className="flex items-center gap-2 text-sm">
                     <span className="text-cyan-400 font-medium">
