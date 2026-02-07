@@ -68,11 +68,11 @@ export default function Page() {
     });
 
     const { data, error, isLoading } = useQuery({
-        queryKey: ["admin-events-detail"],
+        queryKey: ["admin-transactions-detail"],
         queryFn: async () =>
             (
                 await fetch(
-                    `${process.env.NEXT_PUBLIC_URL_API}/events/${params?.id}`,
+                    `${process.env.NEXT_PUBLIC_URL_API}/transactions/${params?.id}`,
                     {
                         headers: {
                             "Content-Type": "application/json",
@@ -108,58 +108,6 @@ export default function Page() {
         }
     }, [data, form]);
 
-    const handleSubmit = async (data: any) => {
-        console.log(data);
-        setIsDisable(true);
-        try {
-            const DataPassing = {
-                title: data?.title || "",
-                excerpt: data?.excerpt || "",
-                description: data?.description || "",
-                event_date_start: data?.event_date_start || "",
-                event_date_end: data?.event_date_end || "",
-                location: data?.location || "",
-                vendor: data?.vendor || "",
-                sponsor: data?.sponsor || [],
-                categories: data?.categories || [],
-                thumbnail: data?.title || "",
-                images: data?.images || [],
-                status: data?.status || "Draft",
-                max_participants: Number(data?.max_participants) || 0,
-                price: Number(data?.price) || 0,
-            };
-
-            const config = {
-                url: `${process.env.NEXT_PUBLIC_URL_API}/events/${params?.id}`,
-                method: "PUT",
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    "Content-Type": "application/json",
-                },
-                data: JSON.stringify({
-                    ...DataPassing,
-                }),
-            };
-
-            const response = await axios(config);
-            toast.success(
-                response?.data?.message || "Successfull to register.",
-                {
-                    position: "top-right",
-                },
-            );
-            // router.push(`/admin/events`);
-        } catch (error: any) {
-            toast.error(error?.response?.data?.message || error?.message, {
-                position: "top-right",
-            });
-        } finally {
-            setTimeout(() => {
-                setIsDisable(false);
-            }, 1000);
-        }
-    };
-
     return (
         <section className="w-full">
             <WrapperCard
@@ -168,7 +116,7 @@ export default function Page() {
                 headerSubTitle=""
                 className="p-0 gap-0"
             >
-                <WrapperForms form={form} onSubmitFunction={handleSubmit}>
+                <WrapperForms form={form}>
                     <div className="w-full flex flex-col gap-4">
                         <div className="w-full">
                             <FormRegularInput
