@@ -48,7 +48,7 @@ export default function EventsHomepages() {
                 )}
             </div>
             <div className="w-full flex items-center justify-center">
-                <Link href="/events/coming-soon">
+                <Link href="/events">
                     <Button className="cursor-pointer">See More</Button>
                 </Link>
             </div>

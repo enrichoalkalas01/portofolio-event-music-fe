@@ -37,6 +37,7 @@ const schemaForm = z.object({
     status: z.string().optional(),
     max_participants: z.string().optional(),
     price: z.string().optional(),
+    coming_soon: z.string().optional(),
 });
 
 export default function Page() {
@@ -64,6 +65,7 @@ export default function Page() {
             status: "",
             max_participants: "0",
             price: "0",
+            coming_soon: "NO",
         },
     });
 
@@ -104,6 +106,10 @@ export default function Page() {
                 form.setValue("status", data?.data?.status);
                 form.setValue("vendor", data?.data?.vendor);
                 form.setValue("sponsor", data?.data?.sponsor);
+                form.setValue(
+                    "coming_soon",
+                    data?.data?.others?.coming_soon || "NO",
+                );
             }, 500);
         }
     }, [data, form]);
@@ -127,6 +133,7 @@ export default function Page() {
                 status: data?.status || "Draft",
                 max_participants: Number(data?.max_participants) || 0,
                 price: Number(data?.price) || 0,
+                coming_soon: data?.coming_soon || "NO",
             };
 
             const config = {
@@ -299,6 +306,19 @@ export default function Page() {
 
                         <div className="w-full">
                             <EventStatus form={form} IsDisable={IsDisable} />
+                        </div>
+
+                        <div className="w-full">
+                            <FormRegularSelect
+                                form={form}
+                                disable={IsDisable}
+                                name="coming_soon"
+                                labelName={"Coming Soon Event"}
+                                defaultValue={[
+                                    { label: "NO", value: "NO" },
+                                    { label: "YES", value: "YES" },
+                                ]}
+                            />
                         </div>
 
                         <div className="w-full flex gap-2">
