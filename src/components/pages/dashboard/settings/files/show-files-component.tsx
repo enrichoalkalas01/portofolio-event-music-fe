@@ -27,7 +27,8 @@ interface IShowFilesComponentProps {
     readonly gridCols?: number;
 }
 
-const baseUrlImage = "https://files.swarnatactical.com/tester-minio/";
+const baseUrlImage =
+    "https://minio-api.enrichoalkalas.my.id/portofolio-event-music/";
 
 export default function ShowFilesComponent({
     files,

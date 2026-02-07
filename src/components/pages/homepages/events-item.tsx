@@ -16,7 +16,7 @@ import Link from "next/link";
 
 const BaseUrlImage =
     process.env.NEXT_PUBLIC_URL_IMAGE ||
-    "https://files.swarnatactical.com/tester-minio/";
+    "https://minio-api.enrichoalkalas.my.id/portofolio-event-music/";
 
 export default function EventsItem({ data }: { data: any }) {
     const router = useRouter();

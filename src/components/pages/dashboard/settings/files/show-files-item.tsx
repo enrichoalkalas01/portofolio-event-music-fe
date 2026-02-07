@@ -34,7 +34,8 @@ import {
 import { cn } from "@/lib/utils";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-const baseImageUrl = "https://files.swarnatactical.com/tester-minio/";
+const baseImageUrl =
+    "https://minio-api.enrichoalkalas.my.id/portofolio-event-music/";
 
 interface IShowFilesItem {
     readonly file: any;

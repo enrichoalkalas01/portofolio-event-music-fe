@@ -84,6 +84,8 @@ env:
       value: "https://endlessapp.my.id/"
     - name: NEXT_PUBLIC_URL_API
       value: "https://endlessapp.my.id/server-api/portofolio-event-music-be/api/v1"
+    - name: NEXT_PUBLIC_URL_IMAGE
+      value: "https://minio-api.enrichoalkalas.my.id/portofolio-event-music/"
 
 # Environment from ConfigMap/Secret
 envFrom: []
