@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
             "api-backend-dev.swarnatactical.com",
             "files.swarnatactical.com",
             "swarnatactical.com",
+            "minio-api.enrichoalkalas.my.id",
             "localhost",
             "127.0.0.1",
             "*",
@@ -49,6 +50,11 @@ const nextConfig: NextConfig = {
             {
                 protocol: "https",
                 hostname: "swarnatactical.com",
+                pathname: "/**",
+            },
+            {
+                protocol: "https",
+                hostname: "minio-api.enrichoalkalas.my.id",
                 pathname: "/**",
             },
 

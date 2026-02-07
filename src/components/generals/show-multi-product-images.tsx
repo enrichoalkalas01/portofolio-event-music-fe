@@ -257,7 +257,7 @@ export default function ShowMultiProductImages({
             {/* Dialog untuk select images */}
             <Dialog open={openModal} onOpenChange={setOpenModal}>
                 {/* <DialogContent className="max-w-[75%] max-h-[85vh] overflow-hidden flex flex-col"> */}
-                <DialogContent className="w-[500px] overflow-hidden flex flex-col">
+                <DialogContent className="w-full h-[70vh] overflow-hidden flex flex-col">
                     <DialogHeader>
                         <DialogTitle>Select {title}</DialogTitle>
                         <DialogDescription>

@@ -11,23 +11,34 @@ import { useQuery } from "@tanstack/react-query";
 import PaginationSimple from "@/components/generals/pagination/pagination-simple";
 
 export default function Page() {
+    const [size, setSize] = useState(10);
+    const [query, setQuery] = useState("");
+    const [search, setSearch] = useState("");
+
     const { data, error, isLoading } = useQuery({
         queryKey: ["events"],
         queryFn: async () =>
             (
-                await fetch(`${process.env.NEXT_PUBLIC_URL_API}/events`, {
-                    headers: {
-                        "Content-Type": "application/json",
+                await fetch(
+                    `${process.env.NEXT_PUBLIC_URL_API}/events?search=${search}&size=${size}`,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
                     },
-                })
+                )
             ).json(),
     });
+
+    const handleSearch = () => {
+        // setSearch();
+    };
 
     return (
         <section className="w-full min-h-[80vh] lg:max-w-7xl mx-auto py-8 px-4 ">
             <div className="w-full flex flex-col gap-4">
                 <div className="w-full search-bar flex gap-4">
-                    <Input />
+                    <Input onChange={(e: any) => setQuery(e?.target?.value)} />
                     <Button>Search</Button>
                 </div>
 
