@@ -7,7 +7,7 @@ import { WrapperCard } from "@/components/generals/wrapper/wrapper-card";
 import { WrapperForms } from "@/components/generals/wrapper/wrapper-forms";
 import { Button } from "@/components/shadcn/ui/button";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -21,23 +21,10 @@ import EventVendor from "@/components/pages/events/event-vendor";
 import EventStatus from "@/components/pages/events/event-status";
 import ShowMultiProductImages from "@/components/generals/show-multi-product-images";
 import { useSession } from "next-auth/react";
-
-const schemaForm = z.object({
-    title: z.string().nonempty(),
-    excerpt: z.string().optional(),
-    description: z.string().optional(),
-    event_date_start: z.string().optional(),
-    event_date_end: z.string().optional(),
-    location: z.string().optional(),
-    vendor: z.string().optional(),
-    sponsor: z.any().optional(),
-    thumbnail: z.any().optional(),
-    images: z.any().optional(),
-    categories: z.any().optional(),
-    status: z.string().optional(),
-    max_participants: z.string().optional(),
-    price: z.string().optional(),
-});
+import { Badge } from "@/components/shadcn/ui/badge";
+import { ConverterCurrency } from "@/utils/currency";
+import { Card } from "@/components/shadcn/ui/card";
+import QRCode from "qrcode";
 
 export default function Page() {
     const router = useRouter();
@@ -45,27 +32,7 @@ export default function Page() {
     const params = useParams();
     const accessToken = session?.data?.user?.token?.access_token;
 
-    const [IsDisable, setIsDisable] = useState<boolean>(true);
-
-    const form = useForm({
-        resolver: zodResolver(schemaForm),
-        defaultValues: {
-            title: "",
-            excerpt: "",
-            description: "",
-            event_date_start: "",
-            event_date_end: "",
-            location: "",
-            vendor: "",
-            sponsor: null,
-            thumbnail: [],
-            images: [],
-            categories: null,
-            status: "",
-            max_participants: "0",
-            price: "0",
-        },
-    });
+    const canvasRef = useRef(null);
 
     const { data, error, isLoading } = useQuery({
         queryKey: ["admin-transactions-detail"],
@@ -84,183 +51,88 @@ export default function Page() {
 
     useEffect(() => {
         if (data?.data) {
-            console.log(data?.data);
-            form.setValue("title", data?.data?.title);
-            form.setValue("excerpt", data?.data?.excerpt);
-            form.setValue("description", data?.data?.description);
-            form.setValue("event_date_start", data?.data?.eventDate?.start);
-            form.setValue("event_date_end", data?.data?.eventDate?.end);
-            form.setValue("location", data?.data?.location);
-            form.setValue("thumbnail", data?.data?.thumbnail);
-            form.setValue("images", data?.data?.images);
-            form.setValue(
-                "max_participants",
-                `${data?.data?.max_participants}`,
-            );
-            form.setValue("price", `${data?.data?.price}`);
-
-            setTimeout(() => {
-                form.setValue("categories", data?.data?.categories);
-                form.setValue("status", data?.data?.status);
-                form.setValue("vendor", data?.data?.vendor);
-                form.setValue("sponsor", data?.data?.sponsor);
-            }, 500);
+            const qrisData = `${data?.data?._id}-${data?.data?.event_id}-${data?.data?.user?.id}-${data?.data?.settlement?.order_id}`;
+            QRCode.toCanvas(canvasRef.current, qrisData, {
+                width: 300,
+                margin: 2,
+            });
         }
-    }, [data, form]);
+    }, [data]);
 
     return (
         <section className="w-full">
             <WrapperCard
                 headerStatus={true}
-                headerTitle="Create Data"
+                headerTitle="Data Transactions"
                 headerSubTitle=""
                 className="p-0 gap-0"
+                buttonUrlComponent={
+                    <div>
+                        <Badge className="text-sm">
+                            {data?.data?.status_transaction}
+                        </Badge>
+                    </div>
+                }
             >
-                <WrapperForms form={form}>
-                    <div className="w-full flex flex-col gap-4">
+                <div className="w-full flex flex-col gap-8">
+                    <div className="w-full flex flex-col gap-2">
                         <div className="w-full">
-                            <FormRegularInput
-                                form={form}
-                                disable={IsDisable}
-                                name="title"
-                                labelName={"title"}
-                            />
+                            <h2 className="font-bold text-primary">
+                                Transaction ID : {data?.data?._id}
+                            </h2>
                         </div>
-
                         <div className="w-full">
-                            <FormRegularInput
-                                form={form}
-                                disable={IsDisable}
-                                name="excerpt"
-                                labelName={"excerpt"}
-                            />
-                        </div>
-
-                        <div className="w-full flex gap-4">
-                            <FormRegularInput
-                                form={form}
-                                disable={IsDisable}
-                                propsFormItem={{ className: "w-full" }}
-                                propsInput={{
-                                    className: "w-full",
-                                    type: "date",
-                                }}
-                                propsFormControl={{ className: "w-full" }}
-                                name="event_date_start"
-                                labelName={"event_date_start"}
-                            />
-                            <FormRegularInput
-                                form={form}
-                                disable={IsDisable}
-                                propsFormItem={{ className: "w-full" }}
-                                propsInput={{
-                                    className: "w-full",
-                                    type: "date",
-                                }}
-                                propsFormControl={{ className: "w-full" }}
-                                name="event_date_end"
-                                labelName={"event_date_end"}
-                            />
-                        </div>
-
-                        <div className="w-full flex gap-4">
-                            <FormRegularInput
-                                form={form}
-                                disable={IsDisable}
-                                propsFormItem={{ className: "w-full" }}
-                                propsInput={{
-                                    className: "w-full",
-                                    type: "number",
-                                    min: 0,
-                                }}
-                                propsFormControl={{ className: "w-full" }}
-                                name="price"
-                                labelName={"price"}
-                            />
-                            <FormRegularInput
-                                form={form}
-                                disable={IsDisable}
-                                propsFormItem={{ className: "w-full" }}
-                                propsInput={{
-                                    className: "w-full",
-                                    type: "number",
-                                    min: 0,
-                                }}
-                                propsFormControl={{ className: "w-full" }}
-                                name="max_participants"
-                                labelName={"max_participants"}
-                            />
-                        </div>
-
-                        <div className="w-full">
-                            <ShowMultiProductImages
-                                form={form}
-                                isDisable={IsDisable}
-                                fieldName="thumbnail"
-                                title="Thumbnail"
-                                maxSelection={1}
-                            />
-                        </div>
-
-                        <div className="w-full">
-                            <FormRegularInput
-                                form={form}
-                                disable={IsDisable}
-                                name="description"
-                                labelName={"description"}
-                            />
-                        </div>
-
-                        <div className="w-full">
-                            <FormRegularInput
-                                form={form}
-                                disable={IsDisable}
-                                name="location"
-                                labelName={"location"}
-                            />
-                        </div>
-
-                        <div className="w-full">
-                            <ShowMultiProductImages
-                                form={form}
-                                isDisable={IsDisable}
-                                fieldName="images"
-                                title="Images"
-                                maxSelection={5}
-                            />
-                        </div>
-
-                        <div className="w-full">
-                            <EventVendor form={form} IsDisable={IsDisable} />
-                        </div>
-
-                        <div className="w-full">
-                            <EventSponsor form={form} IsDisable={IsDisable} />
-                        </div>
-
-                        <div className="w-full">
-                            <EventCategories
-                                form={form}
-                                IsDisable={IsDisable}
-                            />
-                        </div>
-
-                        <div className="w-full">
-                            <EventStatus form={form} IsDisable={IsDisable} />
-                        </div>
-
-                        <div className="w-full flex gap-2">
-                            <Button
-                                className="cursor-pointer"
-                                variant={"ghost"}
-                                type="button"
-                                onClick={() => router.back()}
-                            >
-                                Back
-                            </Button>
+                            <span>Event ID : {data?.data?.event_id}</span>
                         </div>
                     </div>
-                </WrapperForms>
+
+                    {data?.data && (
+                        <Card className="p-4">
+                            <div className="w-full flex flex-col gap-2 text-sm">
+                                <div className="w-full">
+                                    <span className="font-bold text-primary">
+                                        Transaction Request
+                                    </span>
+                                </div>
+                                {Object.entries(data?.data?.request)?.map(
+                                    ([key, value]) => {
+                                        return (
+                                            <div
+                                                key={key}
+                                                className="w-full flex gap-4"
+                                            >
+                                                <span>{key}</span>
+                                                <span>:</span>
+                                                <span>
+                                                    {key === "subtotal" ||
+                                                    key === "tax_total" ||
+                                                    key === "total_payment"
+                                                        ? ConverterCurrency({
+                                                              amount: value as any,
+                                                          })
+                                                        : (value as any)}
+                                                </span>
+                                            </div>
+                                        );
+                                    },
+                                )}
+                            </div>
+                        </Card>
+                    )}
+
+                    <Card className="p-4 w-auto">
+                        <div className="w-full">
+                            <span className="font-bold text-primary">
+                                QR Code Ticket
+                            </span>
+                        </div>
+                        {data?.data && (
+                            <div className="w-auto">
+                                <canvas ref={canvasRef}></canvas>
+                            </div>
+                        )}
+                    </Card>
+                </div>
             </WrapperCard>
         </section>
     );
