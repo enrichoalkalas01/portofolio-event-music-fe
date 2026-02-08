@@ -15,9 +15,10 @@ export default function Footers() {
                                 alt="logo"
                             />
                         </Link>
-                        <p className="text-xs w-1/2">
-                            Lorem Ipsum is simply dummy text of the printing and
-                            typesetting industry.
+                        <p className="text-xs w-full md:w-3/4">
+                            Platform pembelian tiket event musik terpercaya di
+                            Indonesia. Temukan dan hadiri konser favoritmu dengan
+                            mudah dan aman.
                         </p>
                     </div>
                     <div className="w-full md:max-w-full flex justify-end">

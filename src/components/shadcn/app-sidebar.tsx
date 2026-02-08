@@ -8,6 +8,12 @@ import {
     BanknoteArrowUp,
     FastForward,
     Music,
+    Ticket,
+    Bookmark,
+    Home,
+    CreditCard,
+    User,
+    Calendar,
 } from "lucide-react";
 
 import { NavMain } from "@/components/shadcn/nav-main";
@@ -38,19 +44,29 @@ const data = {
     ],
     projects: [
         {
-            name: "Events Saved",
-            url: "/events-saved",
-            icon: Music,
+            name: "Dashboard",
+            url: "/dashboard",
+            icon: Home,
         },
         {
-            name: "Transactions",
-            url: "/transactions",
-            icon: BanknoteArrowUp,
+            name: "Tiket Saya",
+            url: "/dashboard/events",
+            icon: Ticket,
         },
         {
-            name: "Profile",
-            url: "/profile",
-            icon: Users,
+            name: "Event Tersimpan",
+            url: "/dashboard/events-saved",
+            icon: Bookmark,
+        },
+        {
+            name: "Transaksi",
+            url: "/dashboard/transactions",
+            icon: CreditCard,
+        },
+        {
+            name: "Profil",
+            url: "/dashboard/profile",
+            icon: User,
         },
     ],
 };
