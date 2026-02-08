@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
     /* config options here */
     reactCompiler: true,
     images: {
+        unoptimized: true,
         domains: [
             "storage.googleapis.com",
             "swarnatactical.com",
