@@ -4,7 +4,6 @@ import { Star, Ticket } from "lucide-react";
 import Link from "next/link";
 
 const BaseUrlImage =
-    process.env.NEXT_PUBLIC_URL_IMAGE ||
     "https://minio-api.enrichoalkalas.my.id/portofolio-event-music/";
 
 export default function EventsItem2({ data }: { data: any }) {

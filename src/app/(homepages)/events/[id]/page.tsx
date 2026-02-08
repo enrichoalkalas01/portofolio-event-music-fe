@@ -8,7 +8,6 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const BaseUrlImage =
-    process.env.NEXT_PUBLIC_URL_IMAGE ||
     "https://minio-api.enrichoalkalas.my.id/portofolio-event-music/";
 
 export default function Page() {
