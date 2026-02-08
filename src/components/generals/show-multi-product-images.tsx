@@ -449,7 +449,7 @@ export default function ShowMultiProductImages({
                                         height={720}
                                         src={
                                             image?.name
-                                                ? `${baseUrlImage}/${image.name}`
+                                                ? `${baseUrlImage}${image.name}`
                                                 : ""
                                         }
                                         alt={image?.name || "-"}
