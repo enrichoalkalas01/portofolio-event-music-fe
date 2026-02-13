@@ -133,6 +133,7 @@ export default function Page() {
                 status: data?.status || "Draft",
                 max_participants: Number(data?.max_participants) || 0,
                 price: Number(data?.price) || 0,
+                coming_soon: data?.coming_soon || "NO",
             };
 
             const config = {

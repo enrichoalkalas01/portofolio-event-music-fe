@@ -11,7 +11,7 @@ export default function Page() {
         queryFn: async () =>
             (
                 await fetch(
-                    `${process.env.NEXT_PUBLIC_URL_API}/events/coming-soon?size=1`,
+                    `${process.env.NEXT_PUBLIC_URL_API}/events/coming-soon?size=100`,
                     {
                         headers: {
                             "Content-Type": "application/json",

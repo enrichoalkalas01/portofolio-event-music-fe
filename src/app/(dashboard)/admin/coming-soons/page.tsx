@@ -1,5 +1,5 @@
 import { WrapperCard } from "@/components/generals/wrapper/wrapper-card";
-import TablePageSystemParams from "@/components/pages/coming-soon/table-page";
+import TablePageComingSoon from "@/components/pages/coming-soon/table-page";
 import { Button } from "@/components/shadcn/ui/button";
 import Link from "next/link";
 
@@ -19,7 +19,7 @@ export default function Page() {
                     </div>
                 }
             >
-                <TablePageSystemParams />
+                <TablePageComingSoon />
             </WrapperCard>
         </section>
     );

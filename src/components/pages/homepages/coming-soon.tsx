@@ -11,7 +11,7 @@ export default function ComingSoonHomepages() {
         queryFn: async () =>
             (
                 await fetch(
-                    `${process.env.NEXT_PUBLIC_URL_API}/events/coming-soon?size=1`,
+                    `${process.env.NEXT_PUBLIC_URL_API}/events/coming-soon?size=4`,
                     {
                         headers: {
                             "Content-Type": "application/json",

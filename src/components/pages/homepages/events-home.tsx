@@ -11,7 +11,7 @@ export default function EventsHomepages() {
         queryFn: async () =>
             (
                 await fetch(
-                    `${process.env.NEXT_PUBLIC_URL_API}/events?limit=5`,
+                    `${process.env.NEXT_PUBLIC_URL_API}/events?size=6`,
                     {
                         headers: {
                             "Content-Type": "application/json",

@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { columns } from "./table-columns";
 import { DataTable } from "./table-data";
 
-export default function TablePageSystemParamsType() {
+export default function TablePageComingSoon() {
     const { data, error, isLoading } = useQuery({
         queryKey: ["admin-coming-soon-list"],
         queryFn: async () =>
