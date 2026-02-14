@@ -126,10 +126,10 @@ export default function Page() {
                                 <div className="flex-1">
                                     <div className="flex items-center gap-3 mb-2">
                                         <h2 className="text-2xl font-bold">
-                                            {profile?.firstname} {profile?.lastname || profile?.name || "User"}
+                                            {profile?.fullname || profile?.username || profile?.name || "User"}
                                         </h2>
-                                        <Badge className="bg-green-100 text-green-800">
-                                            Aktif
+                                        <Badge className={profile?.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                                            {profile?.isActive ? "Aktif" : "Tidak Aktif"}
                                         </Badge>
                                     </div>
                                     <p className="text-gray-500 mb-4">
@@ -190,19 +190,17 @@ export default function Page() {
                                         Informasi Pribadi
                                     </h3>
                                     <div className="space-y-4">
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <p className="text-sm text-gray-500">Nama Depan</p>
-                                                <p className="font-medium">
-                                                    {profile?.firstname || "-"}
-                                                </p>
-                                            </div>
-                                            <div>
-                                                <p className="text-sm text-gray-500">Nama Belakang</p>
-                                                <p className="font-medium">
-                                                    {profile?.lastname || "-"}
-                                                </p>
-                                            </div>
+                                        <div>
+                                            <p className="text-sm text-gray-500">Nama Lengkap</p>
+                                            <p className="font-medium">
+                                                {profile?.fullname || "-"}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm text-gray-500">Username</p>
+                                            <p className="font-medium">
+                                                {profile?.username || "-"}
+                                            </p>
                                         </div>
                                         <div>
                                             <p className="text-sm text-gray-500">Email</p>
@@ -211,32 +209,7 @@ export default function Page() {
                                         <div>
                                             <p className="text-sm text-gray-500">Nomor Telepon</p>
                                             <p className="font-medium">
-                                                {profile?.phonenumber || profile?.phone || "-"}
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <p className="text-sm text-gray-500">Tanggal Lahir</p>
-                                            <p className="font-medium">
-                                                {profile?.birthdate
-                                                    ? new Date(profile.birthdate).toLocaleDateString(
-                                                          "id-ID",
-                                                          {
-                                                              day: "numeric",
-                                                              month: "long",
-                                                              year: "numeric",
-                                                          }
-                                                      )
-                                                    : "-"}
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <p className="text-sm text-gray-500">Jenis Kelamin</p>
-                                            <p className="font-medium">
-                                                {profile?.gender === "male"
-                                                    ? "Laki-laki"
-                                                    : profile?.gender === "female"
-                                                    ? "Perempuan"
-                                                    : "-"}
+                                                {profile?.phonenumber || "-"}
                                             </p>
                                         </div>
                                     </div>
@@ -250,20 +223,20 @@ export default function Page() {
                                     </h3>
                                     <div className="space-y-4">
                                         <div>
-                                            <p className="text-sm text-gray-500">Alamat Lengkap</p>
+                                            <p className="text-sm text-gray-500">Jalan</p>
                                             <p className="font-medium">
-                                                {profile?.address || "-"}
+                                                {profile?.address?.street || "-"}
                                             </p>
                                         </div>
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
                                                 <p className="text-sm text-gray-500">Kota</p>
-                                                <p className="font-medium">{profile?.city || "-"}</p>
+                                                <p className="font-medium">{profile?.address?.city || "-"}</p>
                                             </div>
                                             <div>
                                                 <p className="text-sm text-gray-500">Provinsi</p>
                                                 <p className="font-medium">
-                                                    {profile?.province || "-"}
+                                                    {profile?.address?.province || "-"}
                                                 </p>
                                             </div>
                                         </div>
@@ -271,13 +244,13 @@ export default function Page() {
                                             <div>
                                                 <p className="text-sm text-gray-500">Kode Pos</p>
                                                 <p className="font-medium">
-                                                    {profile?.postalCode || "-"}
+                                                    {profile?.address?.postalCode || "-"}
                                                 </p>
                                             </div>
                                             <div>
                                                 <p className="text-sm text-gray-500">Negara</p>
                                                 <p className="font-medium">
-                                                    {profile?.country || "Indonesia"}
+                                                    {profile?.address?.country || "Indonesia"}
                                                 </p>
                                             </div>
                                         </div>
@@ -304,24 +277,24 @@ export default function Page() {
                                             </p>
                                         </div>
                                         <div>
-                                            <p className="text-sm text-gray-500">Status Verifikasi</p>
+                                            <p className="text-sm text-gray-500">Status Akun</p>
                                             <Badge
                                                 className={
-                                                    profile?.isVerified
+                                                    profile?.isActive
                                                         ? "bg-green-100 text-green-800"
                                                         : "bg-yellow-100 text-yellow-800"
                                                 }
                                             >
-                                                {profile?.isVerified
-                                                    ? "Terverifikasi"
-                                                    : "Belum Terverifikasi"}
+                                                {profile?.isActive
+                                                    ? "Aktif"
+                                                    : "Tidak Aktif"}
                                             </Badge>
                                         </div>
                                         <div>
-                                            <p className="text-sm text-gray-500">Terakhir Login</p>
+                                            <p className="text-sm text-gray-500">Bergabung Sejak</p>
                                             <p className="font-medium">
-                                                {profile?.lastLogin
-                                                    ? new Date(profile.lastLogin).toLocaleString(
+                                                {profile?.createdAt
+                                                    ? new Date(profile.createdAt).toLocaleString(
                                                           "id-ID"
                                                       )
                                                     : "-"}

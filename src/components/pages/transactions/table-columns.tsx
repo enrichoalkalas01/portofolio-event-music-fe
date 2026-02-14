@@ -20,17 +20,23 @@ export const columns: ColumnDef<any>[] = [
         },
     },
     {
-        accessorKey: "event_id",
-        header: () => <div className="">event id</div>,
+        accessorKey: "event",
+        header: () => <div className="">Event</div>,
         cell: ({ row }) => {
+            const event = row?.original?.event;
             return (
                 <div className="">
                     <Link
                         className="hover:text-primary"
                         href={`/admin/events/${row?.original?.event_id}`}
                     >
-                        {row?.original?.event_id}
+                        {event?.title || row?.original?.event_id}
                     </Link>
+                    {event?.location && (
+                        <p className="text-xs text-muted-foreground">
+                            {event.location}
+                        </p>
+                    )}
                 </div>
             );
         },

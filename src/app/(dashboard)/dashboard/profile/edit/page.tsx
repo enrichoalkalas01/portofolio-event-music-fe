@@ -1,14 +1,12 @@
 "use client";
 
 import { FormRegularInput } from "@/components/generals/forms/form-regular-input";
-import { FormRegularSelect } from "@/components/generals/forms/form-regular-select";
 import { LoadingComponent } from "@/components/generals/loading/loading";
 import { WrapperCard } from "@/components/generals/wrapper/wrapper-card";
 import { WrapperForms } from "@/components/generals/wrapper/wrapper-forms";
 import { Button } from "@/components/shadcn/ui/button";
 import { Card } from "@/components/shadcn/ui/card";
-import { Label } from "@/components/shadcn/ui/label";
-import { Textarea } from "@/components/shadcn/ui/textarea";
+import { Badge } from "@/components/shadcn/ui/badge";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -18,17 +16,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { ArrowLeft, Camera, User } from "lucide-react";
+import { ArrowLeft, Camera, User, Mail, Shield } from "lucide-react";
 
 const schemaForm = z.object({
-    firstname: z.string().min(1, "Nama depan wajib diisi"),
-    lastname: z.string().optional(),
-    email: z.string().email("Email tidak valid"),
+    fullname: z.string().min(1, "Nama lengkap wajib diisi"),
     phonenumber: z.string().optional(),
-    birthdate: z.string().optional(),
-    gender: z.string().optional(),
-    bio: z.string().optional(),
-    address: z.string().optional(),
+    avatar: z.string().optional(),
+    street: z.string().optional(),
     city: z.string().optional(),
     province: z.string().optional(),
     postalCode: z.string().optional(),
@@ -50,14 +44,10 @@ export default function Page() {
     const form = useForm<FormData>({
         resolver: zodResolver(schemaForm),
         defaultValues: {
-            firstname: "",
-            lastname: "",
-            email: "",
+            fullname: "",
             phonenumber: "",
-            birthdate: "",
-            gender: "",
-            bio: "",
-            address: "",
+            avatar: "",
+            street: "",
             city: "",
             province: "",
             postalCode: "",
@@ -65,65 +55,96 @@ export default function Page() {
         },
     });
 
-    // TODO: Integrate with API to get user profile
     const { data: profileData, isLoading } = useQuery({
-        queryKey: ["user-profile-edit"],
+        queryKey: ["user-profile"],
         queryFn: async () =>
             (
-                await fetch(`${process.env.NEXT_PUBLIC_URL_API}/users/profile`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${accessToken}`,
+                await fetch(
+                    `${process.env.NEXT_PUBLIC_URL_API}/users/profile`,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${accessToken}`,
+                        },
                     },
-                })
+                )
             ).json(),
         enabled: !!accessToken,
     });
 
+    const profile = profileData?.data;
+
     useEffect(() => {
-        if (profileData?.data) {
-            const profile = profileData.data;
-            form.setValue("firstname", profile?.firstname || "");
-            form.setValue("lastname", profile?.lastname || "");
-            form.setValue("email", profile?.email || "");
-            form.setValue("phonenumber", profile?.phonenumber || "");
-            form.setValue("birthdate", profile?.birthdate?.split("T")[0] || "");
-            form.setValue("gender", profile?.gender || "");
-            form.setValue("bio", profile?.bio || "");
-            form.setValue("address", profile?.address || "");
-            form.setValue("city", profile?.city || "");
-            form.setValue("province", profile?.province || "");
-            form.setValue("postalCode", profile?.postalCode || "");
-            form.setValue("country", profile?.country || "Indonesia");
+        if (profile) {
+            form.reset({
+                fullname: profile?.fullname || profile?.username || "",
+                phonenumber: profile?.phonenumber || "",
+                avatar: profile?.avatar || "",
+                street: profile?.address?.street || "",
+                city: profile?.address?.city || "",
+                province: profile?.address?.province || "",
+                postalCode: profile?.address?.postalCode || "",
+                country: profile?.address?.country || "Indonesia",
+            });
 
             if (profile?.avatar) {
                 setAvatarPreview(profile.avatar);
             }
-        } else if (user) {
-            // Fallback to session user data
-            form.setValue("firstname", user?.firstname || user?.name?.split(" ")[0] || "");
-            form.setValue("lastname", user?.lastname || user?.name?.split(" ").slice(1).join(" ") || "");
-            form.setValue("email", user?.email || "");
-            form.setValue("phonenumber", user?.phonenumber || user?.phone || "");
+        } else if (user && !isLoading) {
+            form.reset({
+                fullname: user?.fullname || user?.name || user?.username || "",
+                phonenumber: user?.phonenumber || "",
+                avatar: "",
+                street: "",
+                city: "",
+                province: "",
+                postalCode: "",
+                country: "Indonesia",
+            });
         }
-    }, [profileData, user, form]);
+    }, [profile, user, isLoading]);
 
     const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setAvatarPreview(reader.result as string);
+                const result = reader.result as string;
+                setAvatarPreview(result);
+                form.setValue("avatar", result);
             };
             reader.readAsDataURL(file);
-            // TODO: Upload avatar to API
         }
     };
 
     const handleSubmit = async (data: FormData) => {
         setIsSubmitting(true);
         try {
-            // TODO: Integrate with API to update profile
+            const payload: any = {
+                fullname: data.fullname,
+                phonenumber: data.phonenumber,
+            };
+
+            if (data.avatar) {
+                payload.avatar = data.avatar;
+            }
+
+            const hasAddress =
+                data.street ||
+                data.city ||
+                data.province ||
+                data.postalCode ||
+                data.country;
+            if (hasAddress) {
+                payload.address = {
+                    street: data.street,
+                    city: data.city,
+                    province: data.province,
+                    postalCode: data.postalCode,
+                    country: data.country,
+                };
+            }
+
             const config = {
                 url: `${process.env.NEXT_PUBLIC_URL_API}/users/profile`,
                 method: "PUT",
@@ -131,48 +152,33 @@ export default function Page() {
                     Authorization: `Bearer ${accessToken}`,
                     "Content-Type": "application/json",
                 },
-                data: JSON.stringify({
-                    firstname: data.firstname,
-                    lastname: data.lastname,
-                    email: data.email,
-                    phonenumber: data.phonenumber,
-                    birthdate: data.birthdate,
-                    gender: data.gender,
-                    bio: data.bio,
-                    address: data.address,
-                    city: data.city,
-                    province: data.province,
-                    postalCode: data.postalCode,
-                    country: data.country,
-                }),
+                data: JSON.stringify(payload),
             };
 
             const response = await axios(config);
-            toast.success(response?.data?.message || "Profil berhasil diperbarui!", {
-                position: "top-right",
-            });
+            toast.success(
+                response?.data?.message || "Profil berhasil diperbarui!",
+                {
+                    position: "top-right",
+                },
+            );
 
-            // Invalidate profile query to refresh data
             queryClient.invalidateQueries({ queryKey: ["user-profile"] });
-            queryClient.invalidateQueries({ queryKey: ["user-profile-edit"] });
 
             router.push("/dashboard/profile");
         } catch (error: any) {
             toast.error(
-                error?.response?.data?.message || error?.message || "Gagal memperbarui profil",
+                error?.response?.data?.message ||
+                    error?.message ||
+                    "Gagal memperbarui profil",
                 {
                     position: "top-right",
-                }
+                },
             );
         } finally {
             setIsSubmitting(false);
         }
     };
-
-    const genderOptions = [
-        { label: "Laki-laki", value: "male" },
-        { label: "Perempuan", value: "female" },
-    ];
 
     if (isLoading) {
         return (
@@ -201,12 +207,14 @@ export default function Page() {
             >
                 <WrapperForms form={form} onSubmitFunction={handleSubmit}>
                     <div className="w-full p-6 space-y-6">
-                        {/* Avatar Section */}
+                        {/* Current Account Info (Read-only) */}
                         <Card className="p-6">
-                            <h3 className="font-bold text-lg mb-4">Foto Profil</h3>
+                            <h3 className="font-bold text-lg mb-4">
+                                Informasi Akun
+                            </h3>
                             <div className="flex items-center gap-6">
                                 <div className="relative">
-                                    <div className="w-24 h-24 bg-purple-100 rounded-full flex items-center justify-center overflow-hidden">
+                                    <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center overflow-hidden">
                                         {avatarPreview ? (
                                             <img
                                                 src={avatarPreview}
@@ -214,11 +222,11 @@ export default function Page() {
                                                 className="w-full h-full object-cover"
                                             />
                                         ) : (
-                                            <User className="w-12 h-12 text-purple-600" />
+                                            <User className="w-10 h-10 text-purple-600" />
                                         )}
                                     </div>
-                                    <label className="absolute bottom-0 right-0 p-2 bg-purple-600 rounded-full cursor-pointer hover:bg-purple-700 transition-colors">
-                                        <Camera className="w-4 h-4 text-white" />
+                                    <label className="absolute bottom-0 right-0 p-1.5 bg-purple-600 rounded-full cursor-pointer hover:bg-purple-700 transition-colors">
+                                        <Camera className="w-3.5 h-3.5 text-white" />
                                         <input
                                             type="file"
                                             accept="image/*"
@@ -227,10 +235,37 @@ export default function Page() {
                                         />
                                     </label>
                                 </div>
-                                <div>
-                                    <p className="text-sm text-gray-600">
-                                        Upload foto profil Anda. Format yang didukung: JPG, PNG.
-                                        Ukuran maksimal: 2MB.
+                                <div className="flex-1 space-y-2">
+                                    <div className="flex items-center gap-2">
+                                        <User className="w-4 h-4 text-gray-500" />
+                                        <span className="font-medium">
+                                            {profile?.username ||
+                                                user?.username ||
+                                                "-"}
+                                        </span>
+                                        <Badge
+                                            className={
+                                                profile?.isActive
+                                                    ? "bg-green-100 text-green-800"
+                                                    : "bg-gray-100 text-gray-800"
+                                            }
+                                        >
+                                            {profile?.role ||
+                                                user?.role ||
+                                                "user"}
+                                        </Badge>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Mail className="w-4 h-4 text-gray-500" />
+                                        <span className="text-sm text-gray-600">
+                                            {profile?.email ||
+                                                user?.email ||
+                                                "-"}
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-gray-400">
+                                        Username dan email tidak dapat diubah
+                                        dari halaman ini.
                                     </p>
                                 </div>
                             </div>
@@ -238,32 +273,22 @@ export default function Page() {
 
                         {/* Personal Information */}
                         <Card className="p-6">
-                            <h3 className="font-bold text-lg mb-4">Informasi Pribadi</h3>
+                            <h3 className="font-bold text-lg mb-4">
+                                Informasi Pribadi
+                            </h3>
                             <div className="grid gap-4 md:grid-cols-2">
-                                <FormRegularInput
-                                    form={form}
-                                    name="firstname"
-                                    labelName="Nama Depan"
-                                    propsInput={{ placeholder: "Masukkan nama depan" }}
-                                    propsFormItem={{ className: "w-full" }}
-                                />
-                                <FormRegularInput
-                                    form={form}
-                                    name="lastname"
-                                    labelName="Nama Belakang"
-                                    propsInput={{ placeholder: "Masukkan nama belakang" }}
-                                    propsFormItem={{ className: "w-full" }}
-                                />
-                                <FormRegularInput
-                                    form={form}
-                                    name="email"
-                                    labelName="Email"
-                                    propsInput={{
-                                        placeholder: "Masukkan email",
-                                        type: "email",
-                                    }}
-                                    propsFormItem={{ className: "w-full" }}
-                                />
+                                <div className="md:col-span-2">
+                                    <FormRegularInput
+                                        form={form}
+                                        name="fullname"
+                                        labelName="Nama Lengkap"
+                                        propsInput={{
+                                            placeholder:
+                                                "Masukkan nama lengkap",
+                                        }}
+                                        propsFormItem={{ className: "w-full" }}
+                                    />
+                                </div>
                                 <FormRegularInput
                                     form={form}
                                     name="phonenumber"
@@ -274,28 +299,6 @@ export default function Page() {
                                     }}
                                     propsFormItem={{ className: "w-full" }}
                                 />
-                                <FormRegularInput
-                                    form={form}
-                                    name="birthdate"
-                                    labelName="Tanggal Lahir"
-                                    propsInput={{ type: "date" }}
-                                    propsFormItem={{ className: "w-full" }}
-                                />
-                                <FormRegularSelect
-                                    form={form}
-                                    name="gender"
-                                    labelName="Jenis Kelamin"
-                                    defaultValue={genderOptions}
-                                />
-                            </div>
-                            <div className="mt-4">
-                                <Label className="text-sm font-medium">Bio</Label>
-                                <Textarea
-                                    {...form.register("bio")}
-                                    placeholder="Ceritakan sedikit tentang diri Anda..."
-                                    className="mt-2"
-                                    rows={3}
-                                />
                             </div>
                         </Card>
 
@@ -304,12 +307,15 @@ export default function Page() {
                             <h3 className="font-bold text-lg mb-4">Alamat</h3>
                             <div className="space-y-4">
                                 <div>
-                                    <Label className="text-sm font-medium">Alamat Lengkap</Label>
-                                    <Textarea
-                                        {...form.register("address")}
-                                        placeholder="Masukkan alamat lengkap..."
-                                        className="mt-2"
-                                        rows={2}
+                                    <FormRegularInput
+                                        form={form}
+                                        name="street"
+                                        labelName="Jalan"
+                                        propsInput={{
+                                            placeholder:
+                                                "Masukkan alamat jalan",
+                                        }}
+                                        propsFormItem={{ className: "w-full" }}
                                     />
                                 </div>
                                 <div className="grid gap-4 md:grid-cols-2">
@@ -317,28 +323,36 @@ export default function Page() {
                                         form={form}
                                         name="city"
                                         labelName="Kota"
-                                        propsInput={{ placeholder: "Masukkan kota" }}
+                                        propsInput={{
+                                            placeholder: "Masukkan kota",
+                                        }}
                                         propsFormItem={{ className: "w-full" }}
                                     />
                                     <FormRegularInput
                                         form={form}
                                         name="province"
                                         labelName="Provinsi"
-                                        propsInput={{ placeholder: "Masukkan provinsi" }}
+                                        propsInput={{
+                                            placeholder: "Masukkan provinsi",
+                                        }}
                                         propsFormItem={{ className: "w-full" }}
                                     />
                                     <FormRegularInput
                                         form={form}
                                         name="postalCode"
                                         labelName="Kode Pos"
-                                        propsInput={{ placeholder: "Masukkan kode pos" }}
+                                        propsInput={{
+                                            placeholder: "Masukkan kode pos",
+                                        }}
                                         propsFormItem={{ className: "w-full" }}
                                     />
                                     <FormRegularInput
                                         form={form}
                                         name="country"
                                         labelName="Negara"
-                                        propsInput={{ placeholder: "Masukkan negara" }}
+                                        propsInput={{
+                                            placeholder: "Masukkan negara",
+                                        }}
                                         propsFormItem={{ className: "w-full" }}
                                     />
                                 </div>

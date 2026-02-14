@@ -72,7 +72,7 @@ export default function TableRowAction({
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="">
-                {/* <DropdownMenuItem
+                <DropdownMenuItem
                     onClick={handleView}
                     className="flex items-center justify-start gap-2 cursor-pointer"
                 >
@@ -80,13 +80,6 @@ export default function TableRowAction({
                     <span>View</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                    onClick={handleEdit}
-                    className="flex items-center justify-start gap-2 cursor-pointer"
-                >
-                    <Pencil className="w-5 h-5" />
-                    <span>Edit</span>
-                </DropdownMenuItem> */}
                 <DropdownMenuItem
                     onClick={handleDelete}
                     className="flex items-center justify-start gap-2 cursor-pointer text-red-400"

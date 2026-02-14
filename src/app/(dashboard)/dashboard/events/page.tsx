@@ -4,10 +4,11 @@ import { WrapperCard } from "@/components/generals/wrapper/wrapper-card";
 import { Card } from "@/components/shadcn/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { Calendar, MapPin, Ticket, Clock } from "lucide-react";
+import { Calendar, MapPin, Ticket, CreditCard } from "lucide-react";
 import { Badge } from "@/components/shadcn/ui/badge";
 import Link from "next/link";
 import { parseEventDate } from "@/lib/parsed-date";
+import { ConverterCurrency } from "@/utils/currency";
 
 const BaseUrlImage =
     "https://minio-api.enrichoalkalas.my.id/portofolio-event-music/";
@@ -21,7 +22,7 @@ export default function Page() {
         queryFn: async () =>
             (
                 await fetch(
-                    `${process.env.NEXT_PUBLIC_URL_API}/transactions?size=50`,
+                    `${process.env.NEXT_PUBLIC_URL_API}/transactions`,
                     {
                         headers: {
                             "Content-Type": "application/json",
@@ -77,24 +78,32 @@ export default function Page() {
                                     : null;
                                 const thumbnail = event?.thumbnail?.[0]?.name
                                     ? BaseUrlImage + event?.thumbnail?.[0]?.name
-                                    : "/no-image-available.jpg";
+                                    : null;
 
                                 return (
                                     <Link
                                         key={index}
-                                        href={`/dashboard/events/${transaction?._id}`}
+                                        href={`/dashboard/transactions/${transaction?._id}`}
                                     >
                                         <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
-                                            <div
-                                                className="h-40 bg-gray-200 bg-cover bg-center"
-                                                style={{
-                                                    backgroundImage: `url('${thumbnail}')`,
-                                                }}
-                                            />
+                                            {thumbnail ? (
+                                                <div
+                                                    className="h-40 bg-gray-200 bg-cover bg-center"
+                                                    style={{
+                                                        backgroundImage: `url('${thumbnail}')`,
+                                                    }}
+                                                />
+                                            ) : (
+                                                <div className="h-40 bg-purple-50 flex items-center justify-center">
+                                                    <Ticket className="w-12 h-12 text-purple-300" />
+                                                </div>
+                                            )}
                                             <div className="p-4">
                                                 <div className="flex items-start justify-between mb-2">
                                                     <h3 className="font-bold text-lg line-clamp-1">
-                                                        {event?.title || "Event"}
+                                                        {event?.title ||
+                                                            transaction?.payment?.item_details?.[0]?.name ||
+                                                            "Event"}
                                                     </h3>
                                                     <Badge className={getStatusColor(transaction?.status_transaction)}>
                                                         {transaction?.status_transaction}
@@ -104,15 +113,31 @@ export default function Page() {
                                                     <div className="flex items-center gap-2">
                                                         <Calendar className="w-4 h-4" />
                                                         <span>
-                                                            {parsedDate?.start?.full || "-"}
+                                                            {parsedDate?.start?.full ||
+                                                                new Date(transaction?.createdAt).toLocaleDateString("id-ID", {
+                                                                    day: "numeric",
+                                                                    month: "short",
+                                                                    year: "numeric",
+                                                                })}
                                                         </span>
                                                     </div>
-                                                    <div className="flex items-center gap-2">
-                                                        <MapPin className="w-4 h-4" />
-                                                        <span className="line-clamp-1">
-                                                            {event?.location || "-"}
-                                                        </span>
-                                                    </div>
+                                                    {event?.location ? (
+                                                        <div className="flex items-center gap-2">
+                                                            <MapPin className="w-4 h-4" />
+                                                            <span className="line-clamp-1">
+                                                                {event.location}
+                                                            </span>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex items-center gap-2">
+                                                            <CreditCard className="w-4 h-4" />
+                                                            <span>
+                                                                {ConverterCurrency({
+                                                                    amount: transaction?.request?.total_payment || 0,
+                                                                })}
+                                                            </span>
+                                                        </div>
+                                                    )}
                                                     <div className="flex items-center gap-2">
                                                         <Ticket className="w-4 h-4" />
                                                         <span>

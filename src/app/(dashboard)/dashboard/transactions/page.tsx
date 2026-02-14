@@ -24,11 +24,13 @@ export default function Page() {
                             "Content-Type": "application/json",
                             Authorization: `Bearer ${accessToken}`,
                         },
-                    }
+                    },
                 )
             ).json(),
         enabled: !!accessToken,
     });
+
+    console.log(data?.data);
 
     const getStatusColor = (status: string) => {
         switch (status) {
@@ -82,58 +84,73 @@ export default function Page() {
                         </div>
                     ) : data?.data?.length > 0 ? (
                         <div className="divide-y">
-                            {data?.data?.map((transaction: any, index: number) => (
-                                <Link
-                                    key={index}
-                                    href={`/dashboard/events/${transaction?._id}`}
-                                >
-                                    <div className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-                                        <div className="flex items-center gap-4">
-                                            <div className="p-3 bg-purple-100 rounded-lg">
-                                                <Ticket className="w-6 h-6 text-purple-600" />
-                                            </div>
-                                            <div>
-                                                <h3 className="font-medium">
-                                                    {transaction?.event?.title || "Event"}
-                                                </h3>
-                                                <div className="flex items-center gap-4 text-sm text-gray-500 mt-1">
-                                                    <span className="flex items-center gap-1">
-                                                        <Calendar className="w-4 h-4" />
-                                                        {new Date(
-                                                            transaction?.createdAt
-                                                        ).toLocaleDateString("id-ID", {
-                                                            day: "numeric",
-                                                            month: "short",
-                                                            year: "numeric",
-                                                        })}
-                                                    </span>
-                                                    <span className="flex items-center gap-1">
-                                                        <CreditCard className="w-4 h-4" />
-                                                        {transaction?._id?.slice(0, 8)}...
-                                                    </span>
+                            {data?.data?.map(
+                                (transaction: any, index: number) => (
+                                    <Link
+                                        key={index}
+                                        href={`/dashboard/transactions/${transaction?._id}`}
+                                    >
+                                        <div className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                                            <div className="flex items-center gap-4">
+                                                <div className="p-3 bg-purple-100 rounded-lg">
+                                                    <Ticket className="w-6 h-6 text-purple-600" />
+                                                </div>
+                                                <div>
+                                                    <h3 className="font-medium">
+                                                        {transaction?.event
+                                                            ?.title || "Event"}
+                                                    </h3>
+                                                    <div className="flex items-center gap-4 text-sm text-gray-500 mt-1">
+                                                        <span className="flex items-center gap-1">
+                                                            <Calendar className="w-4 h-4" />
+                                                            {new Date(
+                                                                transaction?.createdAt,
+                                                            ).toLocaleDateString(
+                                                                "id-ID",
+                                                                {
+                                                                    day: "numeric",
+                                                                    month: "short",
+                                                                    year: "numeric",
+                                                                },
+                                                            )}
+                                                        </span>
+                                                        <span className="flex items-center gap-1">
+                                                            <CreditCard className="w-4 h-4" />
+                                                            {transaction?._id?.slice(
+                                                                0,
+                                                                8,
+                                                            )}
+                                                            ...
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="flex items-center gap-4">
-                                            <div className="text-right">
-                                                <p className="font-bold text-purple-600">
-                                                    {ConverterCurrency({
-                                                        amount:
-                                                            transaction?.request?.total_payment || 0,
-                                                    })}
-                                                </p>
+                                            <div className="flex items-center gap-4">
+                                                <div className="text-right">
+                                                    <p className="font-bold text-purple-600">
+                                                        {ConverterCurrency({
+                                                            amount:
+                                                                transaction
+                                                                    ?.request
+                                                                    ?.total_payment ||
+                                                                0,
+                                                        })}
+                                                    </p>
+                                                </div>
+                                                <Badge
+                                                    className={getStatusColor(
+                                                        transaction?.status_transaction,
+                                                    )}
+                                                >
+                                                    {getStatusLabel(
+                                                        transaction?.status_transaction,
+                                                    )}
+                                                </Badge>
                                             </div>
-                                            <Badge
-                                                className={getStatusColor(
-                                                    transaction?.status_transaction
-                                                )}
-                                            >
-                                                {getStatusLabel(transaction?.status_transaction)}
-                                            </Badge>
                                         </div>
-                                    </div>
-                                </Link>
-                            ))}
+                                    </Link>
+                                ),
+                            )}
                         </div>
                     ) : (
                         <div className="p-8 text-center">

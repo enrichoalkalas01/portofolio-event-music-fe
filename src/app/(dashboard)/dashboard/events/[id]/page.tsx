@@ -10,7 +10,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Calendar, MapPin, Download, ArrowLeft } from "lucide-react";
 import { parseEventDate } from "@/lib/parsed-date";
 import { ConverterCurrency } from "@/utils/currency";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import QRCode from "qrcode";
 
 const BaseUrlImage =
@@ -28,13 +28,13 @@ export default function Page() {
         queryFn: async () =>
             (
                 await fetch(
-                    `${process.env.NEXT_PUBLIC_URL_API}/transactions/${params?.id}`,
+                    `${process.env.NEXT_PUBLIC_URL_API}/transactions/${params?.id}?limit=1000`,
                     {
                         headers: {
                             "Content-Type": "application/json",
                             Authorization: `Bearer ${accessToken}`,
                         },
-                    }
+                    },
                 )
             ).json(),
         enabled: !!accessToken && !!params?.id,
@@ -72,6 +72,182 @@ export default function Page() {
                 return "bg-gray-100 text-gray-800";
         }
     };
+
+    const handleDownloadETicket = useCallback(async () => {
+        if (!transaction) return;
+
+        const ticketCanvas = document.createElement("canvas");
+        const ctx = ticketCanvas.getContext("2d");
+        if (!ctx) return;
+
+        const width = 800;
+        const height = 1000;
+        ticketCanvas.width = width;
+        ticketCanvas.height = height;
+
+        // Background
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, width, height);
+
+        // Header bar
+        ctx.fillStyle = "#7c3aed";
+        ctx.fillRect(0, 0, width, 120);
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 32px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("E-TICKET", width / 2, 50);
+        ctx.font = "16px Arial";
+        ctx.fillText(event?.title || "Event", width / 2, 80);
+        ctx.font = "14px Arial";
+        ctx.fillText(
+            `ID: ${transaction?._id?.slice(0, 16)}...`,
+            width / 2,
+            105,
+        );
+
+        // Dashed separator
+        ctx.setLineDash([8, 4]);
+        ctx.strokeStyle = "#d1d5db";
+        ctx.beginPath();
+        ctx.moveTo(40, 140);
+        ctx.lineTo(width - 40, 140);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Event details section
+        ctx.textAlign = "left";
+        ctx.fillStyle = "#7c3aed";
+        ctx.font = "bold 20px Arial";
+        ctx.fillText("Detail Event", 50, 180);
+
+        ctx.fillStyle = "#374151";
+        ctx.font = "16px Arial";
+        let y = 215;
+
+        const drawDetail = (label: string, value: string) => {
+            ctx.fillStyle = "#6b7280";
+            ctx.font = "14px Arial";
+            ctx.fillText(label, 50, y);
+            ctx.fillStyle = "#111827";
+            ctx.font = "16px Arial";
+            ctx.fillText(value || "-", 200, y);
+            y += 35;
+        };
+
+        drawDetail("Event", event?.title || "-");
+        drawDetail(
+            "Tanggal",
+            event?.eventDate?.start
+                ? new Date(event.eventDate.start).toLocaleDateString("id-ID", {
+                      weekday: "long",
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                  })
+                : "-",
+        );
+        drawDetail("Lokasi", event?.location || "-");
+        drawDetail("Vendor", event?.vendor || "-");
+
+        // Separator
+        ctx.setLineDash([8, 4]);
+        ctx.strokeStyle = "#d1d5db";
+        ctx.beginPath();
+        ctx.moveTo(40, y + 5);
+        ctx.lineTo(width - 40, y + 5);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        y += 30;
+
+        // Attendee details
+        ctx.fillStyle = "#7c3aed";
+        ctx.font = "bold 20px Arial";
+        ctx.fillText("Detail Peserta", 50, y);
+        y += 35;
+
+        drawDetail(
+            "Nama",
+            transaction?.request?.firstname
+                ? `${transaction.request.firstname} ${transaction.request.lastname || ""}`
+                : transaction?.user?.username || "-",
+        );
+        drawDetail("Email", transaction?.request?.email || "-");
+        drawDetail("Telepon", transaction?.request?.phonenumber || "-");
+
+        // Separator
+        ctx.setLineDash([8, 4]);
+        ctx.strokeStyle = "#d1d5db";
+        ctx.beginPath();
+        ctx.moveTo(40, y + 5);
+        ctx.lineTo(width - 40, y + 5);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        y += 30;
+
+        // Payment details
+        ctx.fillStyle = "#7c3aed";
+        ctx.font = "bold 20px Arial";
+        ctx.fillText("Detail Pembayaran", 50, y);
+        y += 35;
+
+        drawDetail(
+            "Total",
+            ConverterCurrency({
+                amount: transaction?.request?.total_payment || 0,
+            }),
+        );
+        drawDetail(
+            "Status",
+            transaction?.status_transaction?.toUpperCase() || "-",
+        );
+
+        // Separator
+        ctx.setLineDash([8, 4]);
+        ctx.strokeStyle = "#d1d5db";
+        ctx.beginPath();
+        ctx.moveTo(40, y + 5);
+        ctx.lineTo(width - 40, y + 5);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        y += 30;
+
+        // QR Code
+        ctx.fillStyle = "#7c3aed";
+        ctx.font = "bold 20px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("Scan QR Code", width / 2, y);
+        y += 15;
+
+        const qrSize = 200;
+        const qrisData = `${transaction?._id}-${transaction?.event_id}-${transaction?.user?.id}-${transaction?.settlement?.order_id}`;
+        const qrDataUrl = await QRCode.toDataURL(qrisData, {
+            width: qrSize,
+            margin: 1,
+        });
+
+        const qrImage = new Image();
+        qrImage.onload = () => {
+            ctx.drawImage(qrImage, (width - qrSize) / 2, y, qrSize, qrSize);
+
+            // Footer
+            ctx.fillStyle = "#9ca3af";
+            ctx.font = "12px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText(
+                "Tunjukkan e-ticket ini saat memasuki venue",
+                width / 2,
+                y + qrSize + 30,
+            );
+
+            // Download
+            const link = document.createElement("a");
+            link.download = `e-ticket-${transaction?._id}.png`;
+            link.href = ticketCanvas.toDataURL("image/png");
+            link.click();
+        };
+        qrImage.src = qrDataUrl;
+    }, [transaction, event]);
 
     if (isLoading) {
         return (
@@ -115,7 +291,11 @@ export default function Page() {
                 headerSubTitle=""
                 className="p-0 gap-0"
                 buttonUrlComponent={
-                    <Badge className={getStatusColor(transaction?.status_transaction)}>
+                    <Badge
+                        className={getStatusColor(
+                            transaction?.status_transaction,
+                        )}
+                    >
                         {transaction?.status_transaction}
                     </Badge>
                 }
@@ -125,32 +305,55 @@ export default function Page() {
                         {/* Event Info */}
                         <div className="lg:col-span-2 space-y-6">
                             <Card className="overflow-hidden">
-                                <div
-                                    className="h-48 bg-gray-200 bg-cover bg-center"
-                                    style={{
-                                        backgroundImage: `url('${thumbnail}')`,
-                                    }}
-                                />
+                                {event?.thumbnail?.[0]?.name && (
+                                    <div
+                                        className="h-48 bg-gray-200 bg-cover bg-center"
+                                        style={{
+                                            backgroundImage: `url('${thumbnail}')`,
+                                        }}
+                                    />
+                                )}
                                 <div className="p-6">
                                     <h2 className="text-2xl font-bold mb-4">
-                                        {event?.title || "Event"}
+                                        {event?.title ||
+                                            transaction?.payment
+                                                ?.item_details?.[0]?.name ||
+                                            "Event"}
                                     </h2>
                                     <div className="space-y-3 text-gray-600">
-                                        <div className="flex items-center gap-3">
-                                            <Calendar className="w-5 h-5 text-purple-600" />
-                                            <span>
-                                                {parsedDate?.start?.day}, {parsedDate?.start?.full}
-                                            </span>
-                                        </div>
-                                        <div className="flex items-center gap-3">
-                                            <MapPin className="w-5 h-5 text-purple-600" />
-                                            <span>{event?.location || "-"}</span>
-                                        </div>
+                                        {(parsedDate || event?.eventDate) && (
+                                            <div className="flex items-center gap-3">
+                                                <Calendar className="w-5 h-5 text-purple-600" />
+                                                <span>
+                                                    {parsedDate?.start?.day
+                                                        ? `${parsedDate.start.day}, ${parsedDate.start.full}`
+                                                        : "-"}
+                                                </span>
+                                            </div>
+                                        )}
+                                        {event?.location && (
+                                            <div className="flex items-center gap-3">
+                                                <MapPin className="w-5 h-5 text-purple-600" />
+                                                <span>{event.location}</span>
+                                            </div>
+                                        )}
+                                        {!event && (
+                                            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                                                <span>
+                                                    Event ID:{" "}
+                                                    {transaction?.event_id}
+                                                </span>
+                                            </div>
+                                        )}
                                     </div>
                                     {event?.description && (
                                         <div className="mt-4 pt-4 border-t">
-                                            <h3 className="font-semibold mb-2">Deskripsi</h3>
-                                            <p className="text-gray-600">{event?.description}</p>
+                                            <h3 className="font-semibold mb-2">
+                                                Deskripsi
+                                            </h3>
+                                            <p className="text-gray-600">
+                                                {event.description}
+                                            </p>
                                         </div>
                                     )}
                                 </div>
@@ -158,41 +361,65 @@ export default function Page() {
 
                             {/* Transaction Details */}
                             <Card className="p-6">
-                                <h3 className="font-bold text-lg mb-4">Detail Transaksi</h3>
+                                <h3 className="font-bold text-lg mb-4">
+                                    Detail Transaksi
+                                </h3>
                                 <div className="space-y-3 text-sm">
                                     <div className="flex justify-between">
-                                        <span className="text-gray-600">ID Transaksi</span>
-                                        <span className="font-mono">{transaction?._id}</span>
+                                        <span className="text-gray-600">
+                                            ID Transaksi
+                                        </span>
+                                        <span className="font-mono">
+                                            {transaction?._id}
+                                        </span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-gray-600">Nama</span>
+                                        <span className="text-gray-600">
+                                            Nama
+                                        </span>
                                         <span>
                                             {transaction?.request?.firstname}{" "}
                                             {transaction?.request?.lastname}
                                         </span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-gray-600">Email</span>
-                                        <span>{transaction?.request?.email}</span>
+                                        <span className="text-gray-600">
+                                            Email
+                                        </span>
+                                        <span>
+                                            {transaction?.request?.email}
+                                        </span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-gray-600">Telepon</span>
-                                        <span>{transaction?.request?.phonenumber}</span>
+                                        <span className="text-gray-600">
+                                            Telepon
+                                        </span>
+                                        <span>
+                                            {transaction?.request?.phonenumber}
+                                        </span>
                                     </div>
                                     <div className="border-t pt-3 mt-3">
                                         <div className="flex justify-between">
-                                            <span className="text-gray-600">Subtotal</span>
+                                            <span className="text-gray-600">
+                                                Subtotal
+                                            </span>
                                             <span>
                                                 {ConverterCurrency({
-                                                    amount: transaction?.request?.subtotal || 0,
+                                                    amount:
+                                                        transaction?.request
+                                                            ?.subtotal || 0,
                                                 })}
                                             </span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="text-gray-600">Pajak</span>
+                                            <span className="text-gray-600">
+                                                Pajak
+                                            </span>
                                             <span>
                                                 {ConverterCurrency({
-                                                    amount: transaction?.request?.tax_total || 0,
+                                                    amount:
+                                                        transaction?.request
+                                                            ?.tax_total || 0,
                                                 })}
                                             </span>
                                         </div>
@@ -200,7 +427,10 @@ export default function Page() {
                                             <span>Total</span>
                                             <span className="text-purple-600">
                                                 {ConverterCurrency({
-                                                    amount: transaction?.request?.total_payment || 0,
+                                                    amount:
+                                                        transaction?.request
+                                                            ?.total_payment ||
+                                                        0,
                                                 })}
                                             </span>
                                         </div>
@@ -212,26 +442,44 @@ export default function Page() {
                         {/* QR Code & Actions */}
                         <div className="space-y-6">
                             <Card className="p-6 text-center">
-                                <h3 className="font-bold text-lg mb-4">E-Ticket QR Code</h3>
+                                <h3 className="font-bold text-lg mb-4">
+                                    E-Ticket QR Code
+                                </h3>
                                 <div className="flex justify-center mb-4">
                                     <canvas ref={canvasRef}></canvas>
                                 </div>
                                 <p className="text-sm text-gray-500 mb-4">
-                                    Tunjukkan QR code ini saat check-in di lokasi event
+                                    Tunjukkan QR code ini saat check-in di
+                                    lokasi event
                                 </p>
-                                <Button className="w-full" variant="outline">
-                                    <Download className="w-4 h-4 mr-2" />
-                                    Download E-Ticket
-                                </Button>
+                                {transaction?.status_transaction ===
+                                    "success" && (
+                                    <Button
+                                        className="w-full"
+                                        onClick={handleDownloadETicket}
+                                    >
+                                        <Download className="w-4 h-4 mr-2" />
+                                        Download E-Ticket
+                                    </Button>
+                                )}
                             </Card>
 
                             <Card className="p-6">
-                                <h3 className="font-bold text-lg mb-4">Informasi Penting</h3>
+                                <h3 className="font-bold text-lg mb-4">
+                                    Informasi Penting
+                                </h3>
                                 <ul className="space-y-2 text-sm text-gray-600">
-                                    <li>• Bawa identitas yang sesuai dengan nama di tiket</li>
-                                    <li>• Datang 30 menit sebelum acara dimulai</li>
-                                    <li>• QR code hanya dapat digunakan satu kali</li>
-                                    <li>• Tiket tidak dapat dipindahtangankan</li>
+                                    <li>
+                                        Bawa identitas yang sesuai dengan nama
+                                        di tiket
+                                    </li>
+                                    <li>
+                                        Datang 30 menit sebelum acara dimulai
+                                    </li>
+                                    <li>
+                                        QR code hanya dapat digunakan satu kali
+                                    </li>
+                                    <li>Tiket tidak dapat dipindahtangankan</li>
                                 </ul>
                             </Card>
 

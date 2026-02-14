@@ -8,8 +8,8 @@ export default function Page() {
         <section className="w-full">
             <WrapperCard
                 headerStatus={true}
-                headerTitle="List Data"
-                headerSubTitle=""
+                headerTitle="Users Management"
+                headerSubTitle="Daftar semua pengguna"
                 className="p-0 gap-0"
                 // buttonUrlComponent={
                 //     <div className="w-auto">

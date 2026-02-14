@@ -3,9 +3,16 @@
 import { LoadingComponent } from "@/components/generals/loading/loading";
 import { Button } from "@/components/shadcn/ui/button";
 import { parseEventDate } from "@/lib/parsed-date";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { Calendar, Loader2, MapPin, Share2, Star, Ticket } from "lucide-react";
+import {
+    Calendar,
+    Loader2,
+    MapPin,
+    Share2,
+    Star,
+    Ticket,
+} from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -19,14 +26,16 @@ export default function Page() {
     const session: any = useSession();
     const accessToken: any = session?.data?.user?.token?.access_token;
     const params = useParams();
+    const queryClient = useQueryClient();
 
     const [ParsedDate, setParsedDate] = useState<any>({});
     const [Thumbnail, setThumbnail] = useState<any>("");
     const [isLoadingTicket, setIsLoadingTicket] = useState(false);
     const [isLoadingSaved, setIsLoadingSaved] = useState(false);
+    const [isSaved, setIsSaved] = useState(false);
 
     const { data, error, isLoading } = useQuery({
-        queryKey: ["admin-events-list"],
+        queryKey: ["event-detail", params?.id],
         queryFn: async () =>
             (
                 await fetch(
@@ -38,9 +47,32 @@ export default function Page() {
                     },
                 )
             ).json(),
+        enabled: !!params?.id,
     });
 
-    console.log(params?.id);
+    // Check if event is saved
+    const { data: savedStatus } = useQuery({
+        queryKey: ["saved-check", params?.id],
+        queryFn: async () =>
+            (
+                await fetch(
+                    `${process.env.NEXT_PUBLIC_URL_API}/saved/check/${params?.id}`,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    },
+                )
+            ).json(),
+        enabled: !!accessToken && !!params?.id,
+    });
+
+    useEffect(() => {
+        if (savedStatus?.data?.isSaved !== undefined) {
+            setIsSaved(savedStatus.data.isSaved);
+        }
+    }, [savedStatus]);
 
     useEffect(() => {
         if (data?.data) {
@@ -51,8 +83,6 @@ export default function Page() {
             const thumbnail = !data?.data?.thumbnail?.[0]
                 ? "/no-image-available.jpg"
                 : BaseUrlImage + data?.data?.thumbnail?.[0]?.name;
-
-            console.log(thumbnail);
 
             setParsedDate(parsedDate);
             setThumbnail(thumbnail);
@@ -109,13 +139,31 @@ export default function Page() {
             };
 
             const response = await axios(config);
-            toast.success("Event saved to favorites", {
-                position: "top-right",
+            const newIsSaved = response?.data?.data?.isSaved;
+            setIsSaved(newIsSaved);
+
+            toast.success(
+                newIsSaved
+                    ? "Event saved to favorites"
+                    : "Event removed from favorites",
+                {
+                    position: "top-right",
+                },
+            );
+
+            queryClient.invalidateQueries({
+                queryKey: ["saved-check", params?.id],
+            });
+            queryClient.invalidateQueries({
+                queryKey: ["dashboard-saved-events"],
             });
         } catch (error: any) {
-            toast.error(error?.response?.message || error?.message, {
-                position: "top-right",
-            });
+            toast.error(
+                error?.response?.data?.message || error?.message,
+                {
+                    position: "top-right",
+                },
+            );
         } finally {
             setIsLoadingSaved(false);
         }
@@ -145,9 +193,12 @@ export default function Page() {
             });
             router.push(`/checkout/${response?.data?.data?._id}`);
         } catch (error: any) {
-            toast.error(error?.response?.message || error?.message, {
-                position: "top-right",
-            });
+            toast.error(
+                error?.response?.data?.message || error?.message,
+                {
+                    position: "top-right",
+                },
+            );
         } finally {
             setIsLoadingTicket(false);
         }
@@ -179,7 +230,11 @@ export default function Page() {
                                         <Loader2 className="w-7 h-7 animate-spin" />
                                     ) : (
                                         <Star
-                                            className="w-7 h-7 cursor-pointer hover:text-gray-600"
+                                            className={`w-7 h-7 cursor-pointer transition-colors ${
+                                                isSaved
+                                                    ? "text-yellow-500 fill-yellow-500"
+                                                    : "hover:text-gray-600"
+                                            }`}
                                             onClick={handleSaveFavorite}
                                         />
                                     )}

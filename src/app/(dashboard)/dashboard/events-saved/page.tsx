@@ -28,7 +28,6 @@ export default function Page() {
     const accessToken = session?.data?.user?.token?.access_token;
     const queryClient = useQueryClient();
 
-    // TODO: Integrate with API to get saved events
     const { data, error, isLoading } = useQuery({
         queryKey: ["dashboard-saved-events"],
         queryFn: async () =>
@@ -46,7 +45,6 @@ export default function Page() {
         enabled: !!accessToken,
     });
 
-    // TODO: Integrate with API to remove saved event
     const removeMutation = useMutation({
         mutationFn: async (eventId: string) => {
             const config = {
@@ -64,6 +62,7 @@ export default function Page() {
                 position: "top-right",
             });
             queryClient.invalidateQueries({ queryKey: ["dashboard-saved-events"] });
+            queryClient.invalidateQueries({ queryKey: ["saved-check"] });
         },
         onError: (error: any) => {
             toast.error(
