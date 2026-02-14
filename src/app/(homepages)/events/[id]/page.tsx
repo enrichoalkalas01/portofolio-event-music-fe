@@ -5,7 +5,7 @@ import { Button } from "@/components/shadcn/ui/button";
 import { parseEventDate } from "@/lib/parsed-date";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Calendar, MapPin, Share2, Star, Ticket } from "lucide-react";
+import { Calendar, Loader2, MapPin, Share2, Star, Ticket } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -23,6 +23,7 @@ export default function Page() {
     const [ParsedDate, setParsedDate] = useState<any>({});
     const [Thumbnail, setThumbnail] = useState<any>("");
     const [isLoadingTicket, setIsLoadingTicket] = useState(false);
+    const [isLoadingSaved, setIsLoadingSaved] = useState(false);
 
     const { data, error, isLoading } = useQuery({
         queryKey: ["admin-events-list"],
@@ -57,6 +58,68 @@ export default function Page() {
             setThumbnail(thumbnail);
         }
     }, [data]);
+
+    const handleShare = async () => {
+        const shareData = {
+            title: data?.data?.title || "Event",
+            text: `Check out this event: ${data?.data?.title}`,
+            url: window.location.href,
+        };
+
+        if (navigator.share) {
+            try {
+                await navigator.share(shareData);
+            } catch (err: any) {
+                if (err.name !== "AbortError") {
+                    toast.error("Failed to share", {
+                        position: "top-right",
+                    });
+                }
+            }
+        } else {
+            try {
+                await navigator.clipboard.writeText(window.location.href);
+                toast.success("Link copied to clipboard!", {
+                    position: "top-right",
+                });
+            } catch {
+                toast.error("Failed to copy link", {
+                    position: "top-right",
+                });
+            }
+        }
+    };
+
+    const handleSaveFavorite = async () => {
+        setIsLoadingSaved(true);
+        try {
+            if (!accessToken) {
+                throw {
+                    message: "You must login first to save favorite.",
+                };
+            }
+
+            const config = {
+                url: `${process.env.NEXT_PUBLIC_URL_API}/saved/${params?.id}`,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            };
+
+            const response = await axios(config);
+            toast.success("Event saved to favorites", {
+                position: "top-right",
+            });
+        } catch (error: any) {
+            toast.error(error?.response?.message || error?.message, {
+                position: "top-right",
+            });
+        } finally {
+            setIsLoadingSaved(false);
+        }
+    };
 
     const handleBuyTicket = async () => {
         setIsLoadingTicket(true);
@@ -112,10 +175,19 @@ export default function Page() {
                         <div className="w-auto flex items-center gap-4">
                             <div className="flex gap-4">
                                 <div className="flex">
-                                    <Star className="w-7 h-7 cursor-pointer hover:text-gray-600" />
-                                    {/* <StarOff className="w-7 h-7 cursor-pointer hover:text-gray-600" /> */}
+                                    {isLoadingSaved ? (
+                                        <Loader2 className="w-7 h-7 animate-spin" />
+                                    ) : (
+                                        <Star
+                                            className="w-7 h-7 cursor-pointer hover:text-gray-600"
+                                            onClick={handleSaveFavorite}
+                                        />
+                                    )}
                                 </div>
-                                <Share2 className="w-7 h-7 cursor-pointer hover:text-gray-600" />
+                                <Share2
+                                    className="w-7 h-7 cursor-pointer hover:text-gray-600"
+                                    onClick={handleShare}
+                                />
                             </div>
                             <div className="w-auto">
                                 <Button
