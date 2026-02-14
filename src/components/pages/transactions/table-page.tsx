@@ -9,11 +9,14 @@ export default function TablePageTransactions() {
         queryKey: ["admin-transactions-list"],
         queryFn: async () =>
             (
-                await fetch(`${process.env.NEXT_PUBLIC_URL_API}/transactions`, {
-                    headers: {
-                        "Content-Type": "application/json",
+                await fetch(
+                    `${process.env.NEXT_PUBLIC_URL_API}/transactions/admin`,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
                     },
-                })
+                )
             ).json(),
     });
 

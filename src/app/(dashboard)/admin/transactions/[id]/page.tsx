@@ -10,14 +10,7 @@ import { Badge } from "@/components/shadcn/ui/badge";
 import { ConverterCurrency } from "@/utils/currency";
 import { Card } from "@/components/shadcn/ui/card";
 import QRCode from "qrcode";
-import {
-    Calendar,
-    MapPin,
-    User,
-    Download,
-    Ticket,
-    Clock,
-} from "lucide-react";
+import { Calendar, MapPin, User, Download, Ticket, Clock } from "lucide-react";
 
 export default function Page() {
     const router = useRouter();
@@ -31,7 +24,7 @@ export default function Page() {
         queryFn: async () =>
             (
                 await fetch(
-                    `${process.env.NEXT_PUBLIC_URL_API}/transactions/${params?.id}`,
+                    `${process.env.NEXT_PUBLIC_URL_API}/transactions/admin/${params?.id}`,
                     {
                         headers: {
                             "Content-Type": "application/json",
@@ -163,9 +156,12 @@ export default function Page() {
         ctx.fillText("Detail Peserta", 50, y);
         y += 35;
 
-        drawDetail("Nama", transaction?.request?.firstname
-            ? `${transaction.request.firstname} ${transaction.request.lastname || ""}`
-            : transaction?.user?.username || "-");
+        drawDetail(
+            "Nama",
+            transaction?.request?.firstname
+                ? `${transaction.request.firstname} ${transaction.request.lastname || ""}`
+                : transaction?.user?.username || "-",
+        );
         drawDetail("Email", transaction?.request?.email || "-");
         drawDetail("Telepon", transaction?.request?.phonenumber || "-");
 
@@ -191,7 +187,10 @@ export default function Page() {
                 amount: transaction?.request?.total_payment || 0,
             }),
         );
-        drawDetail("Status", transaction?.status_transaction?.toUpperCase() || "-");
+        drawDetail(
+            "Status",
+            transaction?.status_transaction?.toUpperCase() || "-",
+        );
 
         // Separator
         ctx.setLineDash([8, 4]);
@@ -219,13 +218,7 @@ export default function Page() {
 
         const qrImage = new Image();
         qrImage.onload = () => {
-            ctx.drawImage(
-                qrImage,
-                (width - qrSize) / 2,
-                y,
-                qrSize,
-                qrSize,
-            );
+            ctx.drawImage(qrImage, (width - qrSize) / 2, y, qrSize, qrSize);
 
             // Footer
             ctx.fillStyle = "#9ca3af";
