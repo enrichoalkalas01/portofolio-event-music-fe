@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/shadcn/ui/button";
 import {
     Pagination,
@@ -20,16 +19,16 @@ export default function PaginationSimple({
     totalPages = 0,
     onChangePage = (page: number) => {},
 }: IPaginationProps) {
-    const [Page, setPage] = useState<number>(currentPage);
-
     const handlePrevButton = () => {
-        setPage((prev) => prev - 1);
-        onChangePage(Page - 1);
+        if (currentPage > 1) {
+            onChangePage(currentPage - 1);
+        }
     };
 
     const handleNextButton = () => {
-        setPage((prev) => prev + 1);
-        onChangePage(Page + 1);
+        if (currentPage < totalPages) {
+            onChangePage(currentPage + 1);
+        }
     };
 
     return (
@@ -40,13 +39,11 @@ export default function PaginationSimple({
                         <Button
                             variant="outline"
                             className="cursor-pointer aria-disabled:pointer-events-none aria-disabled:opacity-50"
-                            aria-disabled={Page === 1 ? true : undefined}
-                            role={Page === 1 ? "link" : undefined}
-                            asChild
-                            disabled={Page === 1}
+                            aria-disabled={currentPage === 1 ? true : undefined}
+                            disabled={currentPage === 1}
                             onClick={handlePrevButton}
                         >
-                            <div className="text-xs">
+                            <div className="text-xs flex items-center gap-1">
                                 <ChevronLeftIcon
                                     className="-ms-1 opacity-60"
                                     size={16}
@@ -56,21 +53,20 @@ export default function PaginationSimple({
                             </div>
                         </Button>
                     </PaginationItem>
-                    <PaginationItem className="w-auto flex justify-center items-center">
-                        {Page}
+                    <PaginationItem className="w-auto flex justify-center items-center text-sm">
+                        {currentPage} / {totalPages}
                     </PaginationItem>
                     <PaginationItem className="w-auto">
                         <Button
                             variant="outline"
                             className="cursor-pointer aria-disabled:pointer-events-none aria-disabled:opacity-50"
                             aria-disabled={
-                                Page >= totalPages ? true : undefined
+                                currentPage >= totalPages ? true : undefined
                             }
-                            role={Page >= totalPages ? "link" : undefined}
-                            asChild
+                            disabled={currentPage >= totalPages}
                             onClick={handleNextButton}
                         >
-                            <div className="text-xs">
+                            <div className="text-xs flex items-center gap-1">
                                 Next
                                 <ChevronRightIcon
                                     className="-me-1 opacity-60"
