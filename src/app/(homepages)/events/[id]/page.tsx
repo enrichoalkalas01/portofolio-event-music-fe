@@ -1,20 +1,28 @@
 "use client";
 
+import { LoadingComponent } from "@/components/generals/loading/loading";
 import { Button } from "@/components/shadcn/ui/button";
 import { parseEventDate } from "@/lib/parsed-date";
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { Calendar, MapPin, Share2, Star, Ticket } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const BaseUrlImage =
     "https://minio-api.enrichoalkalas.my.id/portofolio-event-music/";
 
 export default function Page() {
+    const router = useRouter();
+    const session: any = useSession();
+    const accessToken: any = session?.data?.user?.token?.access_token;
     const params = useParams();
 
     const [ParsedDate, setParsedDate] = useState<any>({});
     const [Thumbnail, setThumbnail] = useState<any>("");
+    const [isLoadingTicket, setIsLoadingTicket] = useState(false);
 
     const { data, error, isLoading } = useQuery({
         queryKey: ["admin-events-list"],
@@ -31,7 +39,7 @@ export default function Page() {
             ).json(),
     });
 
-    console.log(data?.data);
+    console.log(params?.id);
 
     useEffect(() => {
         if (data?.data) {
@@ -49,6 +57,38 @@ export default function Page() {
             setThumbnail(thumbnail);
         }
     }, [data]);
+
+    const handleBuyTicket = async () => {
+        setIsLoadingTicket(true);
+        try {
+            if (!accessToken) {
+                throw {
+                    message: "You must login first for buy tickets.",
+                };
+            }
+
+            const config = {
+                url: `${process.env.NEXT_PUBLIC_URL_API}/transactions/${params?.id}`,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            };
+
+            const response = await axios(config);
+            toast.success("Successfull to order ticket", {
+                position: "top-right",
+            });
+            router.push(`/checkout/${response?.data?.data?._id}`);
+        } catch (error: any) {
+            toast.error(error?.response?.message || error?.message, {
+                position: "top-right",
+            });
+        } finally {
+            setIsLoadingTicket(false);
+        }
+    };
 
     return (
         <section className="w-full min-h-[80vh]">
@@ -78,8 +118,16 @@ export default function Page() {
                                 <Share2 className="w-7 h-7 cursor-pointer hover:text-gray-600" />
                             </div>
                             <div className="w-auto">
-                                <Button className="cursor-pointer">
-                                    Buy Ticket
+                                <Button
+                                    disabled={isLoadingTicket}
+                                    className="cursor-pointer"
+                                    onClick={handleBuyTicket}
+                                >
+                                    {isLoadingTicket ? (
+                                        <LoadingComponent type="icon" />
+                                    ) : (
+                                        <span>Buy Ticket</span>
+                                    )}
                                 </Button>
                             </div>
                         </div>
