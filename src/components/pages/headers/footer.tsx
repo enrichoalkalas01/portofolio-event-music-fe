@@ -17,8 +17,8 @@ export default function Footers() {
                         </Link>
                         <p className="text-xs w-full md:w-3/4">
                             Platform pembelian tiket event musik terpercaya di
-                            Indonesia. Temukan dan hadiri konser favoritmu dengan
-                            mudah dan aman.
+                            Indonesia. Temukan dan hadiri konser favoritmu
+                            dengan mudah dan aman.
                         </p>
                     </div>
                     <div className="w-full md:max-w-full flex justify-end">
@@ -29,7 +29,10 @@ export default function Footers() {
                             <Link href={"/events"} className="text-md">
                                 <span>Events</span>
                             </Link>
-                            <Link href={"/coming-soon"} className="text-md">
+                            <Link
+                                href={"/events/coming-soon"}
+                                className="text-md"
+                            >
                                 <span>Coming Soon</span>
                             </Link>
                             <Link href={"/about-us"} className="text-md">

@@ -38,23 +38,28 @@ export default function Page() {
 
     const team = [
         {
-            name: "Ahmad Rizki",
-            role: "Founder & CEO",
+            name: "Enricho Alkalas",
+            role: "Team",
             image: "/images/team/team-1.jpg",
         },
         {
-            name: "Sarah Putri",
-            role: "Creative Director",
+            name: "Nigel Satria",
+            role: "Team",
             image: "/images/team/team-2.jpg",
         },
         {
-            name: "Budi Santoso",
-            role: "Event Manager",
+            name: "Gita Editya",
+            role: "Team",
             image: "/images/team/team-3.jpg",
         },
         {
-            name: "Maya Dewi",
-            role: "Marketing Lead",
+            name: "Maria Stefi",
+            role: "Team",
+            image: "/images/team/team-4.jpg",
+        },
+        {
+            name: "Adelline Shania",
+            role: "Team",
             image: "/images/team/team-4.jpg",
         },
     ];
@@ -82,25 +87,25 @@ export default function Page() {
                             Cerita Kami
                         </h2>
                         <p className="text-gray-600 text-lg mb-4 leading-relaxed">
-                            Event Music Indonesia didirikan pada tahun 2014 dengan
-                            satu visi sederhana: menghubungkan pecinta musik dengan
-                            artis favorit mereka melalui event-event berkualitas
-                            tinggi.
+                            Event Music Indonesia didirikan pada tahun 2014
+                            dengan satu visi sederhana: menghubungkan pecinta
+                            musik dengan artis favorit mereka melalui
+                            event-event berkualitas tinggi.
                         </p>
                         <p className="text-gray-600 text-lg mb-4 leading-relaxed">
-                            Berawal dari sebuah tim kecil yang passionate terhadap
-                            musik, kami telah berkembang menjadi salah satu
-                            penyelenggara event musik terpercaya di Indonesia.
-                            Dengan pengalaman lebih dari satu dekade, kami telah
-                            sukses menyelenggarakan ratusan konser, festival, dan
-                            acara musik privat.
+                            Berawal dari sebuah tim kecil yang passionate
+                            terhadap musik, kami telah berkembang menjadi salah
+                            satu penyelenggara event musik terpercaya di
+                            Indonesia. Dengan pengalaman lebih dari satu dekade,
+                            kami telah sukses menyelenggarakan ratusan konser,
+                            festival, dan acara musik privat.
                         </p>
                         <p className="text-gray-600 text-lg leading-relaxed">
                             Kami percaya bahwa musik memiliki kekuatan untuk
                             menyatukan orang-orang dan menciptakan kenangan yang
                             akan bertahan selamanya. Itulah mengapa kami selalu
-                            berusaha memberikan yang terbaik di setiap event yang
-                            kami selenggarakan.
+                            berusaha memberikan yang terbaik di setiap event
+                            yang kami selenggarakan.
                         </p>
                     </div>
                     <div className="relative h-[400px] rounded-2xl overflow-hidden bg-purple-100 flex items-center justify-center">
@@ -145,10 +150,10 @@ export default function Page() {
                             </h3>
                         </div>
                         <p className="text-gray-600 text-lg leading-relaxed">
-                            Menjadi penyelenggara event musik terdepan di Indonesia
-                            yang dikenal karena kualitas, inovasi, dan kemampuan
-                            menciptakan pengalaman musik yang tak terlupakan bagi
-                            semua kalangan.
+                            Menjadi penyelenggara event musik terdepan di
+                            Indonesia yang dikenal karena kualitas, inovasi, dan
+                            kemampuan menciptakan pengalaman musik yang tak
+                            terlupakan bagi semua kalangan.
                         </p>
                     </div>
                     <div className="bg-gradient-to-br from-purple-50 to-white p-8 rounded-2xl border border-purple-100">
@@ -171,11 +176,13 @@ export default function Page() {
                             </li>
                             <li className="flex items-start gap-2">
                                 <span className="text-purple-600 mt-1">•</span>
-                                Memberikan platform bagi artis lokal dan internasional
+                                Memberikan platform bagi artis lokal dan
+                                internasional
                             </li>
                             <li className="flex items-start gap-2">
                                 <span className="text-purple-600 mt-1">•</span>
-                                Menciptakan pengalaman berkesan bagi setiap penonton
+                                Menciptakan pengalaman berkesan bagi setiap
+                                penonton
                             </li>
                         </ul>
                     </div>
@@ -190,7 +197,8 @@ export default function Page() {
                             Nilai-Nilai Kami
                         </h2>
                         <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-                            Prinsip yang menjadi landasan kami dalam setiap event
+                            Prinsip yang menjadi landasan kami dalam setiap
+                            event
                         </p>
                     </div>
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -226,10 +234,7 @@ export default function Page() {
                 </div>
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {team.map((member, index) => (
-                        <div
-                            key={index}
-                            className="text-center group"
-                        >
+                        <div key={index} className="text-center group">
                             <div className="relative h-[300px] rounded-2xl overflow-hidden mb-4 bg-purple-100 flex items-center justify-center">
                                 <Users className="w-20 h-20 text-purple-300 group-hover:scale-110 transition-transform" />
                             </div>
