@@ -4,6 +4,20 @@ const nextConfig: NextConfig = {
     reactCompiler: true,
     images: {
         unoptimized: true,
+        domains: [
+            "storage.googleapis.com",
+            "swarnatactical.com",
+            "apparel.swarnatactical.com",
+            "apparel-dev.swarnatactical.com",
+            "api-backend.swarnatactical.com",
+            "api-backend-dev.swarnatactical.com",
+            "files.swarnatactical.com",
+            "swarnatactical.com",
+            "minio-api.enrichoalkalas.my.id",
+            "localhost",
+            "127.0.0.1",
+            "*",
+        ],
         remotePatterns: [
             {
                 protocol: "http",
