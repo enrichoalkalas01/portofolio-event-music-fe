@@ -1,24 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-    /* config options here */
     reactCompiler: true,
     images: {
         unoptimized: true,
-        domains: [
-            "storage.googleapis.com",
-            "swarnatactical.com",
-            "apparel.swarnatactical.com",
-            "apparel-dev.swarnatactical.com",
-            "api-backend.swarnatactical.com",
-            "api-backend-dev.swarnatactical.com",
-            "files.swarnatactical.com",
-            "swarnatactical.com",
-            "minio-api.enrichoalkalas.my.id",
-            "localhost",
-            "127.0.0.1",
-            "*",
-        ],
         remotePatterns: [
             {
                 protocol: "http",
@@ -42,12 +27,6 @@ const nextConfig: NextConfig = {
                 hostname: "files.swarnatactical.com",
                 pathname: "/**",
             },
-
-            // {
-            //     protocol: "https",
-            //     hostname: "swarnatactical.com",
-            //     pathname: "/wp-content/uploads/**",
-            // },
             {
                 protocol: "https",
                 hostname: "swarnatactical.com",
@@ -58,7 +37,6 @@ const nextConfig: NextConfig = {
                 hostname: "minio-api.enrichoalkalas.my.id",
                 pathname: "/**",
             },
-
             {
                 protocol: "https",
                 hostname: "storage.googleapis.com",
