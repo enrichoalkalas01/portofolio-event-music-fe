@@ -1,70 +1,61 @@
-# Stage 1: Dependencies
+# Stage 1: dependencies
 FROM node:20-alpine AS deps
-RUN apk add --no-cache libc6-compat
-
-# Install pnpm
-RUN npm install -g pnpm
+RUN apk add --no-cache libc6-compat && npm install -g pnpm@10.33.0
 
 WORKDIR /app
-
-# Copy package files
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --prod=false
+RUN pnpm install --frozen-lockfile
 
-# Stage 2: Builder
+# Stage 2: build
 FROM node:20-alpine AS builder
+RUN npm install -g pnpm@10.33.0
 WORKDIR /app
 
-# Install pnpm
-RUN npm install -g pnpm
-
-# Copy dependencies
 COPY --from=deps /app/node_modules ./node_modules
-
-# Copy source code
 COPY . .
 
-# Use ARG to allow build-time port configuration
-ARG PORT=3000
-ARG NEXTAUTH_SECRET
-ARG NEXTAUTH_URL
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# NEXT_PUBLIC_* are inlined into the JS bundle, so they must exist at build time.
+# Jenkins (deployPipelineVaultV2, vaultMode 'build') passes the Vault path as a
+# BuildKit secret `vault_secrets` (KEY=value lines); without BuildKit it falls back
+# to --build-arg, picked up by the ARGs below. Only public keys are exported, so
+# runtime secrets such as NEXTAUTH_SECRET never reach the build or the image.
 ARG NEXT_PUBLIC_URL_API
+ARG NEXT_PUBLIC_API_BASE_URL
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_IMAGE_BASE_URL
 
-ENV PORT=${PORT}
-ENV NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
-ENV NEXTAUTH_URL=${NEXTAUTH_URL}
-ENV NEXT_PUBLIC_URL_API=${NEXT_PUBLIC_URL_API}
+RUN --mount=type=secret,id=vault_secrets,required=false \
+    if [ -f /run/secrets/vault_secrets ]; then \
+        while IFS='=' read -r key value || [ -n "$key" ]; do \
+            case "$key" in NEXT_PUBLIC_*) export "$key=$value" ;; esac; \
+        done < /run/secrets/vault_secrets; \
+    fi; \
+    echo "NEXT_PUBLIC_URL_API=${NEXT_PUBLIC_URL_API}"; \
+    pnpm build
 
-# Build the application
-RUN pnpm build
-
-# Stage 3: Runner
+# Stage 3: runtime
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-ENV NODE_ENV=production
+ENV NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1 \
+    HOSTNAME="0.0.0.0" \
+    PORT=3000
 
-# Create non-root user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
 
-# Install pnpm and wget for healthcheck
-RUN npm install -g pnpm && apk add --no-cache wget
-
-# Copy package files and install production dependencies
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --prod
-
-# Copy built application
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/next.config.ts ./next.config.ts
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
 USER nextjs
 
-# Expose the port dynamically
-EXPOSE ${PORT}
+EXPOSE 3000
 
-ENV HOSTNAME="0.0.0.0"
-
-# Use environment variable for port
-CMD ["sh", "-c", "pnpm start --port=${PORT}"]
+# NEXTAUTH_URL and NEXTAUTH_SECRET are injected at runtime (values env + ESO secret).
+CMD ["node", "node_modules/next/dist/bin/next", "start"]

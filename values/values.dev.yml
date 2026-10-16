@@ -1,0 +1,90 @@
+# ==============================================================
+# portofolio-event-music-fe — DEV
+# Pipeline: deployPipelineVaultV2 (vaultMode 'build', chart: generic-app-vault)
+# Build-time: NEXT_PUBLIC_* from Vault `portofolio/portofolio-event-music-fe-dev`.
+# Runtime   : the same Vault path synced by ESO (vaultRuntime below) -> NEXTAUTH_SECRET.
+# Keys set under `env:` here WIN over the same key in Vault.
+# ==============================================================
+
+appName: portofolio-event-music-fe-dev
+namespace: portofolio
+replicaCount: 1
+
+image:
+    repository: 192.168.20.21/other/portofolio-event-music-fe-dev
+    tag: "latest"
+    pullPolicy: Always
+
+imagePullSecrets:
+    - name: harbor-creds
+
+nameOverride: ""
+fullnameOverride: ""
+
+containerPort: 3000
+
+service:
+    type: NodePort
+    port: 3000
+    targetPort: 3000
+    nodePort: 31183 # OVERRIDDEN by the pipeline (param servicePort)
+
+ingress:
+    enabled: false
+
+# "/" is the public landing page (200 without auth).
+probe:
+    enabled: true
+    liveness:
+        path: /
+        port: 3000
+    readiness:
+        path: /
+        port: 3000
+
+resources:
+    requests:
+        cpu: 50m
+        memory: 160Mi
+    limits:
+        cpu: 500m
+        memory: 512Mi
+
+autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 1
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+
+env:
+    - name: NODE_ENV
+      value: "production"
+    - name: PORT
+      value: "3000"
+    - name: NEXTAUTH_URL
+      value: "http://192.168.20.11:31183"
+
+vaultRuntime:
+    enabled: true
+    path: portofolio-event-music-fe-dev
+    dataFrom: true
+    storeName: vault-backend
+    storeKind: ClusterSecretStore
+    refreshInterval: 1m
+
+envFrom: []
+
+volumeMounts: []
+volumes: []
+hostAliases: []
+nodeSelector: {}
+tolerations: []
+affinity: {}
+podSecurityContext: {}
+securityContext: {}
+
+serviceAccount:
+    create: false
+    name: ""
+    annotations: {}
