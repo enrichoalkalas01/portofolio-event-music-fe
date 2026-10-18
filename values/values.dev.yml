@@ -63,7 +63,7 @@ env:
     - name: PORT
       value: "3000"
     - name: NEXTAUTH_URL
-      value: "http://192.168.20.11:31183"
+      value: "https://endlessapp.my.id"
 
 vaultRuntime:
     enabled: true
