@@ -61,7 +61,7 @@ export function parseEventDate(
     eventDate: EventDate,
     options: ParseOptions = {},
 ): ParsedEventDate {
-    const { lang = "id", timeFormat = "12h" } = options;
+    const { lang = "id", timeFormat = "24h" } = options;
 
     const start = moment(eventDate.start).locale(lang);
     const end = moment(eventDate.end).locale(lang);

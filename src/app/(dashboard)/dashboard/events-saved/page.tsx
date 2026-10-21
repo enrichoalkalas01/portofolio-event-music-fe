@@ -20,8 +20,9 @@ import { ConverterCurrency } from "@/utils/currency";
 import { toast } from "sonner";
 import axios from "axios";
 
-const BaseUrlImage =
-    "https://minio-api.enrichoalkalas.my.id/portofolio-event-music/";
+import { IMAGE_BASE_URL } from "@/lib/config";
+
+const BaseUrlImage = `${IMAGE_BASE_URL}/`;
 
 export default function Page() {
     const session: any = useSession();
@@ -84,15 +85,15 @@ export default function Page() {
         switch (status?.toLowerCase()) {
             case "active":
             case "published":
-                return "bg-green-100 text-green-800";
+                return "bg-emerald-500/15 text-emerald-400 border-emerald-500/30";
             case "coming soon":
-                return "bg-blue-100 text-blue-800";
+                return "bg-sky-500/15 text-sky-400 border-sky-500/30";
             case "sold out":
-                return "bg-red-100 text-red-800";
+                return "bg-rose-500/15 text-rose-400 border-rose-500/30";
             case "ended":
-                return "bg-gray-100 text-gray-800";
+                return "bg-muted text-foreground";
             default:
-                return "bg-purple-100 text-purple-800";
+                return "bg-primary/15 text-primary";
         }
     };
 
@@ -104,7 +105,7 @@ export default function Page() {
                 headerSubTitle="Daftar event yang Anda simpan untuk nanti"
                 className="p-0 gap-0"
                 buttonUrlComponent={
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Bookmark className="w-4 h-4" />
                         <span>{savedEvents.length} Event</span>
                     </div>
@@ -112,7 +113,7 @@ export default function Page() {
             >
                 <div className="w-full p-4">
                     {isLoading ? (
-                        <div className="p-8 text-center text-gray-500">
+                        <div className="p-8 text-center text-muted-foreground">
                             Memuat data...
                         </div>
                     ) : error ? (
@@ -138,7 +139,7 @@ export default function Page() {
                                         <Link href={`/events/${event?._id || event?.id}`}>
                                             <div className="relative">
                                                 <div
-                                                    className="h-44 bg-gray-200 bg-cover bg-center"
+                                                    className="h-44 bg-muted bg-cover bg-center"
                                                     style={{
                                                         backgroundImage: `url('${thumbnail}')`,
                                                     }}
@@ -187,15 +188,15 @@ export default function Page() {
                                                 <h3 className="font-bold text-lg line-clamp-1 mb-2">
                                                     {event?.title || "Event"}
                                                 </h3>
-                                                <div className="space-y-2 text-sm text-gray-600 mb-3">
+                                                <div className="space-y-2 text-sm text-muted-foreground mb-3">
                                                     <div className="flex items-center gap-2">
-                                                        <Calendar className="w-4 h-4 text-purple-600" />
+                                                        <Calendar className="w-4 h-4 text-primary" />
                                                         <span>
                                                             {parsedDate?.start?.full || "-"}
                                                         </span>
                                                     </div>
                                                     <div className="flex items-center gap-2">
-                                                        <MapPin className="w-4 h-4 text-purple-600" />
+                                                        <MapPin className="w-4 h-4 text-primary" />
                                                         <span className="line-clamp-1">
                                                             {event?.location || "-"}
                                                         </span>
@@ -203,10 +204,10 @@ export default function Page() {
                                                 </div>
                                                 <div className="flex items-center justify-between pt-3 border-t">
                                                     <div>
-                                                        <p className="text-xs text-gray-500">
+                                                        <p className="text-xs text-muted-foreground">
                                                             Mulai dari
                                                         </p>
-                                                        <p className="font-bold text-purple-600">
+                                                        <p className="font-bold text-primary">
                                                             {ConverterCurrency({
                                                                 amount: event?.price || 0,
                                                             })}
@@ -214,7 +215,7 @@ export default function Page() {
                                                     </div>
                                                     <Button
                                                         size="sm"
-                                                        className="cursor-pointer bg-purple-600 hover:bg-purple-700"
+                                                        className="cursor-pointer bg-primary hover:bg-primary"
                                                     >
                                                         Beli Tiket
                                                     </Button>
@@ -227,18 +228,18 @@ export default function Page() {
                         </div>
                     ) : (
                         <div className="p-12 text-center">
-                            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Bookmark className="w-10 h-10 text-gray-300" />
+                            <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Bookmark className="w-10 h-10 text-muted-foreground/60" />
                             </div>
-                            <h3 className="text-lg font-medium text-gray-600 mb-2">
+                            <h3 className="text-lg font-medium text-muted-foreground mb-2">
                                 Belum Ada Event Tersimpan
                             </h3>
-                            <p className="text-gray-500 mb-6 max-w-md mx-auto">
+                            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
                                 Simpan event yang menarik agar Anda bisa dengan mudah menemukannya
                                 lagi nanti. Klik ikon hati pada event untuk menyimpannya.
                             </p>
                             <Link href="/events">
-                                <Button className="cursor-pointer bg-purple-600 hover:bg-purple-700">
+                                <Button className="cursor-pointer bg-primary hover:bg-primary">
                                     Jelajahi Event
                                 </Button>
                             </Link>
@@ -249,12 +250,12 @@ export default function Page() {
 
             {/* Tips Section */}
             {savedEvents.length > 0 && (
-                <Card className="mt-6 p-4 bg-purple-50 border-purple-100">
+                <Card className="mt-6 p-4 bg-primary/15 border-purple-100">
                     <div className="flex items-start gap-3">
-                        <Heart className="w-5 h-5 text-purple-600 mt-0.5" />
+                        <Heart className="w-5 h-5 text-primary mt-0.5" />
                         <div>
-                            <h4 className="font-medium text-purple-800">Tips</h4>
-                            <p className="text-sm text-purple-600">
+                            <h4 className="font-medium text-primary">Tips</h4>
+                            <p className="text-sm text-primary">
                                 Event yang sudah tersimpan akan tetap ada di sini sampai Anda
                                 menghapusnya. Jangan lupa untuk segera membeli tiket sebelum
                                 kehabisan!

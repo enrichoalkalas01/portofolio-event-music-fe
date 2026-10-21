@@ -15,6 +15,7 @@ import { Calendar, MapPin, User, Download, Ticket, Clock } from "lucide-react";
 export default function Page() {
     const router = useRouter();
     const session: any = useSession();
+    const accessToken = session?.data?.user?.token?.access_token;
     const params = useParams();
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -28,10 +29,12 @@ export default function Page() {
                     {
                         headers: {
                             "Content-Type": "application/json",
+                            Authorization: `Bearer ${accessToken}`,
                         },
                     },
                 )
             ).json(),
+        enabled: !!params?.id && !!accessToken,
     });
 
     const transaction = data?.data;
@@ -50,16 +53,16 @@ export default function Page() {
     const getStatusColor = (status: string) => {
         switch (status) {
             case "success":
-                return "bg-green-100 text-green-800";
+                return "bg-emerald-500/15 text-emerald-400 border-emerald-500/30";
             case "pending":
-                return "bg-yellow-100 text-yellow-800";
+                return "bg-amber-500/15 text-amber-400 border-amber-500/30";
             case "failed":
             case "cancelled":
-                return "bg-red-100 text-red-800";
+                return "bg-rose-500/15 text-rose-400 border-rose-500/30";
             case "checkout":
-                return "bg-blue-100 text-blue-800";
+                return "bg-sky-500/15 text-sky-400 border-sky-500/30";
             default:
-                return "bg-gray-100 text-gray-800";
+                return "bg-muted text-foreground";
         }
     };
 
@@ -286,14 +289,14 @@ export default function Page() {
                                 </span>
                                 <div className="flex flex-col gap-2 text-sm">
                                     <div className="flex items-center gap-2">
-                                        <Ticket className="w-4 h-4 text-purple-500" />
+                                        <Ticket className="w-4 h-4 text-primary" />
                                         <span className="font-semibold">
                                             {event?.title}
                                         </span>
                                     </div>
                                     {event?.eventDate?.start && (
                                         <div className="flex items-center gap-2">
-                                            <Calendar className="w-4 h-4 text-purple-500" />
+                                            <Calendar className="w-4 h-4 text-primary" />
                                             <span>
                                                 {new Date(
                                                     event.eventDate.start,
@@ -324,19 +327,19 @@ export default function Page() {
                                     )}
                                     {event?.location && (
                                         <div className="flex items-center gap-2">
-                                            <MapPin className="w-4 h-4 text-purple-500" />
+                                            <MapPin className="w-4 h-4 text-primary" />
                                             <span>{event.location}</span>
                                         </div>
                                     )}
                                     {event?.vendor && (
                                         <div className="flex items-center gap-2">
-                                            <User className="w-4 h-4 text-purple-500" />
+                                            <User className="w-4 h-4 text-primary" />
                                             <span>{event.vendor}</span>
                                         </div>
                                     )}
                                     {event?.price !== undefined && (
                                         <div className="flex items-center gap-2">
-                                            <Clock className="w-4 h-4 text-purple-500" />
+                                            <Clock className="w-4 h-4 text-primary" />
                                             <span>
                                                 Harga Tiket:{" "}
                                                 {ConverterCurrency({

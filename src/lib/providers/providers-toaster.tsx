@@ -13,13 +13,15 @@ export default function ProvidersToaster({
         <>
             {children}
             <Toaster
+                position="top-right"
+                closeButton
                 icons={{
-                    success: <CheckCheck className="w-5 h-5 text-green-400" />,
-                    info: <Info className="w-5 h-5 text-gray-800" />,
+                    success: <CheckCheck className="w-5 h-5 text-emerald-400" />,
+                    info: <Info className="w-5 h-5 text-sky-400" />,
                     warning: (
-                        <TriangleAlert className="w-5 h-5 text-orange-400" />
+                        <TriangleAlert className="w-5 h-5 text-amber-400" />
                     ),
-                    error: <CircleX className="w-5 h-5 text-red-400" />,
+                    error: <CircleX className="w-5 h-5 text-rose-400" />,
                 }}
             />
         </>

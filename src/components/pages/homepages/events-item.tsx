@@ -1,159 +1,136 @@
 "use client";
 
-import { Clock4, Eye, Ticket } from "lucide-react";
+import Link from "next/link";
+import { CalendarDays, Clock3, Eye, MapPin, Ticket, Users } from "lucide-react";
 
-import { Badge } from "@/components/shadcn/ui/badge";
 import { Button } from "@/components/shadcn/ui/button";
+import { LoadingComponent } from "@/components/generals/loading/loading";
+import AvailabilityBadge from "@/components/pages/events/availability-badge";
 
 import { parseEventDate } from "@/lib/parsed-date";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { LoadingComponent } from "@/components/generals/loading/loading";
-import { useSession } from "next-auth/react";
-import { toast } from "sonner";
-import axios from "axios";
-import Link from "next/link";
+import { getThumbnail } from "@/lib/config";
+import { getAvailability, type EventRecord } from "@/lib/event-status";
+import { ConverterCurrency } from "@/utils/currency";
+import { useBuyTicket } from "@/hooks/use-buy-ticket";
 
-const BaseUrlImage =
-    "https://minio-api.enrichoalkalas.my.id/portofolio-event-music/";
+export default function EventsItem({ data }: { data: EventRecord }) {
+    const date = parseEventDate(data?.eventDate, { lang: "id" });
+    const thumbnail = getThumbnail(data);
+    const availability = getAvailability(data);
+    const { buy, isLoading } = useBuyTicket(data?._id);
+    const detailHref = `/events/${data?._id}`;
 
-export default function EventsItem({ data }: { data: any }) {
-    const router = useRouter();
-    const session: any = useSession();
-    const accessToken: any = session?.data?.user?.token?.access_token;
-
-    const dateParsed = parseEventDate(data?.eventDate, { lang: "en" });
-    const thumbnail = !data?.thumbnail?.[0]
-        ? "/no-image-available.jpg"
-        : BaseUrlImage + data?.thumbnail?.[0]?.name;
-
-    const [isLoadingTicket, setIsLoadingTicket] = useState(false);
-    const [isLoadingMoreInfo, setIsLoadingMoreInfo] = useState(false);
-
-    const handleBuyTicket = async () => {
-        setIsLoadingTicket(true);
-        try {
-            if (!accessToken) {
-                throw {
-                    message: "You must login first for buy tickets.",
-                };
-            }
-
-            const config = {
-                url: `${process.env.NEXT_PUBLIC_URL_API}/transactions/${data?._id}`,
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            };
-
-            const response = await axios(config);
-            router.push(`/checkout/${response?.data?.data?._id}`);
-        } catch (error: any) {
-            toast.error(error?.response?.message || error?.message, {
-                position: "top-right",
-            });
-        } finally {
-            setIsLoadingTicket(false);
-        }
-    };
-
-    const handleMoreDetail = () => {
-        router.push(`/events/${data?._id || data?.id}`);
-    };
+    const isMultiDay = !date.compare.isSameDay;
+    const dateLabel = isMultiDay
+        ? `${date.start.dateMonth} – ${date.end.dateMonth} ${date.end.year}`
+        : `${date.start.day}, ${date.start.dateMonth} ${date.start.year}`;
 
     return (
-        <div className="w-full bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 flex items-center gap-6 p-5 rounded-xl shadow-2xl border border-gray-700/50">
-            {/* Date Section */}
-            <div className="flex flex-col justify-center items-center min-w-[80px] text-center">
-                <p className="text-pink-500 font-medium text-sm">
-                    {dateParsed?.start?.dayShort},
-                </p>
-                <p className="text-pink-500 font-bold text-2xl leading-tight">
-                    {dateParsed?.start?.dateMonth}
-                </p>
-                <p className="text-pink-500 font-bold text-2xl leading-tight">
-                    {dateParsed?.start?.year}
-                </p>
-            </div>
-
-            {/* Image Section - ukuran fixed tapi lebih besar dari sebelumnya */}
-            <div className="flex-shrink-0">
-                <div className="w-[140px] h-[140px] rounded-lg overflow-hidden ring-1 ring-purple-500/40">
+        <article className="group w-full rounded-2xl border border-border bg-card/80 hover:bg-card hover:border-primary/40 transition-colors shadow-sm overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-[176px_1fr_auto] gap-0 md:gap-6">
+                <Link href={detailHref} className="relative block w-full aspect-video md:aspect-square overflow-hidden">
                     <img
                         src={thumbnail}
-                        alt="TY TRACK - REMASTERED"
-                        className="w-full h-full object-cover"
+                        alt={data?.title || "Thumbnail event"}
+                        loading="lazy"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-                </div>
-            </div>
+                    <div className="absolute inset-x-0 bottom-0 md:hidden bg-gradient-to-t from-black/70 to-transparent p-3">
+                        <AvailabilityBadge event={data} />
+                    </div>
+                    <div className="absolute top-3 left-3 flex flex-col items-center justify-center rounded-xl bg-background/90 backdrop-blur px-2.5 py-1.5 text-center shadow">
+                        <span className="text-[10px] font-semibold uppercase tracking-wider text-primary leading-none">
+                            {date.start.raw.format("MMM")}
+                        </span>
+                        <span className="text-xl font-bold leading-tight text-foreground tabular-nums">
+                            {date.start.date}
+                        </span>
+                    </div>
+                </Link>
 
-            {/* Content Section */}
-            <div className="flex-1 flex flex-col justify-center gap-2 min-w-0">
-                <h1 className="text-xl font-bold text-white hover:text-primary">
-                    <Link href={`/events/${data?._id}`}>{data?.title}</Link>
-                </h1>
+                <div className="flex flex-col justify-center gap-2.5 p-4 md:py-5 md:pl-0 min-w-0">
+                    <div className="hidden md:flex items-center gap-2 flex-wrap">
+                        <AvailabilityBadge event={data} />
+                        {data?.categories?.slice(0, 3).map((c) => (
+                            <Link
+                                key={c}
+                                href={`/events?category=${encodeURIComponent(c)}`}
+                                className="rounded-full border border-border px-2.5 py-0.5 text-[11px] text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors"
+                            >
+                                {c}
+                            </Link>
+                        ))}
+                    </div>
 
-                <div className="flex items-center gap-2 text-sm">
-                    <span className="text-cyan-400 font-medium">
-                        {data?.location}
-                    </span>
-                    {dateParsed?.time?.start !== dateParsed?.time?.end && (
-                        <>
-                            <span className="text-gray-500">|</span>
-                            <span className="text-gray-400">
-                                {dateParsed?.time?.range}
+                    <h3 className="text-lg md:text-xl font-bold leading-snug text-foreground">
+                        <Link href={detailHref} className="hover:text-primary transition-colors line-clamp-2">
+                            {data?.title}
+                        </Link>
+                    </h3>
+
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                        <span className="inline-flex items-center gap-1.5">
+                            <CalendarDays className="size-4 text-primary" /> {dateLabel}
+                        </span>
+                        <span className="inline-flex items-center gap-1.5">
+                            <Clock3 className="size-4 text-primary" /> {date.time.start} WIB
+                        </span>
+                        {data?.location && (
+                            <span className="inline-flex items-center gap-1.5 min-w-0">
+                                <MapPin className="size-4 text-primary shrink-0" />
+                                <span className="truncate">{data.location}</span>
                             </span>
-                        </>
+                        )}
+                    </div>
+
+                    {data?.excerpt && (
+                        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                            {data.excerpt}
+                        </p>
                     )}
+
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                        <span className="inline-flex items-center gap-1.5">
+                            <Users className="size-3.5" />
+                            {availability.isSoldOut
+                                ? "Tiket habis"
+                                : `${availability.remaining.toLocaleString("id-ID")} tiket tersisa`}
+                        </span>
+                        {data?.vendor && <span>oleh {data.vendor}</span>}
+                    </div>
                 </div>
 
-                <p className="text-gray-400 text-sm leading-relaxed line-clamp-3">
-                    {data?.excerpt}
-                </p>
-
-                <div>
-                    <span className="inline-flex items-center gap-1.5 text-cyan-400 text-xs border border-cyan-500/40 rounded-full px-3 py-1">
-                        <Clock4 className="w-3.5 h-3.5" />
-                        {data?.total_tickets || data?.max_participants} Tickets
-                        Remaining
-                    </span>
+                <div className="flex md:flex-col items-center md:items-stretch justify-between md:justify-center gap-3 px-4 pb-4 md:p-5 md:pl-0 md:w-48 md:border-l md:border-border/60">
+                    <div className="flex flex-col md:items-end">
+                        <span className="text-[11px] uppercase tracking-wider text-muted-foreground">Mulai dari</span>
+                        <span className="text-lg font-bold text-foreground tabular-nums">
+                            {data?.price > 0 ? ConverterCurrency({ amount: data.price }) : "Gratis"}
+                        </span>
+                    </div>
+                    <div className="flex md:flex-col gap-2 w-auto md:w-full">
+                        <Button
+                            disabled={isLoading || !availability.canBuy}
+                            onClick={buy}
+                            className="cursor-pointer"
+                            size="default"
+                        >
+                            {isLoading ? (
+                                <LoadingComponent type="icon" />
+                            ) : (
+                                <>
+                                    <Ticket className="size-4" />
+                                    {availability.canBuy ? "Beli Tiket" : availability.label}
+                                </>
+                            )}
+                        </Button>
+                        <Button variant="outline" asChild className="cursor-pointer">
+                            <Link href={detailHref}>
+                                <Eye className="size-4" /> Detail
+                            </Link>
+                        </Button>
+                    </div>
                 </div>
             </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col gap-4 justify-center">
-                <Button
-                    disabled={isLoadingTicket}
-                    onClick={handleBuyTicket}
-                    className="cursor-pointer bg-pink-500 hover:bg-pink-600 text-white font-medium rounded-md px-6 py-2.5 flex items-center gap-2 whitespace-nowrap"
-                >
-                    {isLoadingTicket ? (
-                        <LoadingComponent type="icon" />
-                    ) : (
-                        <div className="flex gap-2 items-center">
-                            <Ticket className="w-4 h-4" />
-                            Buy Tickets
-                        </div>
-                    )}
-                </Button>
-                <Button
-                    disabled={isLoadingMoreInfo}
-                    onClick={handleMoreDetail}
-                    variant="outline"
-                    className="cursor-pointer border-gray-600 text-gray-400 hover:bg-gray-700/50 hover:text-white rounded-md px-6 py-2.5 whitespace-nowrap"
-                >
-                    {isLoadingMoreInfo ? (
-                        <LoadingComponent type="icon" />
-                    ) : (
-                        <div className="flex gap-2 items-center">
-                            <Eye className="w-4 h-4" />
-                            More Info
-                        </div>
-                    )}
-                </Button>
-            </div>
-        </div>
+        </article>
     );
 }

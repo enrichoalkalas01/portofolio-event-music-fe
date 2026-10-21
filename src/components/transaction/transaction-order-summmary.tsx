@@ -11,7 +11,9 @@ import { ConverterCurrency } from "@/utils/currency";
 import { UseFormReturn, useWatch } from "react-hook-form";
 import { useEffect } from "react";
 
-const BaseImageUrl = "https://files.swarnatactical.com/tester-upload/";
+import { IMAGE_BASE_URL } from "@/lib/config";
+
+const BaseImageUrl = `${IMAGE_BASE_URL}/`;
 
 export default function TransactionOrderSummary({
     data,

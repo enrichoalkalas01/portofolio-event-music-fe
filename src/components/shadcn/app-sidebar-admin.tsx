@@ -1,80 +1,49 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import {
-    GalleryVerticalEnd,
-    Settings,
-    Users,
     BanknoteArrowUp,
     FastForward,
-    Music,
     File,
+    Home,
+    LayoutDashboard,
+    Music,
+    Settings,
+    ShieldCheck,
+    Users,
 } from "lucide-react";
 
-import { NavMain } from "@/components/shadcn/nav-main";
 import { NavProjects } from "@/components/shadcn/nav-projects";
 import { NavUser } from "@/components/shadcn/nav-user";
-import { TeamSwitcher } from "@/components/shadcn/team-switcher";
 import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
     SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
     SidebarRail,
 } from "@/components/shadcn/ui/sidebar";
 
-// This is sample data.
-const data = {
-    user: {
-        name: "shadcn",
-        email: "m@example.com",
-        avatar: "/avatars/shadcn.jpg",
-    },
-    teams: [
-        {
-            name: "Dashboard",
-            logo: GalleryVerticalEnd,
-            plan: "Admin",
-        },
-    ],
-    projects: [
-        {
-            name: "Events",
-            url: "/admin/events",
-            icon: Music,
-        },
-        {
-            name: "Coming Soon Events",
-            url: "/admin/coming-soons",
-            icon: FastForward,
-        },
-        {
-            name: "Transactions",
-            url: "/admin/transactions",
-            icon: BanknoteArrowUp,
-        },
-        {
-            name: "Users",
-            url: "/admin/users",
-            icon: Users,
-        },
-        {
-            name: "Files",
-            url: "/admin/files",
-            icon: File,
-        },
-        {
-            name: "System Params",
-            url: "/admin/system-params",
-            icon: Settings,
-        },
-        {
-            name: "System Params Type",
-            url: "/admin/system-params-type",
-            icon: Settings,
-        },
-    ],
-};
+const MAIN = [
+    { name: "Ringkasan", url: "/admin", icon: LayoutDashboard, exact: true },
+    { name: "Event", url: "/admin/events", icon: Music },
+    { name: "Segera Hadir", url: "/admin/coming-soons", icon: FastForward },
+    { name: "Transaksi", url: "/admin/transactions", icon: BanknoteArrowUp },
+    { name: "Pengguna", url: "/admin/users", icon: Users },
+    { name: "File", url: "/admin/files", icon: File },
+];
+
+const SETTINGS = [
+    { name: "System Params", url: "/admin/system-params", icon: Settings },
+    { name: "Tipe System Params", url: "/admin/system-params-type", icon: Settings },
+];
+
+const SHORTCUTS = [
+    { name: "Dashboard Pengguna", url: "/dashboard", icon: Home, exact: true },
+];
 
 export function AppSidebarAdmin({
     ...props
@@ -82,13 +51,31 @@ export function AppSidebarAdmin({
     return (
         <Sidebar collapsible="icon" {...props}>
             <SidebarHeader>
-                <TeamSwitcher teams={data.teams} />
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton size="lg" asChild>
+                            <Link href="/admin">
+                                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                                    <ShieldCheck className="size-4" />
+                                </div>
+                                <div className="grid flex-1 text-left text-sm leading-tight">
+                                    <span className="truncate font-semibold">
+                                        Endless<span className="text-primary">Music</span>
+                                    </span>
+                                    <span className="truncate text-xs text-muted-foreground">Panel Admin</span>
+                                </div>
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
-                <NavProjects projects={data.projects} />
+                <NavProjects projects={MAIN} label="Kelola" />
+                <NavProjects projects={SETTINGS} label="Pengaturan" />
+                <NavProjects projects={SHORTCUTS} label="Pintasan" />
             </SidebarContent>
             <SidebarFooter>
-                <NavUser user={data.user} />
+                <NavUser />
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>

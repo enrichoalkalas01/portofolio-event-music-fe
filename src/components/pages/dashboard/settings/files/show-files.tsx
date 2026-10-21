@@ -3,7 +3,8 @@
 // Library
 import React, { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetcher } from "@/lib/fetcher";
+import { api } from "@/lib/api";
+import { useAccessToken } from "@/hooks/use-access-token";
 
 // Components Pages
 import ShowFilesItem from "./show-files-item";
@@ -29,6 +30,7 @@ type DataResponse = {
 };
 
 export default function ShowFiles() {
+    const { accessToken } = useAccessToken();
     const [TotalPages, setTotalPages] = useState<number>(0);
     const [Size, setSize] = useState<number>(10);
     const [Page, setPage] = useState<number>(1);
@@ -38,11 +40,13 @@ export default function ShowFiles() {
     const queryClient = useQueryClient();
     const { data, error, isLoading }: any = useQuery<DataResponse>({
         queryKey: ["files-admin", Search, Page, Size, IsSubmit],
+        enabled: !!accessToken,
         queryFn: async () => {
             setIsSubmit(false);
-            const response = await fetcher<DataResponse>(
-                `${process.env.NEXT_PUBLIC_URL_API}/images?size=${Size}&page=${Page}&search=${Search}`,
-            );
+            const response = (await api<any>("/images", {
+                token: accessToken,
+                query: { size: Size, page: Page, search: Search },
+            })) as unknown as DataResponse;
             const totalData = (response.data as { totalData: number })
                 .totalData;
             setTotalPages(Math.ceil(totalData / Size));

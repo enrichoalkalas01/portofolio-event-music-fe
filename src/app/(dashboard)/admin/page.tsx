@@ -1,136 +1,117 @@
 "use client";
 
+import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import {
+    ArrowRight,
+    Calendar,
+    CalendarPlus,
+    CreditCard,
+    FileText,
+    Ticket,
+    TrendingUp,
+    Users,
+} from "lucide-react";
+
 import { WrapperCard } from "@/components/generals/wrapper/wrapper-card";
 import { Card } from "@/components/shadcn/ui/card";
-import { useQuery } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
-import { Calendar, Users, CreditCard, TrendingUp, Ticket, FileText } from "lucide-react";
-import { ConverterCurrency } from "@/utils/currency";
-import Link from "next/link";
 import { Badge } from "@/components/shadcn/ui/badge";
+import { Skeleton } from "@/components/shadcn/ui/skeleton";
+import { api } from "@/lib/api";
+import { ConverterCurrency } from "@/utils/currency";
+import { TRANSACTION_STATUS_LABEL, transactionStatusClass, type TransactionStatus } from "@/lib/event-status";
+import { useAccessToken } from "@/hooks/use-access-token";
+
+interface Summary {
+    transactions: Record<string, number>;
+    revenue: number;
+    tickets_sold: number;
+    events: Record<string, number>;
+    users: number;
+}
 
 export default function Page() {
-    const session: any = useSession();
-    const user = session?.data?.user;
-    const accessToken = user?.token?.access_token;
+    const { accessToken, user } = useAccessToken();
 
-    const { data: eventsData } = useQuery({
-        queryKey: ["admin-dashboard-events"],
-        queryFn: async () =>
-            (
-                await fetch(`${process.env.NEXT_PUBLIC_URL_API}/events?size=100`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                })
-            ).json(),
-    });
-
-    const { data: usersData } = useQuery({
-        queryKey: ["admin-dashboard-users"],
-        queryFn: async () =>
-            (
-                await fetch(`${process.env.NEXT_PUBLIC_URL_API}/users?size=100`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                })
-            ).json(),
+    const { data: summary, isLoading: isLoadingSummary } = useQuery({
+        queryKey: ["admin-summary"],
+        queryFn: () => api<Summary>("/transactions/admin/summary", { token: accessToken }),
         enabled: !!accessToken,
     });
 
-    const { data: transactionsData, isLoading: isLoadingTransactions } = useQuery({
-        queryKey: ["admin-dashboard-transactions"],
-        queryFn: async () =>
-            (
-                await fetch(`${process.env.NEXT_PUBLIC_URL_API}/transactions?size=100`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                })
-            ).json(),
+    const { data: recent, isLoading: isLoadingRecent } = useQuery({
+        queryKey: ["admin-recent-transactions"],
+        queryFn: () => api<any[]>("/transactions/admin", { token: accessToken, query: { size: 6 } }),
         enabled: !!accessToken,
     });
 
-    const totalRevenue = transactionsData?.data
-        ?.filter((t: any) => t.status_transaction === "success")
-        ?.reduce((acc: number, t: any) => acc + (t?.request?.total_payment || 0), 0) || 0;
+    const s = summary?.data;
+    const totalEvents = Object.values(s?.events || {}).reduce((a, b) => a + b, 0);
+    const totalTx = Object.values(s?.transactions || {}).reduce((a, b) => a + b, 0);
 
     const stats = [
         {
-            title: "Total Event",
-            value: eventsData?.data?.length || 0,
+            title: "Pendapatan",
+            value: ConverterCurrency({ amount: s?.revenue || 0 }),
+            hint: `${(s?.tickets_sold || 0).toLocaleString("id-ID")} tiket terjual`,
+            icon: TrendingUp,
+            href: "/admin/transactions",
+        },
+        {
+            title: "Transaksi",
+            value: totalTx.toLocaleString("id-ID"),
+            hint: `${s?.transactions?.pending || 0} menunggu pembayaran`,
+            icon: CreditCard,
+            href: "/admin/transactions",
+        },
+        {
+            title: "Event",
+            value: totalEvents.toLocaleString("id-ID"),
+            hint: `${s?.events?.ACTIVE || 0} aktif · ${s?.events?.DRAFT || 0} draft`,
             icon: Calendar,
-            color: "text-blue-600",
-            bgColor: "bg-blue-100",
             href: "/admin/events",
         },
         {
-            title: "Total User",
-            value: usersData?.data?.length || 0,
+            title: "Pengguna",
+            value: (s?.users || 0).toLocaleString("id-ID"),
+            hint: "akun terdaftar",
             icon: Users,
-            color: "text-green-600",
-            bgColor: "bg-green-100",
             href: "/admin/users",
-        },
-        {
-            title: "Total Transaksi",
-            value: transactionsData?.data?.length || 0,
-            icon: CreditCard,
-            color: "text-purple-600",
-            bgColor: "bg-purple-100",
-            href: "/admin/transactions",
-        },
-        {
-            title: "Total Pendapatan",
-            value: ConverterCurrency({ amount: totalRevenue }),
-            icon: TrendingUp,
-            color: "text-orange-600",
-            bgColor: "bg-orange-100",
-            href: "/admin/transactions",
         },
     ];
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case "success":
-                return "bg-green-100 text-green-800";
-            case "pending":
-                return "bg-yellow-100 text-yellow-800";
-            case "failed":
-            case "cancelled":
-                return "bg-red-100 text-red-800";
-            default:
-                return "bg-gray-100 text-gray-800";
-        }
-    };
+    const quickActions = [
+        { href: "/admin/events/create", icon: CalendarPlus, title: "Buat Event Baru", desc: "Tambahkan event musik baru" },
+        { href: "/admin/events", icon: FileText, title: "Kelola Event", desc: "Lihat dan edit event yang ada" },
+        { href: "/admin/users", icon: Users, title: "Kelola Pengguna", desc: "Lihat daftar pengguna" },
+        { href: "/admin/transactions", icon: CreditCard, title: "Kelola Transaksi", desc: "Pantau semua transaksi" },
+    ];
 
     return (
-        <div className="flex flex-1 flex-col gap-6 p-4 pt-0">
-            {/* Welcome Section */}
-            <div className="w-full">
-                <h1 className="text-2xl font-bold text-gray-800">
-                    Admin Dashboard
-                </h1>
-                <p className="text-gray-600">
-                    Selamat datang, {user?.name || "Admin"}! Kelola platform Event Music dari sini.
+        <div className="flex flex-1 flex-col gap-6">
+            <div className="flex flex-col gap-1">
+                <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Ringkasan</h1>
+                <p className="text-muted-foreground">
+                    Selamat datang, {user?.name || "Admin"}. Berikut kondisi platform saat ini.
                 </p>
             </div>
 
-            {/* Stats Cards */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                {stats.map((stat, index) => (
-                    <Link key={index} href={stat.href}>
-                        <Card className="p-6 hover:shadow-md transition-shadow cursor-pointer">
-                            <div className="flex items-center gap-4">
-                                <div className={`p-3 rounded-full ${stat.bgColor}`}>
-                                    <stat.icon className={`w-6 h-6 ${stat.color}`} />
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                {stats.map((stat) => (
+                    <Link key={stat.title} href={stat.href}>
+                        <Card className="p-5 hover:border-primary/40 transition-colors h-full">
+                            <div className="flex items-start justify-between gap-4">
+                                <div className="flex flex-col gap-1 min-w-0">
+                                    <span className="text-sm text-muted-foreground">{stat.title}</span>
+                                    {isLoadingSummary ? (
+                                        <Skeleton className="h-8 w-28" />
+                                    ) : (
+                                        <span className="text-2xl font-bold tabular-nums truncate">{stat.value}</span>
+                                    )}
+                                    <span className="text-xs text-muted-foreground">{stat.hint}</span>
                                 </div>
-                                <div>
-                                    <p className="text-sm text-gray-600">{stat.title}</p>
-                                    <p className="text-2xl font-bold">{stat.value}</p>
+                                <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
+                                    <stat.icon className="size-5" />
                                 </div>
                             </div>
                         </Card>
@@ -138,115 +119,74 @@ export default function Page() {
                 ))}
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-2">
-                {/* Recent Transactions */}
+            <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
                 <WrapperCard
-                    headerStatus={true}
+                    headerStatus
                     headerTitle="Transaksi Terbaru"
-                    headerSubTitle=""
+                    headerSubTitle="6 transaksi terakhir di platform"
                     className="p-0 gap-0"
+                    classNameContent="p-0"
                 >
-                    <div className="w-full">
-                        {isLoadingTransactions ? (
-                            <div className="p-8 text-center text-gray-500">
-                                Memuat data...
-                            </div>
-                        ) : transactionsData?.data?.length > 0 ? (
-                            <div className="divide-y">
-                                {transactionsData?.data?.slice(0, 5).map((transaction: any, index: number) => (
-                                    <Link
-                                        key={index}
-                                        href={`/admin/transactions/${transaction?._id}`}
-                                    >
-                                        <div className="p-4 flex items-center justify-between hover:bg-gray-50">
-                                            <div className="flex items-center gap-4">
-                                                <div className="p-2 bg-purple-100 rounded-lg">
-                                                    <Ticket className="w-5 h-5 text-purple-600" />
-                                                </div>
-                                                <div>
-                                                    <p className="font-medium text-sm">
-                                                        {transaction?.event?.title || "Event"}
-                                                    </p>
-                                                    <p className="text-xs text-gray-500">
-                                                        {transaction?.user?.firstname} {transaction?.user?.lastname}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <Badge className={getStatusColor(transaction?.status_transaction)}>
-                                                {transaction?.status_transaction}
-                                            </Badge>
+                    {isLoadingRecent ? (
+                        <div className="p-4 flex flex-col gap-3">
+                            {Array.from({ length: 4 }).map((_, i) => (
+                                <Skeleton key={i} className="h-14 w-full" />
+                            ))}
+                        </div>
+                    ) : (recent?.data?.length ?? 0) > 0 ? (
+                        <div className="divide-y divide-border">
+                            {recent!.data.map((tx: any) => (
+                                <Link
+                                    key={tx._id}
+                                    href={`/admin/transactions/${tx._id}`}
+                                    className="p-4 flex items-center justify-between gap-4 hover:bg-accent/50 transition-colors"
+                                >
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
+                                            <Ticket className="size-4" />
                                         </div>
-                                    </Link>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="p-8 text-center text-gray-500">
-                                Belum ada transaksi
-                            </div>
-                        )}
-                    </div>
+                                        <div className="min-w-0">
+                                            <p className="font-medium text-sm truncate">{tx?.event?.title || "Event"}</p>
+                                            <p className="text-xs text-muted-foreground truncate">
+                                                {tx?.user?.username} · {tx?.request?.total_payment ? ConverterCurrency({ amount: tx.request.total_payment }) : "-"}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <Badge className={transactionStatusClass(tx?.status_transaction)}>
+                                        {TRANSACTION_STATUS_LABEL[tx?.status_transaction as TransactionStatus] || tx?.status_transaction}
+                                    </Badge>
+                                </Link>
+                            ))}
+                            <Link
+                                href="/admin/transactions"
+                                className="p-3 flex items-center justify-center gap-1.5 text-sm text-primary hover:underline"
+                            >
+                                Lihat semua transaksi <ArrowRight className="size-4" />
+                            </Link>
+                        </div>
+                    ) : (
+                        <div className="p-8 text-center text-muted-foreground">Belum ada transaksi</div>
+                    )}
                 </WrapperCard>
 
-                {/* Quick Actions */}
-                <WrapperCard
-                    headerStatus={true}
-                    headerTitle="Aksi Cepat"
-                    headerSubTitle=""
-                    className="p-0 gap-0"
-                >
-                    <div className="p-4 grid gap-3">
-                        <Link href="/admin/events/create">
-                            <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-blue-500">
-                                <div className="flex items-center gap-4">
-                                    <Calendar className="w-6 h-6 text-blue-600" />
-                                    <div>
-                                        <p className="font-medium">Buat Event Baru</p>
-                                        <p className="text-sm text-gray-500">
-                                            Tambahkan event musik baru
-                                        </p>
+                <WrapperCard headerStatus headerTitle="Aksi Cepat" headerSubTitle="Tugas yang sering dilakukan" className="p-0 gap-0">
+                    <div className="grid gap-3">
+                        {quickActions.map((action) => (
+                            <Link key={action.href} href={action.href}>
+                                <Card className="p-4 hover:border-primary/40 transition-colors">
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
+                                            <action.icon className="size-5" />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className="font-medium">{action.title}</p>
+                                            <p className="text-sm text-muted-foreground">{action.desc}</p>
+                                        </div>
+                                        <ArrowRight className="size-4 ml-auto text-muted-foreground" />
                                     </div>
-                                </div>
-                            </Card>
-                        </Link>
-                        <Link href="/admin/events">
-                            <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-green-500">
-                                <div className="flex items-center gap-4">
-                                    <FileText className="w-6 h-6 text-green-600" />
-                                    <div>
-                                        <p className="font-medium">Kelola Event</p>
-                                        <p className="text-sm text-gray-500">
-                                            Lihat dan edit event yang ada
-                                        </p>
-                                    </div>
-                                </div>
-                            </Card>
-                        </Link>
-                        <Link href="/admin/users">
-                            <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-purple-500">
-                                <div className="flex items-center gap-4">
-                                    <Users className="w-6 h-6 text-purple-600" />
-                                    <div>
-                                        <p className="font-medium">Kelola User</p>
-                                        <p className="text-sm text-gray-500">
-                                            Lihat daftar pengguna
-                                        </p>
-                                    </div>
-                                </div>
-                            </Card>
-                        </Link>
-                        <Link href="/admin/transactions">
-                            <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-orange-500">
-                                <div className="flex items-center gap-4">
-                                    <CreditCard className="w-6 h-6 text-orange-600" />
-                                    <div>
-                                        <p className="font-medium">Kelola Transaksi</p>
-                                        <p className="text-sm text-gray-500">
-                                            Lihat semua transaksi
-                                        </p>
-                                    </div>
-                                </div>
-                            </Card>
-                        </Link>
+                                </Card>
+                            </Link>
+                        ))}
                     </div>
                 </WrapperCard>
             </div>

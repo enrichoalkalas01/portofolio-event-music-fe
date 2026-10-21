@@ -64,13 +64,19 @@ export const LoginOld = async ({
             fullname: response?.data.data.fullname || "",
             phonenumber: response?.data.data.phonenumber,
             email: response?.data.data.email,
+            avatar: response?.data.data.avatar || "",
+            role: response?.data.data.role || "user",
             token: response?.data?.data?.token,
         };
 
         return DataPassing;
-    } catch (error) {
-        console.log(error);
-        return null;
+    } catch (error: any) {
+        // Surface the backend message so the login form can show it.
+        const message =
+            error?.response?.data?.message || error?.message || "Login failed";
+        throw new Error(
+            JSON.stringify({ status: error?.response?.status || 401, message }),
+        );
     }
 };
 

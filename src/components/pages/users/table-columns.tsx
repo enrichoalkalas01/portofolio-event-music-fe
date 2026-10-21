@@ -39,14 +39,14 @@ export const columns: ColumnDef<any>[] = [
         cell: ({ row }) => {
             const role = row.getValue("role") as string;
             const colorMap: Record<string, string> = {
-                super_admin: "bg-red-100 text-red-800",
-                admin: "bg-purple-100 text-purple-800",
-                member: "bg-blue-100 text-blue-800",
-                user: "bg-green-100 text-green-800",
-                guest: "bg-gray-100 text-gray-800",
+                super_admin: "bg-rose-500/15 text-rose-400 border-rose-500/30",
+                admin: "bg-primary/15 text-primary",
+                member: "bg-sky-500/15 text-sky-400 border-sky-500/30",
+                user: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+                guest: "bg-muted text-foreground",
             };
             return (
-                <Badge className={colorMap[role] || "bg-gray-100 text-gray-800"}>
+                <Badge className={colorMap[role] || "bg-muted text-foreground"}>
                     {role || "-"}
                 </Badge>
             );
@@ -58,7 +58,7 @@ export const columns: ColumnDef<any>[] = [
         cell: ({ row }) => {
             const isActive = row.getValue("isActive");
             return (
-                <Badge className={isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                <Badge className={isActive ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" : "bg-rose-500/15 text-rose-400 border-rose-500/30"}>
                     {isActive ? "Aktif" : "Tidak Aktif"}
                 </Badge>
             );

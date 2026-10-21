@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
+import { useAccessToken } from "@/hooks/use-access-token";
 
 // Components Pages
 import {
@@ -22,6 +23,7 @@ import { useRouter } from "next/navigation";
 
 export default function Page() {
     const router = useRouter();
+    const { accessToken } = useAccessToken();
     const [isDisable, setIsDisable] = useState<boolean>(false);
     const [isProgress, setIsProgress] = useState<boolean>(false);
     const [isClearData, setIsClearData] = useState<boolean>(false);
@@ -52,6 +54,7 @@ export default function Page() {
                         `${process.env.NEXT_PUBLIC_URL_API}/files/uploads`,
                         formData,
                         {
+                            headers: { Authorization: `Bearer ${accessToken}` },
                             onUploadProgress: (progressEvent: any) => {
                                 const percentCompleted = Math.round(
                                     (progressEvent.loaded * 100) /

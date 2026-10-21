@@ -126,7 +126,7 @@ export default function Page() {
                 <div className="space-y-8">
                     {faqCategories.map((category, categoryIndex) => (
                         <div key={categoryIndex}>
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4 pb-2 border-b border-purple-200">
+                            <h2 className="text-2xl font-bold text-foreground mb-4 pb-2 border-b border-purple-200">
                                 {category.category}
                             </h2>
                             <Accordion type="single" collapsible className="space-y-2">
@@ -136,10 +136,10 @@ export default function Page() {
                                         value={`${categoryIndex}-${faqIndex}`}
                                         className="border border-gray-200 rounded-lg px-4"
                                     >
-                                        <AccordionTrigger className="text-left font-medium hover:text-purple-600">
+                                        <AccordionTrigger className="text-left font-medium hover:text-primary">
                                             {faq.question}
                                         </AccordionTrigger>
-                                        <AccordionContent className="text-gray-600 leading-relaxed">
+                                        <AccordionContent className="text-muted-foreground leading-relaxed">
                                             {faq.answer}
                                         </AccordionContent>
                                     </AccordionItem>
@@ -150,16 +150,16 @@ export default function Page() {
                 </div>
 
                 {/* Contact Section */}
-                <div className="mt-16 bg-purple-50 rounded-2xl p-8 text-center">
-                    <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                <div className="mt-16 bg-primary/15 rounded-2xl p-8 text-center">
+                    <h3 className="text-2xl font-bold text-foreground mb-4">
                         Masih punya pertanyaan?
                     </h3>
-                    <p className="text-gray-600 mb-6">
+                    <p className="text-muted-foreground mb-6">
                         Tim customer service kami siap membantu Anda
                     </p>
                     <Link
                         href="/contact-us"
-                        className="inline-flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-full hover:bg-purple-700 transition-colors"
+                        className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full hover:bg-primary transition-colors"
                     >
                         <Mail className="w-5 h-5" />
                         Hubungi Kami

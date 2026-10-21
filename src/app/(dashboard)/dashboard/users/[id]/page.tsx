@@ -13,7 +13,7 @@ export default function Page() {
 
     return (
         <section className="w-full p-8 text-center">
-            <p className="text-gray-500">Mengalihkan...</p>
+            <p className="text-muted-foreground">Mengalihkan...</p>
         </section>
     );
 }

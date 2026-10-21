@@ -32,6 +32,7 @@ declare module "next-auth" {
         fullname: string;
         phonenumber: string;
         avatar?: string;
+        role: string;
         token: IToken;
     }
 
@@ -58,6 +59,7 @@ declare module "next-auth/jwt" {
         phonenumber: string;
         email: string;
         avatar?: string;
+        role: string;
         token: IToken;
         accessToken: string;
         isValid: boolean;
@@ -78,20 +80,13 @@ export const authOptions: NextAuthOptions = {
                     return null;
                 }
 
-                try {
-                    const response = await LoginOld({
-                        username: credentials.username,
-                        password: credentials.password,
-                    });
+                // Errors propagate so next-auth returns the backend message to the form.
+                const response = await LoginOld({
+                    username: credentials.username,
+                    password: credentials.password,
+                });
 
-                    return response;
-                } catch (error: any) {
-                    console.error(
-                        "Login error:",
-                        error.response?.data || error.message,
-                    );
-                    return null;
-                }
+                return response;
             },
         }),
     ],
@@ -108,6 +103,7 @@ export const authOptions: NextAuthOptions = {
                 token.phonenumber = user.phonenumber;
                 token.email = user.email;
                 token.avatar = user.avatar ?? "";
+                token.role = user.role ?? "user";
                 token.token = user.token;
             }
 
@@ -120,6 +116,7 @@ export const authOptions: NextAuthOptions = {
                 token.phonenumber = session.phonenumber;
                 token.email = session.email;
                 token.avatar = session?.avatar || "";
+                token.role = session?.role || token.role || "user";
                 token.token = session.token;
             }
 
@@ -142,6 +139,7 @@ export const authOptions: NextAuthOptions = {
                     fullname: token.fullname,
                     phonenumber: token.phonenumber,
                     avatar: token.avatar ?? "",
+                    role: token.role ?? "user",
                     token: token.token,
                 },
             };

@@ -119,22 +119,22 @@ export default function Page() {
             >
                 <div className="w-full p-6 space-y-6">
                     {/* Notification Channels Info */}
-                    <Card className="p-4 bg-purple-50 border-purple-100">
+                    <Card className="p-4 bg-primary/15 border-purple-100">
                         <div className="flex gap-4">
                             <div className="flex-1 flex items-center gap-3">
-                                <Mail className="w-5 h-5 text-purple-600" />
+                                <Mail className="w-5 h-5 text-primary" />
                                 <div>
-                                    <p className="font-medium text-purple-800">Email</p>
-                                    <p className="text-sm text-purple-600">
+                                    <p className="font-medium text-primary">Email</p>
+                                    <p className="text-sm text-primary">
                                         Notifikasi dikirim ke email terdaftar
                                     </p>
                                 </div>
                             </div>
                             <div className="flex-1 flex items-center gap-3">
-                                <Smartphone className="w-5 h-5 text-purple-600" />
+                                <Smartphone className="w-5 h-5 text-primary" />
                                 <div>
-                                    <p className="font-medium text-purple-800">Push</p>
-                                    <p className="text-sm text-purple-600">
+                                    <p className="font-medium text-primary">Push</p>
+                                    <p className="text-sm text-primary">
                                         Notifikasi langsung ke perangkat
                                     </p>
                                 </div>
@@ -152,12 +152,12 @@ export default function Page() {
                                     className="flex items-start justify-between py-4 border-b last:border-0"
                                 >
                                     <div className="flex gap-4">
-                                        <div className="p-2 bg-purple-100 rounded-lg">
-                                            <setting.icon className="w-5 h-5 text-purple-600" />
+                                        <div className="p-2 bg-primary/15 rounded-lg">
+                                            <setting.icon className="w-5 h-5 text-primary" />
                                         </div>
                                         <div>
                                             <p className="font-medium">{setting.label}</p>
-                                            <p className="text-sm text-gray-500">
+                                            <p className="text-sm text-muted-foreground">
                                                 {setting.description}
                                             </p>
                                         </div>
@@ -173,7 +173,7 @@ export default function Page() {
                                             />
                                             <Label
                                                 htmlFor={`${setting.id}-email`}
-                                                className="text-sm text-gray-500"
+                                                className="text-sm text-muted-foreground"
                                             >
                                                 Email
                                             </Label>
@@ -188,7 +188,7 @@ export default function Page() {
                                             />
                                             <Label
                                                 htmlFor={`${setting.id}-push`}
-                                                className="text-sm text-gray-500"
+                                                className="text-sm text-muted-foreground"
                                             >
                                                 Push
                                             </Label>
@@ -213,7 +213,7 @@ export default function Page() {
                         <Button
                             onClick={handleSave}
                             disabled={isLoading}
-                            className="cursor-pointer bg-purple-600 hover:bg-purple-700"
+                            className="cursor-pointer bg-primary hover:bg-primary"
                         >
                             {isLoading ? "Menyimpan..." : "Simpan Pengaturan"}
                         </Button>

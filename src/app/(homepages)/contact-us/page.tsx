@@ -42,44 +42,44 @@ export default function Page() {
                     <div className="w-full grid grid-cols-2 gap-8">
                         <div className="flex items-center gap-4">
                             <div className="w-auto flex border border-gray-400 rounded-full p-4">
-                                <MapPin className="w-10 h-10 text-purple-600" />
+                                <MapPin className="w-10 h-10 text-primary" />
                             </div>
                             <div className="w-auto">
                                 <h3 className="font-semibold text-lg">Alamat</h3>
-                                <span className="text-gray-600">
+                                <span className="text-muted-foreground">
                                     Jl. Sudirman No. 123, Jakarta Pusat
                                 </span>
                             </div>
                         </div>
                         <div className="flex items-center gap-4">
                             <div className="w-auto flex border border-gray-400 rounded-full p-4">
-                                <Mail className="w-10 h-10 text-purple-600" />
+                                <Mail className="w-10 h-10 text-primary" />
                             </div>
                             <div className="w-auto">
                                 <h3 className="font-semibold text-lg">Email</h3>
-                                <span className="text-gray-600">
+                                <span className="text-muted-foreground">
                                     info@eventmusic.id
                                 </span>
                             </div>
                         </div>
                         <div className="flex items-center gap-4">
                             <div className="w-auto flex border border-gray-400 rounded-full p-4">
-                                <Phone className="w-10 h-10 text-purple-600" />
+                                <Phone className="w-10 h-10 text-primary" />
                             </div>
                             <div className="w-auto">
                                 <h3 className="font-semibold text-lg">Telepon</h3>
-                                <span className="text-gray-600">
+                                <span className="text-muted-foreground">
                                     +62 21 1234 5678
                                 </span>
                             </div>
                         </div>
                         <div className="flex items-center gap-4">
                             <div className="w-auto flex border border-gray-400 rounded-full p-4">
-                                <Clock className="w-10 h-10 text-purple-600" />
+                                <Clock className="w-10 h-10 text-primary" />
                             </div>
                             <div className="w-auto">
                                 <h3 className="font-semibold text-lg">Jam Operasional</h3>
-                                <span className="text-gray-600">
+                                <span className="text-muted-foreground">
                                     Senin - Jumat: 09:00 - 18:00
                                 </span>
                             </div>
@@ -97,7 +97,7 @@ export default function Page() {
                                 <Label className="text-2xl font-bold">
                                     Kirim Pesan
                                 </Label>
-                                <p className="text-gray-600">
+                                <p className="text-muted-foreground">
                                     Isi form di bawah ini dan tim kami akan segera menghubungi Anda.
                                 </p>
                             </div>
@@ -154,7 +154,7 @@ export default function Page() {
 
                             <div className="w-full flex gap-4">
                                 <Button
-                                    className="w-full cursor-pointer bg-purple-600 hover:bg-purple-700"
+                                    className="w-full cursor-pointer bg-primary hover:bg-primary"
                                     type="submit"
                                 >
                                     Kirim Pesan

@@ -1,4 +1,5 @@
 "use client";
+import { IMAGE_BASE_URL } from "@/lib/config";
 
 // Library
 import { useEffect, useState } from "react";
@@ -35,7 +36,7 @@ import { cn } from "@/lib/utils";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const baseImageUrl =
-    "https://minio-api.enrichoalkalas.my.id/portofolio-event-music/";
+    `${IMAGE_BASE_URL}/`;
 
 interface IShowFilesItem {
     readonly file: any;
@@ -162,7 +163,7 @@ export default function ShowFilesItem({
 
             <div className="flex flex-col items-center">
                 {(file?.name || file?.metadata?.object_name) && (
-                    <div className="w-full bg-gray-100">
+                    <div className="w-full bg-muted">
                         <Image
                             width={1280}
                             height={1280}

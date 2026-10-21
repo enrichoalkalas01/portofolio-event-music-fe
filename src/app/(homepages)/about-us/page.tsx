@@ -83,16 +83,16 @@ export default function Page() {
             <div className="w-full max-w-7xl mx-auto py-20 px-4">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div>
-                        <h2 className="text-4xl font-bold mb-6 text-gray-800">
+                        <h2 className="text-4xl font-bold mb-6 text-foreground">
                             Cerita Kami
                         </h2>
-                        <p className="text-gray-600 text-lg mb-4 leading-relaxed">
+                        <p className="text-muted-foreground text-lg mb-4 leading-relaxed">
                             Event Music Indonesia didirikan pada tahun 2014
                             dengan satu visi sederhana: menghubungkan pecinta
                             musik dengan artis favorit mereka melalui
                             event-event berkualitas tinggi.
                         </p>
-                        <p className="text-gray-600 text-lg mb-4 leading-relaxed">
+                        <p className="text-muted-foreground text-lg mb-4 leading-relaxed">
                             Berawal dari sebuah tim kecil yang passionate
                             terhadap musik, kami telah berkembang menjadi salah
                             satu penyelenggara event musik terpercaya di
@@ -100,7 +100,7 @@ export default function Page() {
                             kami telah sukses menyelenggarakan ratusan konser,
                             festival, dan acara musik privat.
                         </p>
-                        <p className="text-gray-600 text-lg leading-relaxed">
+                        <p className="text-muted-foreground text-lg leading-relaxed">
                             Kami percaya bahwa musik memiliki kekuatan untuk
                             menyatukan orang-orang dan menciptakan kenangan yang
                             akan bertahan selamanya. Itulah mengapa kami selalu
@@ -108,14 +108,14 @@ export default function Page() {
                             yang kami selenggarakan.
                         </p>
                     </div>
-                    <div className="relative h-[400px] rounded-2xl overflow-hidden bg-purple-100 flex items-center justify-center">
-                        <Music className="w-32 h-32 text-purple-300" />
+                    <div className="relative h-[400px] rounded-2xl overflow-hidden bg-primary/15 flex items-center justify-center">
+                        <Music className="w-32 h-32 text-primary" />
                     </div>
                 </div>
             </div>
 
             {/* Stats Section */}
-            <div className="w-full bg-purple-600 py-16">
+            <div className="w-full bg-primary py-16">
                 <div className="max-w-7xl mx-auto px-4">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                         {stats.map((stat, index) => (
@@ -135,21 +135,21 @@ export default function Page() {
             {/* Vision & Mission Section */}
             <div className="w-full max-w-7xl mx-auto py-20 px-4">
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl font-bold mb-4 text-gray-800">
+                    <h2 className="text-4xl font-bold mb-4 text-foreground">
                         Visi & Misi
                     </h2>
                 </div>
                 <div className="grid md:grid-cols-2 gap-12">
                     <div className="bg-gradient-to-br from-purple-50 to-white p-8 rounded-2xl border border-purple-100">
                         <div className="flex items-center gap-4 mb-6">
-                            <div className="p-3 bg-purple-600 rounded-full">
+                            <div className="p-3 bg-primary rounded-full">
                                 <Target className="w-8 h-8 text-white" />
                             </div>
-                            <h3 className="text-2xl font-bold text-gray-800">
+                            <h3 className="text-2xl font-bold text-foreground">
                                 Visi
                             </h3>
                         </div>
-                        <p className="text-gray-600 text-lg leading-relaxed">
+                        <p className="text-muted-foreground text-lg leading-relaxed">
                             Menjadi penyelenggara event musik terdepan di
                             Indonesia yang dikenal karena kualitas, inovasi, dan
                             kemampuan menciptakan pengalaman musik yang tak
@@ -158,29 +158,29 @@ export default function Page() {
                     </div>
                     <div className="bg-gradient-to-br from-purple-50 to-white p-8 rounded-2xl border border-purple-100">
                         <div className="flex items-center gap-4 mb-6">
-                            <div className="p-3 bg-purple-600 rounded-full">
+                            <div className="p-3 bg-primary rounded-full">
                                 <Music className="w-8 h-8 text-white" />
                             </div>
-                            <h3 className="text-2xl font-bold text-gray-800">
+                            <h3 className="text-2xl font-bold text-foreground">
                                 Misi
                             </h3>
                         </div>
-                        <ul className="text-gray-600 text-lg space-y-3">
+                        <ul className="text-muted-foreground text-lg space-y-3">
                             <li className="flex items-start gap-2">
-                                <span className="text-purple-600 mt-1">•</span>
+                                <span className="text-primary mt-1">•</span>
                                 Menyelenggarakan event musik berkualitas tinggi
                             </li>
                             <li className="flex items-start gap-2">
-                                <span className="text-purple-600 mt-1">•</span>
+                                <span className="text-primary mt-1">•</span>
                                 Mendukung perkembangan industri musik Indonesia
                             </li>
                             <li className="flex items-start gap-2">
-                                <span className="text-purple-600 mt-1">•</span>
+                                <span className="text-primary mt-1">•</span>
                                 Memberikan platform bagi artis lokal dan
                                 internasional
                             </li>
                             <li className="flex items-start gap-2">
-                                <span className="text-purple-600 mt-1">•</span>
+                                <span className="text-primary mt-1">•</span>
                                 Menciptakan pengalaman berkesan bagi setiap
                                 penonton
                             </li>
@@ -190,13 +190,13 @@ export default function Page() {
             </div>
 
             {/* Values Section */}
-            <div className="w-full bg-gray-50 py-20">
+            <div className="w-full bg-muted py-20">
                 <div className="max-w-7xl mx-auto px-4">
                     <div className="text-center mb-16">
-                        <h2 className="text-4xl font-bold mb-4 text-gray-800">
+                        <h2 className="text-4xl font-bold mb-4 text-foreground">
                             Nilai-Nilai Kami
                         </h2>
-                        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+                        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
                             Prinsip yang menjadi landasan kami dalam setiap
                             event
                         </p>
@@ -207,13 +207,13 @@ export default function Page() {
                                 key={index}
                                 className="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow"
                             >
-                                <div className="p-3 bg-purple-100 rounded-full w-fit mb-4">
-                                    <value.icon className="w-8 h-8 text-purple-600" />
+                                <div className="p-3 bg-primary/15 rounded-full w-fit mb-4">
+                                    <value.icon className="w-8 h-8 text-primary" />
                                 </div>
-                                <h3 className="text-xl font-bold mb-2 text-gray-800">
+                                <h3 className="text-xl font-bold mb-2 text-foreground">
                                     {value.title}
                                 </h3>
-                                <p className="text-gray-600">
+                                <p className="text-muted-foreground">
                                     {value.description}
                                 </p>
                             </div>
@@ -225,23 +225,23 @@ export default function Page() {
             {/* Team Section */}
             <div className="w-full max-w-7xl mx-auto py-20 px-4">
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl font-bold mb-4 text-gray-800">
+                    <h2 className="text-4xl font-bold mb-4 text-foreground">
                         Tim Kami
                     </h2>
-                    <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+                    <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
                         Orang-orang berbakat di balik setiap event sukses
                     </p>
                 </div>
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {team.map((member, index) => (
                         <div key={index} className="text-center group">
-                            <div className="relative h-[300px] rounded-2xl overflow-hidden mb-4 bg-purple-100 flex items-center justify-center">
-                                <Users className="w-20 h-20 text-purple-300 group-hover:scale-110 transition-transform" />
+                            <div className="relative h-[300px] rounded-2xl overflow-hidden mb-4 bg-primary/15 flex items-center justify-center">
+                                <Users className="w-20 h-20 text-primary group-hover:scale-110 transition-transform" />
                             </div>
-                            <h3 className="text-xl font-bold text-gray-800">
+                            <h3 className="text-xl font-bold text-foreground">
                                 {member.name}
                             </h3>
-                            <p className="text-purple-600">{member.role}</p>
+                            <p className="text-primary">{member.role}</p>
                         </div>
                     ))}
                 </div>
@@ -258,7 +258,7 @@ export default function Page() {
                     </p>
                     <a
                         href="/contact-us"
-                        className="inline-block bg-white text-purple-600 font-semibold px-8 py-4 rounded-full hover:bg-purple-50 transition-colors"
+                        className="inline-block bg-white text-primary font-semibold px-8 py-4 rounded-full hover:bg-primary/15 transition-colors"
                     >
                         Hubungi Kami
                     </a>

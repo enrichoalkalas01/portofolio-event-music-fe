@@ -189,7 +189,7 @@ export default function Page() {
                     headerSubTitle=""
                     className="p-0 gap-0"
                 >
-                    <div className="p-8 text-center text-gray-500">
+                    <div className="p-8 text-center text-muted-foreground">
                         Memuat data...
                     </div>
                 </WrapperCard>
@@ -214,7 +214,7 @@ export default function Page() {
                             </h3>
                             <div className="flex items-center gap-6">
                                 <div className="relative">
-                                    <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center overflow-hidden">
+                                    <div className="w-20 h-20 bg-primary/15 rounded-full flex items-center justify-center overflow-hidden">
                                         {avatarPreview ? (
                                             <img
                                                 src={avatarPreview}
@@ -222,10 +222,10 @@ export default function Page() {
                                                 className="w-full h-full object-cover"
                                             />
                                         ) : (
-                                            <User className="w-10 h-10 text-purple-600" />
+                                            <User className="w-10 h-10 text-primary" />
                                         )}
                                     </div>
-                                    <label className="absolute bottom-0 right-0 p-1.5 bg-purple-600 rounded-full cursor-pointer hover:bg-purple-700 transition-colors">
+                                    <label className="absolute bottom-0 right-0 p-1.5 bg-primary rounded-full cursor-pointer hover:bg-primary transition-colors">
                                         <Camera className="w-3.5 h-3.5 text-white" />
                                         <input
                                             type="file"
@@ -237,7 +237,7 @@ export default function Page() {
                                 </div>
                                 <div className="flex-1 space-y-2">
                                     <div className="flex items-center gap-2">
-                                        <User className="w-4 h-4 text-gray-500" />
+                                        <User className="w-4 h-4 text-muted-foreground" />
                                         <span className="font-medium">
                                             {profile?.username ||
                                                 user?.username ||
@@ -246,8 +246,8 @@ export default function Page() {
                                         <Badge
                                             className={
                                                 profile?.isActive
-                                                    ? "bg-green-100 text-green-800"
-                                                    : "bg-gray-100 text-gray-800"
+                                                    ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30"
+                                                    : "bg-muted text-foreground"
                                             }
                                         >
                                             {profile?.role ||
@@ -256,14 +256,14 @@ export default function Page() {
                                         </Badge>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <Mail className="w-4 h-4 text-gray-500" />
-                                        <span className="text-sm text-gray-600">
+                                        <Mail className="w-4 h-4 text-muted-foreground" />
+                                        <span className="text-sm text-muted-foreground">
                                             {profile?.email ||
                                                 user?.email ||
                                                 "-"}
                                         </span>
                                     </div>
-                                    <p className="text-xs text-gray-400">
+                                    <p className="text-xs text-muted-foreground">
                                         Username dan email tidak dapat diubah
                                         dari halaman ini.
                                     </p>
@@ -373,7 +373,7 @@ export default function Page() {
                             <Button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="cursor-pointer bg-purple-600 hover:bg-purple-700"
+                                className="cursor-pointer bg-primary hover:bg-primary"
                             >
                                 {isSubmitting ? (
                                     <LoadingComponent type="icon" />

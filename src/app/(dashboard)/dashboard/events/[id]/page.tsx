@@ -13,8 +13,9 @@ import { ConverterCurrency } from "@/utils/currency";
 import { useEffect, useRef, useCallback } from "react";
 import QRCode from "qrcode";
 
-const BaseUrlImage =
-    "https://minio-api.enrichoalkalas.my.id/portofolio-event-music/";
+import { IMAGE_BASE_URL } from "@/lib/config";
+
+const BaseUrlImage = `${IMAGE_BASE_URL}/`;
 
 export default function Page() {
     const router = useRouter();
@@ -62,14 +63,14 @@ export default function Page() {
     const getStatusColor = (status: string) => {
         switch (status) {
             case "success":
-                return "bg-green-100 text-green-800";
+                return "bg-emerald-500/15 text-emerald-400 border-emerald-500/30";
             case "pending":
-                return "bg-yellow-100 text-yellow-800";
+                return "bg-amber-500/15 text-amber-400 border-amber-500/30";
             case "failed":
             case "cancelled":
-                return "bg-red-100 text-red-800";
+                return "bg-rose-500/15 text-rose-400 border-rose-500/30";
             default:
-                return "bg-gray-100 text-gray-800";
+                return "bg-muted text-foreground";
         }
     };
 
@@ -258,7 +259,7 @@ export default function Page() {
                     headerSubTitle=""
                     className="p-0 gap-0"
                 >
-                    <div className="p-8 text-center text-gray-500">
+                    <div className="p-8 text-center text-muted-foreground">
                         Memuat data...
                     </div>
                 </WrapperCard>
@@ -307,7 +308,7 @@ export default function Page() {
                             <Card className="overflow-hidden">
                                 {event?.thumbnail?.[0]?.name && (
                                     <div
-                                        className="h-48 bg-gray-200 bg-cover bg-center"
+                                        className="h-48 bg-muted bg-cover bg-center"
                                         style={{
                                             backgroundImage: `url('${thumbnail}')`,
                                         }}
@@ -320,10 +321,10 @@ export default function Page() {
                                                 ?.item_details?.[0]?.name ||
                                             "Event"}
                                     </h2>
-                                    <div className="space-y-3 text-gray-600">
+                                    <div className="space-y-3 text-muted-foreground">
                                         {(parsedDate || event?.eventDate) && (
                                             <div className="flex items-center gap-3">
-                                                <Calendar className="w-5 h-5 text-purple-600" />
+                                                <Calendar className="w-5 h-5 text-primary" />
                                                 <span>
                                                     {parsedDate?.start?.day
                                                         ? `${parsedDate.start.day}, ${parsedDate.start.full}`
@@ -333,7 +334,7 @@ export default function Page() {
                                         )}
                                         {event?.location && (
                                             <div className="flex items-center gap-3">
-                                                <MapPin className="w-5 h-5 text-purple-600" />
+                                                <MapPin className="w-5 h-5 text-primary" />
                                                 <span>{event.location}</span>
                                             </div>
                                         )}
@@ -351,7 +352,7 @@ export default function Page() {
                                             <h3 className="font-semibold mb-2">
                                                 Deskripsi
                                             </h3>
-                                            <p className="text-gray-600">
+                                            <p className="text-muted-foreground">
                                                 {event.description}
                                             </p>
                                         </div>
@@ -366,7 +367,7 @@ export default function Page() {
                                 </h3>
                                 <div className="space-y-3 text-sm">
                                     <div className="flex justify-between">
-                                        <span className="text-gray-600">
+                                        <span className="text-muted-foreground">
                                             ID Transaksi
                                         </span>
                                         <span className="font-mono">
@@ -374,7 +375,7 @@ export default function Page() {
                                         </span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-gray-600">
+                                        <span className="text-muted-foreground">
                                             Nama
                                         </span>
                                         <span>
@@ -383,7 +384,7 @@ export default function Page() {
                                         </span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-gray-600">
+                                        <span className="text-muted-foreground">
                                             Email
                                         </span>
                                         <span>
@@ -391,7 +392,7 @@ export default function Page() {
                                         </span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-gray-600">
+                                        <span className="text-muted-foreground">
                                             Telepon
                                         </span>
                                         <span>
@@ -400,7 +401,7 @@ export default function Page() {
                                     </div>
                                     <div className="border-t pt-3 mt-3">
                                         <div className="flex justify-between">
-                                            <span className="text-gray-600">
+                                            <span className="text-muted-foreground">
                                                 Subtotal
                                             </span>
                                             <span>
@@ -412,7 +413,7 @@ export default function Page() {
                                             </span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="text-gray-600">
+                                            <span className="text-muted-foreground">
                                                 Pajak
                                             </span>
                                             <span>
@@ -425,7 +426,7 @@ export default function Page() {
                                         </div>
                                         <div className="flex justify-between font-bold text-lg mt-2">
                                             <span>Total</span>
-                                            <span className="text-purple-600">
+                                            <span className="text-primary">
                                                 {ConverterCurrency({
                                                     amount:
                                                         transaction?.request
@@ -448,7 +449,7 @@ export default function Page() {
                                 <div className="flex justify-center mb-4">
                                     <canvas ref={canvasRef}></canvas>
                                 </div>
-                                <p className="text-sm text-gray-500 mb-4">
+                                <p className="text-sm text-muted-foreground mb-4">
                                     Tunjukkan QR code ini saat check-in di
                                     lokasi event
                                 </p>
@@ -468,7 +469,7 @@ export default function Page() {
                                 <h3 className="font-bold text-lg mb-4">
                                     Informasi Penting
                                 </h3>
-                                <ul className="space-y-2 text-sm text-gray-600">
+                                <ul className="space-y-2 text-sm text-muted-foreground">
                                     <li>
                                         Bawa identitas yang sesuai dengan nama
                                         di tiket

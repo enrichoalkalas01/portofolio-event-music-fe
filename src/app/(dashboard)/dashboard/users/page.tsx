@@ -48,7 +48,7 @@ export default function Page() {
             >
                 <div className="w-full p-6">
                     {isLoading ? (
-                        <div className="p-8 text-center text-gray-500">
+                        <div className="p-8 text-center text-muted-foreground">
                             Memuat data...
                         </div>
                     ) : (
@@ -57,7 +57,7 @@ export default function Page() {
                                 {/* Profile Card */}
                                 <Card className="p-6">
                                     <div className="flex items-center gap-4 mb-6">
-                                        <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center">
+                                        <div className="w-20 h-20 bg-primary/15 rounded-full flex items-center justify-center">
                                             {profile?.avatar ? (
                                                 <img
                                                     src={profile.avatar}
@@ -65,29 +65,29 @@ export default function Page() {
                                                     className="w-full h-full rounded-full object-cover"
                                                 />
                                             ) : (
-                                                <User className="w-10 h-10 text-purple-600" />
+                                                <User className="w-10 h-10 text-primary" />
                                             )}
                                         </div>
                                         <div>
                                             <h2 className="text-xl font-bold">
                                                 {profile?.fullname || profile?.username || "User"}
                                             </h2>
-                                            <Badge className={profile?.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                                            <Badge className={profile?.isActive ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" : "bg-rose-500/15 text-rose-400 border-rose-500/30"}>
                                                 {profile?.isActive ? "Aktif" : "Tidak Aktif"}
                                             </Badge>
                                         </div>
                                     </div>
                                     <div className="space-y-4">
-                                        <div className="flex items-center gap-3 text-gray-600">
-                                            <Mail className="w-5 h-5 text-purple-600" />
+                                        <div className="flex items-center gap-3 text-muted-foreground">
+                                            <Mail className="w-5 h-5 text-primary" />
                                             <span>{profile?.email || "-"}</span>
                                         </div>
-                                        <div className="flex items-center gap-3 text-gray-600">
-                                            <Phone className="w-5 h-5 text-purple-600" />
+                                        <div className="flex items-center gap-3 text-muted-foreground">
+                                            <Phone className="w-5 h-5 text-primary" />
                                             <span>{profile?.phonenumber || "-"}</span>
                                         </div>
-                                        <div className="flex items-center gap-3 text-gray-600">
-                                            <MapPin className="w-5 h-5 text-purple-600" />
+                                        <div className="flex items-center gap-3 text-muted-foreground">
+                                            <MapPin className="w-5 h-5 text-primary" />
                                             <span>
                                                 {[profile?.address?.street, profile?.address?.city, profile?.address?.province]
                                                     .filter(Boolean)
@@ -100,28 +100,28 @@ export default function Page() {
                                 {/* Account Info */}
                                 <Card className="p-6">
                                     <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                                        <Shield className="w-5 h-5 text-purple-600" />
+                                        <Shield className="w-5 h-5 text-primary" />
                                         Informasi Akun
                                     </h3>
                                     <div className="space-y-4">
                                         <div>
-                                            <p className="text-sm text-gray-500">Username</p>
+                                            <p className="text-sm text-muted-foreground">Username</p>
                                             <p className="font-medium">
                                                 {profile?.username || "-"}
                                             </p>
                                         </div>
                                         <div>
-                                            <p className="text-sm text-gray-500">ID Akun</p>
+                                            <p className="text-sm text-muted-foreground">ID Akun</p>
                                             <p className="font-mono text-sm">
                                                 {profile?.id || profile?._id || "-"}
                                             </p>
                                         </div>
                                         <div>
-                                            <p className="text-sm text-gray-500">Tipe Akun</p>
+                                            <p className="text-sm text-muted-foreground">Tipe Akun</p>
                                             <p className="font-medium capitalize">{profile?.role || "User"}</p>
                                         </div>
                                         <div>
-                                            <p className="text-sm text-gray-500">Bergabung Sejak</p>
+                                            <p className="text-sm text-muted-foreground">Bergabung Sejak</p>
                                             <p className="font-medium">
                                                 {profile?.createdAt
                                                     ? new Date(profile.createdAt).toLocaleDateString(
@@ -144,7 +144,7 @@ export default function Page() {
                                 <Link href="/dashboard/transactions">
                                     <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer">
                                         <h4 className="font-medium">Riwayat Transaksi</h4>
-                                        <p className="text-sm text-gray-500">
+                                        <p className="text-sm text-muted-foreground">
                                             Lihat semua transaksi Anda
                                         </p>
                                     </Card>
@@ -152,7 +152,7 @@ export default function Page() {
                                 <Link href="/dashboard/events">
                                     <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer">
                                         <h4 className="font-medium">Tiket Saya</h4>
-                                        <p className="text-sm text-gray-500">
+                                        <p className="text-sm text-muted-foreground">
                                             Lihat tiket yang sudah dibeli
                                         </p>
                                     </Card>
@@ -160,7 +160,7 @@ export default function Page() {
                                 <Link href="/dashboard/profile">
                                     <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer">
                                         <h4 className="font-medium">Profil Lengkap</h4>
-                                        <p className="text-sm text-gray-500">
+                                        <p className="text-sm text-muted-foreground">
                                             Lihat profil lengkap Anda
                                         </p>
                                     </Card>

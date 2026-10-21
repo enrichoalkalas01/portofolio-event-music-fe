@@ -1,57 +1,72 @@
 "use client";
 
 import Link from "next/link";
-import EventsItem from "./events-item";
-import { Button } from "@/components/shadcn/ui/button";
 import { useQuery } from "@tanstack/react-query";
+import { CalendarX2 } from "lucide-react";
+
+import EventsItem from "./events-item";
+import SectionHeader from "@/components/generals/section-header";
+import EmptyState from "@/components/generals/empty-state";
+import { EventListSkeleton } from "@/components/pages/events/event-skeletons";
+import { Button } from "@/components/shadcn/ui/button";
+import { api } from "@/lib/api";
+import type { EventRecord } from "@/lib/event-status";
 
 export default function EventsHomepages() {
     const { data, error, isLoading } = useQuery({
-        queryKey: ["events"],
-        queryFn: async () =>
-            (
-                await fetch(
-                    `${process.env.NEXT_PUBLIC_URL_API}/events?size=6`,
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    },
-                )
-            ).json(),
+        queryKey: ["home-events-upcoming"],
+        queryFn: () => api<EventRecord[]>("/events", { query: { upcoming: true, size: 5 } }),
+        staleTime: 60 * 1000,
     });
 
     return (
-        <section className="w-full md:max-w-5xl lg:max-w-7xl mx-auto py-18 flex flex-col gap-8">
-            <div className="w-full text-center">
-                <h2 className="text-5xl uppercase font-bold">Events</h2>
-            </div>
-            <div className="w-full h-full min-h-[500px]">
-                {!isLoading && data?.data && (
-                    <div className="w-full flex flex-col gap-6">
-                        {data?.data?.map((e: any, index: number) => {
-                            return <EventsItem data={e} key={index} />;
-                        })}
-                    </div>
-                )}
+        <section className="w-full max-w-7xl mx-auto px-4 py-16 md:py-20 flex flex-col gap-8">
+            <SectionHeader
+                eyebrow="Jadwal terdekat"
+                title="Event Mendatang"
+                description="Amankan tiketmu sebelum kehabisan. Diurutkan dari tanggal paling dekat."
+                href="/events"
+                hrefLabel="Lihat semua event"
+            />
 
-                {isLoading && (
-                    <div className="w-auto h-auto">
-                        <span>Loading...</span>
-                    </div>
-                )}
+            {isLoading && <EventListSkeleton count={3} />}
 
-                {error && (
-                    <div className="w-auto h-auto">
-                        <span>Failed to retrieve data events...</span>
-                    </div>
-                )}
-            </div>
-            <div className="w-full flex items-center justify-center">
-                <Link href="/events">
-                    <Button className="cursor-pointer">See More</Button>
-                </Link>
-            </div>
+            {error && (
+                <EmptyState
+                    icon={CalendarX2}
+                    title="Gagal memuat event"
+                    description="Terjadi gangguan saat mengambil data. Coba muat ulang halaman."
+                />
+            )}
+
+            {!isLoading && !error && (data?.data?.length ?? 0) === 0 && (
+                <EmptyState
+                    icon={CalendarX2}
+                    title="Belum ada event mendatang"
+                    description="Pantau terus halaman ini, event baru akan segera diumumkan."
+                    action={
+                        <Button variant="outline" asChild>
+                            <Link href="/events/coming-soon">Lihat yang segera hadir</Link>
+                        </Button>
+                    }
+                />
+            )}
+
+            {!isLoading && !error && (data?.data?.length ?? 0) > 0 && (
+                <div className="w-full flex flex-col gap-5">
+                    {data!.data.map((event) => (
+                        <EventsItem data={event} key={event._id} />
+                    ))}
+                </div>
+            )}
+
+            {(data?.total ?? 0) > 5 && (
+                <div className="w-full flex items-center justify-center">
+                    <Button size="lg" variant="outline" asChild>
+                        <Link href="/events">Lihat {data!.total} event lainnya</Link>
+                    </Button>
+                </div>
+            )}
         </section>
     );
 }

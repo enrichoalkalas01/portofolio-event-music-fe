@@ -322,7 +322,7 @@ export default function TransactionPaymentInformmation({
                 {appliedPromo && (
                     <div className="flex items-center justify-between p-3 bg-green-50 rounded-ele border border-green-200">
                         <div className="flex items-center gap-2">
-                            <Percent className="h-4 w-4 text-green-600" />
+                            <Percent className="h-4 w-4 text-primary" />
                             <span className="text-sm font-medium text-green-800">
                                 {appliedPromo}
                             </span>
@@ -330,7 +330,7 @@ export default function TransactionPaymentInformmation({
                         <Button
                             variant="ghost"
                             onClick={removePromo}
-                            className="h-6 w-6 p-0 text-green-600 hover:text-green-800"
+                            className="h-6 w-6 p-0 text-primary hover:text-green-800"
                         >
                             <X className="h-3 w-3" />
                         </Button>
@@ -343,7 +343,7 @@ export default function TransactionPaymentInformmation({
                         <span>${summary.subtotal.toFixed(2)}</span>
                     </div>
                     {summary.discount > 0 && (
-                        <div className="flex justify-between text-sm text-green-600">
+                        <div className="flex justify-between text-sm text-primary">
                             <span>Discount</span>
                             <span>-${summary.discount.toFixed(2)}</span>
                         </div>
@@ -426,7 +426,7 @@ export default function TransactionPaymentInformmation({
                                         : "border-border hover:border-primary/50",
                                 )}
                             >
-                                <Wallet className="h-5 w-5 text-blue-600" />
+                                <Wallet className="h-5 w-5 text-primary" />
                                 <div>
                                     <div className="font-medium">PayPal</div>
                                     <div className="text-xs text-muted-foreground">
@@ -448,7 +448,7 @@ export default function TransactionPaymentInformmation({
                                         : "border-border hover:border-primary/50",
                                 )}
                             >
-                                <Smartphone className="h-5 w-5 text-gray-800" />
+                                <Smartphone className="h-5 w-5 text-foreground" />
                                 <div>
                                     <div className="font-medium">Apple Pay</div>
                                     <div className="text-xs text-muted-foreground">
@@ -470,7 +470,7 @@ export default function TransactionPaymentInformmation({
                                         : "border-border hover:border-primary/50",
                                 )}
                             >
-                                <Smartphone className="h-5 w-5 text-green-600" />
+                                <Smartphone className="h-5 w-5 text-primary" />
                                 <div>
                                     <div className="font-medium">
                                         Google Pay
@@ -516,7 +516,7 @@ export default function TransactionPaymentInformmation({
                                         : "border-border hover:border-primary/50",
                                 )}
                             >
-                                <Clock className="h-5 w-5 text-purple-600" />
+                                <Clock className="h-5 w-5 text-primary" />
                                 <div>
                                     <div className="font-medium">
                                         Buy Now Pay Later
@@ -652,7 +652,7 @@ export default function TransactionPaymentInformmation({
                         <div className="border-t pt-6">
                             <div className="bg-blue-50 border border-blue-200 rounded-ele p-4">
                                 <div className="flex items-start gap-3">
-                                    <Wallet className="h-5 w-5 text-blue-600 mt-0.5" />
+                                    <Wallet className="h-5 w-5 text-primary mt-0.5" />
                                     <div>
                                         <h4 className="font-medium text-blue-900">
                                             PayPal Payment
@@ -670,14 +670,14 @@ export default function TransactionPaymentInformmation({
                     {/* Apple Pay Info */}
                     {selectedPaymentType === "apple-pay" && (
                         <div className="border-t pt-6">
-                            <div className="bg-gray-50 border border-gray-200 rounded-ele p-4">
+                            <div className="bg-muted border border-gray-200 rounded-ele p-4">
                                 <div className="flex items-start gap-3">
-                                    <Smartphone className="h-5 w-5 text-gray-800 mt-0.5" />
+                                    <Smartphone className="h-5 w-5 text-foreground mt-0.5" />
                                     <div>
-                                        <h4 className="font-medium text-gray-900">
+                                        <h4 className="font-medium text-foreground">
                                             Apple Pay
                                         </h4>
-                                        <p className="text-sm text-gray-700 mt-1">
+                                        <p className="text-sm text-foreground mt-1">
                                             Use Touch ID or Face ID to pay with
                                             your default card.
                                         </p>
@@ -692,7 +692,7 @@ export default function TransactionPaymentInformmation({
                         <div className="border-t pt-6">
                             <div className="bg-green-50 border border-green-200 rounded-ele p-4">
                                 <div className="flex items-start gap-3">
-                                    <Smartphone className="h-5 w-5 text-green-600 mt-0.5" />
+                                    <Smartphone className="h-5 w-5 text-primary mt-0.5" />
                                     <div>
                                         <h4 className="font-medium text-green-900">
                                             Google Pay
@@ -731,9 +731,9 @@ export default function TransactionPaymentInformmation({
                     {/* Buy Now Pay Later Info */}
                     {selectedPaymentType === "bnpl" && (
                         <div className="border-t pt-6">
-                            <div className="bg-purple-50 border border-purple-200 rounded-ele p-4">
+                            <div className="bg-primary/15 border border-purple-200 rounded-ele p-4">
                                 <div className="flex items-start gap-3">
-                                    <Clock className="h-5 w-5 text-purple-600 mt-0.5" />
+                                    <Clock className="h-5 w-5 text-primary mt-0.5" />
                                     <div>
                                         <h4 className="font-medium text-purple-900">
                                             Buy Now Pay Later
@@ -744,7 +744,7 @@ export default function TransactionPaymentInformmation({
                                             into 4 interest-free payments of $
                                             {(summary.total / 4).toFixed(2)}.
                                         </p>
-                                        <div className="mt-2 text-xs text-purple-600">
+                                        <div className="mt-2 text-xs text-primary">
                                             • Pay $
                                             {(summary.total / 4).toFixed(2)}{" "}
                                             today • Then $

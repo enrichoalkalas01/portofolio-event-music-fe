@@ -1,4 +1,5 @@
 "use client";
+import { IMAGE_BASE_URL } from "@/lib/config";
 
 import { UseFormReturn } from "react-hook-form";
 import { useState, useCallback, useEffect, useMemo } from "react";
@@ -66,7 +67,7 @@ const normalizeImageValue = (
 };
 
 const baseUrlImage =
-    "https://minio-api.enrichoalkalas.my.id/portofolio-event-music/";
+    `${IMAGE_BASE_URL}/`;
 
 export default function ShowMultiProductImages({
     form,

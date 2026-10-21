@@ -1,4 +1,5 @@
 "use client";
+import { IMAGE_BASE_URL } from "@/lib/config";
 
 import { useEffect, useState, useCallback } from "react";
 import ShowFilesItem from "./show-files-item";
@@ -28,7 +29,7 @@ interface IShowFilesComponentProps {
 }
 
 const baseUrlImage =
-    "https://minio-api.enrichoalkalas.my.id/portofolio-event-music/";
+    `${IMAGE_BASE_URL}/`;
 
 export default function ShowFilesComponent({
     files,
@@ -128,7 +129,7 @@ export default function ShowFilesComponent({
                     </span>
                     <button
                         onClick={handleClearSelection}
-                        className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                        className="text-sm text-primary hover:text-blue-800 font-medium"
                     >
                         Clear
                     </button>
@@ -140,7 +141,7 @@ export default function ShowFilesComponent({
                 <div className="mb-4 flex gap-2">
                     <button
                         onClick={handleSelectAll}
-                        className="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-md font-medium transition-colors"
+                        className="px-3 py-2 text-sm bg-muted hover:bg-accent/60 rounded-md font-medium transition-colors"
                     >
                         {selectedMap.size === files.length && files.length > 0
                             ? "Deselect All"

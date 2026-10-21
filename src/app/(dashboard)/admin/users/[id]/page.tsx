@@ -6,6 +6,7 @@ import { Badge } from "@/components/shadcn/ui/badge";
 import { Button } from "@/components/shadcn/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
+import { useAccessToken } from "@/hooks/use-access-token";
 import {
     User,
     Mail,
@@ -19,6 +20,7 @@ import {
 export default function Page() {
     const router = useRouter();
     const params = useParams();
+    const { accessToken } = useAccessToken();
 
     const { data, error, isLoading } = useQuery({
         queryKey: ["admin-user-detail", params?.id],
@@ -29,24 +31,25 @@ export default function Page() {
                     {
                         headers: {
                             "Content-Type": "application/json",
+                            Authorization: `Bearer ${accessToken}`,
                         },
                     },
                 )
             ).json(),
-        enabled: !!params?.id,
+        enabled: !!params?.id && !!accessToken,
     });
 
     const user = data?.data;
 
     const getRoleColor = (role: string) => {
         const colorMap: Record<string, string> = {
-            super_admin: "bg-red-100 text-red-800",
-            admin: "bg-purple-100 text-purple-800",
-            member: "bg-blue-100 text-blue-800",
-            user: "bg-green-100 text-green-800",
-            guest: "bg-gray-100 text-gray-800",
+            super_admin: "bg-rose-500/15 text-rose-400 border-rose-500/30",
+            admin: "bg-primary/15 text-primary",
+            member: "bg-sky-500/15 text-sky-400 border-sky-500/30",
+            user: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+            guest: "bg-muted text-foreground",
         };
-        return colorMap[role] || "bg-gray-100 text-gray-800";
+        return colorMap[role] || "bg-muted text-foreground";
     };
 
     if (isLoading) {
@@ -58,7 +61,7 @@ export default function Page() {
                     headerSubTitle=""
                     className="p-0 gap-0"
                 >
-                    <div className="p-8 text-center text-gray-500">
+                    <div className="p-8 text-center text-muted-foreground">
                         Memuat data...
                     </div>
                 </WrapperCard>
@@ -101,7 +104,7 @@ export default function Page() {
                 className="p-0 gap-0"
                 buttonUrlComponent={
                     <div className="flex items-center gap-2">
-                        <Badge className={user?.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                        <Badge className={user?.isActive ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" : "bg-rose-500/15 text-rose-400 border-rose-500/30"}>
                             {user?.isActive ? "Aktif" : "Tidak Aktif"}
                         </Badge>
                         <Badge className={getRoleColor(user?.role)}>
@@ -114,7 +117,7 @@ export default function Page() {
                     <div className="space-y-6">
                         {/* Profile Header */}
                         <div className="flex flex-col md:flex-row gap-6 items-start">
-                            <div className="w-24 h-24 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <div className="w-24 h-24 bg-primary/15 rounded-full flex items-center justify-center flex-shrink-0">
                                 {user?.avatar ? (
                                     <img
                                         src={user.avatar}
@@ -122,25 +125,25 @@ export default function Page() {
                                         className="w-full h-full rounded-full object-cover"
                                     />
                                 ) : (
-                                    <User className="w-12 h-12 text-purple-600" />
+                                    <User className="w-12 h-12 text-primary" />
                                 )}
                             </div>
                             <div className="flex-1">
                                 <h2 className="text-2xl font-bold mb-1">
                                     {user?.fullname || user?.username || "User"}
                                 </h2>
-                                <p className="text-gray-500 mb-3">@{user?.username}</p>
-                                <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                                <p className="text-muted-foreground mb-3">@{user?.username}</p>
+                                <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                                     <div className="flex items-center gap-2">
-                                        <Mail className="w-4 h-4 text-purple-600" />
+                                        <Mail className="w-4 h-4 text-primary" />
                                         <span>{user?.email || "-"}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <Phone className="w-4 h-4 text-purple-600" />
+                                        <Phone className="w-4 h-4 text-primary" />
                                         <span>{user?.phonenumber || "-"}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <Calendar className="w-4 h-4 text-purple-600" />
+                                        <Calendar className="w-4 h-4 text-primary" />
                                         <span>
                                             Bergabung:{" "}
                                             {user?.createdAt
@@ -164,24 +167,24 @@ export default function Page() {
                             {/* Personal Info */}
                             <Card className="p-6">
                                 <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                                    <User className="w-5 h-5 text-purple-600" />
+                                    <User className="w-5 h-5 text-primary" />
                                     Informasi Pribadi
                                 </h3>
                                 <div className="space-y-4">
                                     <div>
-                                        <p className="text-sm text-gray-500">Nama Lengkap</p>
+                                        <p className="text-sm text-muted-foreground">Nama Lengkap</p>
                                         <p className="font-medium">{user?.fullname || "-"}</p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-500">Username</p>
+                                        <p className="text-sm text-muted-foreground">Username</p>
                                         <p className="font-medium">{user?.username || "-"}</p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-500">Email</p>
+                                        <p className="text-sm text-muted-foreground">Email</p>
                                         <p className="font-medium">{user?.email || "-"}</p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-500">Nomor Telepon</p>
+                                        <p className="text-sm text-muted-foreground">Nomor Telepon</p>
                                         <p className="font-medium">{user?.phonenumber || "-"}</p>
                                     </div>
                                 </div>
@@ -190,31 +193,31 @@ export default function Page() {
                             {/* Address */}
                             <Card className="p-6">
                                 <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                                    <MapPin className="w-5 h-5 text-purple-600" />
+                                    <MapPin className="w-5 h-5 text-primary" />
                                     Alamat
                                 </h3>
                                 <div className="space-y-4">
                                     <div>
-                                        <p className="text-sm text-gray-500">Jalan</p>
+                                        <p className="text-sm text-muted-foreground">Jalan</p>
                                         <p className="font-medium">{user?.address?.street || "-"}</p>
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                            <p className="text-sm text-gray-500">Kota</p>
+                                            <p className="text-sm text-muted-foreground">Kota</p>
                                             <p className="font-medium">{user?.address?.city || "-"}</p>
                                         </div>
                                         <div>
-                                            <p className="text-sm text-gray-500">Provinsi</p>
+                                            <p className="text-sm text-muted-foreground">Provinsi</p>
                                             <p className="font-medium">{user?.address?.province || "-"}</p>
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                            <p className="text-sm text-gray-500">Kode Pos</p>
+                                            <p className="text-sm text-muted-foreground">Kode Pos</p>
                                             <p className="font-medium">{user?.address?.postalCode || "-"}</p>
                                         </div>
                                         <div>
-                                            <p className="text-sm text-gray-500">Negara</p>
+                                            <p className="text-sm text-muted-foreground">Negara</p>
                                             <p className="font-medium">{user?.address?.country || "Indonesia"}</p>
                                         </div>
                                     </div>
@@ -224,28 +227,28 @@ export default function Page() {
                             {/* Account Info */}
                             <Card className="p-6 md:col-span-2">
                                 <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                                    <Shield className="w-5 h-5 text-purple-600" />
+                                    <Shield className="w-5 h-5 text-primary" />
                                     Informasi Akun
                                 </h3>
                                 <div className="grid gap-4 md:grid-cols-4">
                                     <div>
-                                        <p className="text-sm text-gray-500">ID Akun</p>
+                                        <p className="text-sm text-muted-foreground">ID Akun</p>
                                         <p className="font-mono text-sm">{user?._id || "-"}</p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-500">Role</p>
+                                        <p className="text-sm text-muted-foreground">Role</p>
                                         <Badge className={getRoleColor(user?.role)}>
                                             {user?.role || "-"}
                                         </Badge>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-500">Status</p>
-                                        <Badge className={user?.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                                        <p className="text-sm text-muted-foreground">Status</p>
+                                        <Badge className={user?.isActive ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" : "bg-rose-500/15 text-rose-400 border-rose-500/30"}>
                                             {user?.isActive ? "Aktif" : "Tidak Aktif"}
                                         </Badge>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-500">Bergabung Sejak</p>
+                                        <p className="text-sm text-muted-foreground">Bergabung Sejak</p>
                                         <p className="font-medium">
                                             {user?.createdAt
                                                 ? new Date(user.createdAt).toLocaleString("id-ID")

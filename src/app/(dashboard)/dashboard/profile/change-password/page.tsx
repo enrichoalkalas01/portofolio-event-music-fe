@@ -104,7 +104,7 @@ export default function Page() {
                         {/* Security Notice */}
                         <Card className="p-4 bg-yellow-50 border-yellow-200">
                             <div className="flex gap-3">
-                                <AlertTriangle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                                <AlertTriangle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                                 <div>
                                     <h4 className="font-medium text-yellow-800">
                                         Tips Keamanan
@@ -122,7 +122,7 @@ export default function Page() {
                         {/* Password Form */}
                         <Card className="p-6">
                             <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                                <Key className="w-5 h-5 text-purple-600" />
+                                <Key className="w-5 h-5 text-primary" />
                                 Form Ubah Password
                             </h3>
                             <div className="space-y-4">
@@ -173,7 +173,7 @@ export default function Page() {
                             <Button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="cursor-pointer bg-purple-600 hover:bg-purple-700"
+                                className="cursor-pointer bg-primary hover:bg-primary"
                             >
                                 {isSubmitting ? (
                                     <LoadingComponent type="icon" />

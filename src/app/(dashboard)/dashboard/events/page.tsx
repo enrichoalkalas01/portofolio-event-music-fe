@@ -1,175 +1,124 @@
 "use client";
 
-import { WrapperCard } from "@/components/generals/wrapper/wrapper-card";
-import { Card } from "@/components/shadcn/ui/card";
-import { useQuery } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
-import { Calendar, MapPin, Ticket, CreditCard } from "lucide-react";
-import { Badge } from "@/components/shadcn/ui/badge";
 import Link from "next/link";
-import { parseEventDate } from "@/lib/parsed-date";
-import { ConverterCurrency } from "@/utils/currency";
+import { useQuery } from "@tanstack/react-query";
+import { Calendar, MapPin, QrCode, Ticket } from "lucide-react";
 
-const BaseUrlImage =
-    "https://minio-api.enrichoalkalas.my.id/portofolio-event-music/";
+import { WrapperCard } from "@/components/generals/wrapper/wrapper-card";
+import EmptyState from "@/components/generals/empty-state";
+import { Card } from "@/components/shadcn/ui/card";
+import { Badge } from "@/components/shadcn/ui/badge";
+import { Button } from "@/components/shadcn/ui/button";
+import { Skeleton } from "@/components/shadcn/ui/skeleton";
+import { api, getErrorMessage } from "@/lib/api";
+import { getThumbnail } from "@/lib/config";
+import { parseEventDate } from "@/lib/parsed-date";
+import { useAccessToken } from "@/hooks/use-access-token";
 
 export default function Page() {
-    const session: any = useSession();
-    const accessToken = session?.data?.user?.token?.access_token;
+    const { accessToken } = useAccessToken();
 
     const { data, error, isLoading } = useQuery({
         queryKey: ["dashboard-user-events"],
-        queryFn: async () =>
-            (
-                await fetch(
-                    `${process.env.NEXT_PUBLIC_URL_API}/transactions`,
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${accessToken}`,
-                        },
-                    }
-                )
-            ).json(),
+        queryFn: () => api<any[]>("/transactions", { token: accessToken, query: { status: "success", size: 100 } }),
         enabled: !!accessToken,
     });
 
-    const successTransactions = data?.data?.filter(
-        (t: any) => t.status_transaction === "success"
-    );
+    const tickets = data?.data ?? [];
+    const now = new Date();
+    const upcoming = tickets.filter((t) => !t?.event?.eventDate?.end || new Date(t.event.eventDate.end) >= now);
+    const past = tickets.filter((t) => t?.event?.eventDate?.end && new Date(t.event.eventDate.end) < now);
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case "success":
-                return "bg-green-100 text-green-800";
-            case "pending":
-                return "bg-yellow-100 text-yellow-800";
-            case "failed":
-            case "cancelled":
-                return "bg-red-100 text-red-800";
-            default:
-                return "bg-gray-100 text-gray-800";
-        }
+    const TicketCard = ({ transaction, isPast }: { transaction: any; isPast?: boolean }) => {
+        const event = transaction?.event;
+        const date = event?.eventDate ? parseEventDate(event.eventDate, { lang: "id" }) : null;
+        return (
+            <Link href={`/dashboard/transactions/${transaction?._id}`}>
+                <Card className={`overflow-hidden p-0 gap-0 hover:border-primary/40 transition-colors h-full ${isPast ? "opacity-70" : ""}`}>
+                    <div className="relative h-40">
+                        <img src={getThumbnail(event)} alt="" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                        <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-2">
+                            <h3 className="font-bold text-white line-clamp-2 leading-snug">{event?.title || "Event"}</h3>
+                            <Badge className={isPast ? "bg-muted text-muted-foreground" : "bg-emerald-500/20 text-emerald-300 border-emerald-500/30"}>
+                                {isPast ? "Selesai" : "Aktif"}
+                            </Badge>
+                        </div>
+                    </div>
+                    <div className="p-4 flex flex-col gap-2 text-sm text-muted-foreground">
+                        <span className="inline-flex items-center gap-2">
+                            <Calendar className="size-4 text-primary" />
+                            {date ? `${date.start.day}, ${date.start.dateMonth} ${date.start.year} · ${date.time.start} WIB` : "-"}
+                        </span>
+                        {event?.location && (
+                            <span className="inline-flex items-center gap-2">
+                                <MapPin className="size-4 text-primary" />
+                                <span className="line-clamp-1">{event.location}</span>
+                            </span>
+                        )}
+                        <span className="inline-flex items-center gap-2 text-xs">
+                            <QrCode className="size-4 text-primary" />
+                            {transaction?.request?.qty || 1} tiket · ID {transaction?._id?.slice(-8).toUpperCase()}
+                        </span>
+                    </div>
+                </Card>
+            </Link>
+        );
     };
 
     return (
-        <section className="w-full">
+        <section className="w-full flex flex-col gap-6">
             <WrapperCard
-                headerStatus={true}
+                headerStatus
                 headerTitle="Tiket Saya"
-                headerSubTitle="Daftar tiket event yang sudah Anda beli"
+                headerSubTitle="E-ticket dari pembelian yang sudah berhasil dibayar"
                 className="p-0 gap-0"
             >
-                <div className="w-full p-4">
-                    {isLoading ? (
-                        <div className="p-8 text-center text-gray-500">
-                            Memuat data...
+                {isLoading ? (
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        {Array.from({ length: 3 }).map((_, i) => (
+                            <Skeleton key={i} className="h-64 w-full" />
+                        ))}
+                    </div>
+                ) : error ? (
+                    <EmptyState title="Gagal memuat tiket" description={getErrorMessage(error)} />
+                ) : tickets.length === 0 ? (
+                    <EmptyState
+                        icon={Ticket}
+                        title="Belum ada tiket"
+                        description="Kamu belum memiliki tiket event. Mulai jelajahi event musik yang tersedia!"
+                        action={
+                            <Button asChild>
+                                <Link href="/events">Jelajahi Event</Link>
+                            </Button>
+                        }
+                    />
+                ) : (
+                    <div className="flex flex-col gap-8">
+                        <div className="flex flex-col gap-4">
+                            <h3 className="font-semibold">Akan datang ({upcoming.length})</h3>
+                            {upcoming.length === 0 ? (
+                                <p className="text-sm text-muted-foreground">Tidak ada tiket untuk event mendatang.</p>
+                            ) : (
+                                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                                    {upcoming.map((t) => (
+                                        <TicketCard key={t._id} transaction={t} />
+                                    ))}
+                                </div>
+                            )}
                         </div>
-                    ) : error ? (
-                        <div className="p-8 text-center text-red-500">
-                            Gagal memuat data
-                        </div>
-                    ) : successTransactions?.length > 0 ? (
-                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                            {successTransactions?.map((transaction: any, index: number) => {
-                                const event = transaction?.event;
-                                const parsedDate = event?.eventDate
-                                    ? parseEventDate(event?.eventDate, { lang: "id" })
-                                    : null;
-                                const thumbnail = event?.thumbnail?.[0]?.name
-                                    ? BaseUrlImage + event?.thumbnail?.[0]?.name
-                                    : null;
-
-                                return (
-                                    <Link
-                                        key={index}
-                                        href={`/dashboard/transactions/${transaction?._id}`}
-                                    >
-                                        <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
-                                            {thumbnail ? (
-                                                <div
-                                                    className="h-40 bg-gray-200 bg-cover bg-center"
-                                                    style={{
-                                                        backgroundImage: `url('${thumbnail}')`,
-                                                    }}
-                                                />
-                                            ) : (
-                                                <div className="h-40 bg-purple-50 flex items-center justify-center">
-                                                    <Ticket className="w-12 h-12 text-purple-300" />
-                                                </div>
-                                            )}
-                                            <div className="p-4">
-                                                <div className="flex items-start justify-between mb-2">
-                                                    <h3 className="font-bold text-lg line-clamp-1">
-                                                        {event?.title ||
-                                                            transaction?.payment?.item_details?.[0]?.name ||
-                                                            "Event"}
-                                                    </h3>
-                                                    <Badge className={getStatusColor(transaction?.status_transaction)}>
-                                                        {transaction?.status_transaction}
-                                                    </Badge>
-                                                </div>
-                                                <div className="space-y-2 text-sm text-gray-600">
-                                                    <div className="flex items-center gap-2">
-                                                        <Calendar className="w-4 h-4" />
-                                                        <span>
-                                                            {parsedDate?.start?.full ||
-                                                                new Date(transaction?.createdAt).toLocaleDateString("id-ID", {
-                                                                    day: "numeric",
-                                                                    month: "short",
-                                                                    year: "numeric",
-                                                                })}
-                                                        </span>
-                                                    </div>
-                                                    {event?.location ? (
-                                                        <div className="flex items-center gap-2">
-                                                            <MapPin className="w-4 h-4" />
-                                                            <span className="line-clamp-1">
-                                                                {event.location}
-                                                            </span>
-                                                        </div>
-                                                    ) : (
-                                                        <div className="flex items-center gap-2">
-                                                            <CreditCard className="w-4 h-4" />
-                                                            <span>
-                                                                {ConverterCurrency({
-                                                                    amount: transaction?.request?.total_payment || 0,
-                                                                })}
-                                                            </span>
-                                                        </div>
-                                                    )}
-                                                    <div className="flex items-center gap-2">
-                                                        <Ticket className="w-4 h-4" />
-                                                        <span>
-                                                            ID: {transaction?._id?.slice(0, 8)}...
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </Card>
-                                    </Link>
-                                );
-                            })}
-                        </div>
-                    ) : (
-                        <div className="p-8 text-center">
-                            <Ticket className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-                            <h3 className="text-lg font-medium text-gray-600 mb-2">
-                                Belum Ada Tiket
-                            </h3>
-                            <p className="text-gray-500 mb-4">
-                                Anda belum memiliki tiket event. Mulai jelajahi event musik
-                                yang tersedia!
-                            </p>
-                            <Link
-                                href="/events"
-                                className="inline-block bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"
-                            >
-                                Jelajahi Event
-                            </Link>
-                        </div>
-                    )}
-                </div>
+                        {past.length > 0 && (
+                            <div className="flex flex-col gap-4">
+                                <h3 className="font-semibold text-muted-foreground">Sudah lewat ({past.length})</h3>
+                                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                                    {past.map((t) => (
+                                        <TicketCard key={t._id} transaction={t} isPast />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
             </WrapperCard>
         </section>
     );

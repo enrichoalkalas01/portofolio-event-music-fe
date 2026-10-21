@@ -9,7 +9,7 @@ export default function LayoutHomepages({
     return (
         <>
             <Headers />
-                {children}
+            <main className="flex-1 w-full">{children}</main>
             <Footers />
         </>
     );

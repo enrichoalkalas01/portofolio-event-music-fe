@@ -26,8 +26,8 @@ export default function Page() {
             {/* Content */}
             <div className="w-full max-w-4xl mx-auto py-16 px-4">
                 {/* Last Updated */}
-                <div className="bg-purple-50 rounded-lg p-4 mb-8">
-                    <p className="text-gray-600">
+                <div className="bg-primary/15 rounded-lg p-4 mb-8">
+                    <p className="text-muted-foreground">
                         <span className="font-semibold">Terakhir diperbarui:</span>{" "}
                         {lastUpdated}
                     </p>
@@ -35,7 +35,7 @@ export default function Page() {
 
                 {/* Introduction */}
                 <div className="mb-12">
-                    <p className="text-gray-600 text-lg leading-relaxed">
+                    <p className="text-muted-foreground text-lg leading-relaxed">
                         Selamat datang di Event Music Indonesia. Dengan mengakses dan
                         menggunakan website serta layanan kami, Anda menyetujui untuk
                         terikat dengan Syarat dan Ketentuan berikut. Mohon baca dengan
@@ -45,10 +45,10 @@ export default function Page() {
 
                 {/* Section 1: Definisi */}
                 <div className="mb-10 border-b border-gray-200 pb-8">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                    <h2 className="text-2xl font-bold text-foreground mb-4">
                         1. Definisi
                     </h2>
-                    <ul className="space-y-3 text-gray-600">
+                    <ul className="space-y-3 text-muted-foreground">
                         <li>
                             <strong>&quot;Platform&quot;</strong> mengacu pada website dan aplikasi
                             Event Music Indonesia.
@@ -74,10 +74,10 @@ export default function Page() {
 
                 {/* Section 2: Ketentuan Umum */}
                 <div className="mb-10 border-b border-gray-200 pb-8">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                    <h2 className="text-2xl font-bold text-foreground mb-4">
                         2. Ketentuan Umum
                     </h2>
-                    <div className="space-y-4 text-gray-600">
+                    <div className="space-y-4 text-muted-foreground">
                         <p>
                             2.1. Dengan menggunakan Platform, Anda menyatakan bahwa Anda
                             berusia minimal 17 tahun atau memiliki persetujuan orang tua/wali.
@@ -100,12 +100,12 @@ export default function Page() {
                 {/* Section 3: Pembelian Tiket */}
                 <div className="mb-10 border-b border-gray-200 pb-8">
                     <div className="flex items-center gap-4 mb-4">
-                        <Ticket className="w-8 h-8 text-purple-600" />
-                        <h2 className="text-2xl font-bold text-gray-800">
+                        <Ticket className="w-8 h-8 text-primary" />
+                        <h2 className="text-2xl font-bold text-foreground">
                             3. Pembelian Tiket
                         </h2>
                     </div>
-                    <div className="space-y-4 text-gray-600 pl-12">
+                    <div className="space-y-4 text-muted-foreground pl-12">
                         <p>
                             3.1. Semua harga tiket yang tercantum dalam mata uang Rupiah (IDR)
                             dan sudah termasuk pajak yang berlaku.
@@ -134,12 +134,12 @@ export default function Page() {
                 {/* Section 4: Pembayaran */}
                 <div className="mb-10 border-b border-gray-200 pb-8">
                     <div className="flex items-center gap-4 mb-4">
-                        <CreditCard className="w-8 h-8 text-purple-600" />
-                        <h2 className="text-2xl font-bold text-gray-800">
+                        <CreditCard className="w-8 h-8 text-primary" />
+                        <h2 className="text-2xl font-bold text-foreground">
                             4. Pembayaran
                         </h2>
                     </div>
-                    <div className="space-y-4 text-gray-600 pl-12">
+                    <div className="space-y-4 text-muted-foreground pl-12">
                         <p>
                             4.1. Pembayaran harus dilakukan dalam batas waktu yang ditentukan
                             (1 jam sejak pemesanan).
@@ -166,12 +166,12 @@ export default function Page() {
                 {/* Section 5: Pembatalan dan Refund */}
                 <div className="mb-10 border-b border-gray-200 pb-8">
                     <div className="flex items-center gap-4 mb-4">
-                        <XCircle className="w-8 h-8 text-purple-600" />
-                        <h2 className="text-2xl font-bold text-gray-800">
+                        <XCircle className="w-8 h-8 text-primary" />
+                        <h2 className="text-2xl font-bold text-foreground">
                             5. Pembatalan dan Pengembalian Dana
                         </h2>
                     </div>
-                    <div className="space-y-4 text-gray-600 pl-12">
+                    <div className="space-y-4 text-muted-foreground pl-12">
                         <p>
                             5.1. <strong>Pembatalan oleh Pengguna:</strong> Kebijakan pembatalan
                             berbeda untuk setiap Event. Silakan cek halaman detail Event untuk
@@ -200,10 +200,10 @@ export default function Page() {
 
                 {/* Section 6: Penggunaan Tiket */}
                 <div className="mb-10 border-b border-gray-200 pb-8">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                    <h2 className="text-2xl font-bold text-foreground mb-4">
                         6. Penggunaan Tiket
                     </h2>
-                    <div className="space-y-4 text-gray-600">
+                    <div className="space-y-4 text-muted-foreground">
                         <p>
                             6.1. Tiket hanya berlaku untuk Event, tanggal, dan waktu yang
                             tertera.
@@ -230,11 +230,11 @@ export default function Page() {
                 <div className="mb-10 border-b border-gray-200 pb-8">
                     <div className="flex items-center gap-4 mb-4">
                         <AlertTriangle className="w-8 h-8 text-red-500" />
-                        <h2 className="text-2xl font-bold text-gray-800">
+                        <h2 className="text-2xl font-bold text-foreground">
                             7. Larangan
                         </h2>
                     </div>
-                    <div className="space-y-4 text-gray-600 pl-12">
+                    <div className="space-y-4 text-muted-foreground pl-12">
                         <p>Pengguna dilarang untuk:</p>
                         <ul className="list-disc list-inside space-y-2 ml-4">
                             <li>Menjual kembali tiket dengan harga di atas harga resmi</li>
@@ -250,12 +250,12 @@ export default function Page() {
                 {/* Section 8: Batasan Tanggung Jawab */}
                 <div className="mb-10 border-b border-gray-200 pb-8">
                     <div className="flex items-center gap-4 mb-4">
-                        <Scale className="w-8 h-8 text-purple-600" />
-                        <h2 className="text-2xl font-bold text-gray-800">
+                        <Scale className="w-8 h-8 text-primary" />
+                        <h2 className="text-2xl font-bold text-foreground">
                             8. Batasan Tanggung Jawab
                         </h2>
                     </div>
-                    <div className="space-y-4 text-gray-600 pl-12">
+                    <div className="space-y-4 text-muted-foreground pl-12">
                         <p>
                             8.1. Kami tidak bertanggung jawab atas kualitas, keamanan, atau
                             pelaksanaan Event yang diselenggarakan oleh pihak ketiga.
@@ -277,10 +277,10 @@ export default function Page() {
 
                 {/* Section 9: Hak Kekayaan Intelektual */}
                 <div className="mb-10 border-b border-gray-200 pb-8">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                    <h2 className="text-2xl font-bold text-foreground mb-4">
                         9. Hak Kekayaan Intelektual
                     </h2>
-                    <div className="space-y-4 text-gray-600">
+                    <div className="space-y-4 text-muted-foreground">
                         <p>
                             9.1. Seluruh konten di Platform termasuk logo, desain, teks,
                             grafis, dan perangkat lunak adalah milik Event Music Indonesia
@@ -295,10 +295,10 @@ export default function Page() {
 
                 {/* Section 10: Perubahan Ketentuan */}
                 <div className="mb-10 border-b border-gray-200 pb-8">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                    <h2 className="text-2xl font-bold text-foreground mb-4">
                         10. Perubahan Syarat dan Ketentuan
                     </h2>
-                    <div className="space-y-4 text-gray-600">
+                    <div className="space-y-4 text-muted-foreground">
                         <p>
                             10.1. Kami berhak mengubah Syarat dan Ketentuan ini kapan saja.
                         </p>
@@ -314,10 +314,10 @@ export default function Page() {
 
                 {/* Section 11: Hukum yang Berlaku */}
                 <div className="mb-10 border-b border-gray-200 pb-8">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                    <h2 className="text-2xl font-bold text-foreground mb-4">
                         11. Hukum yang Berlaku
                     </h2>
-                    <div className="space-y-4 text-gray-600">
+                    <div className="space-y-4 text-muted-foreground">
                         <p>
                             11.1. Syarat dan Ketentuan ini diatur oleh dan ditafsirkan sesuai
                             dengan hukum Republik Indonesia.
@@ -331,22 +331,22 @@ export default function Page() {
                 </div>
 
                 {/* Contact Section */}
-                <div className="mt-12 bg-purple-50 rounded-2xl p-8">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                <div className="mt-12 bg-primary/15 rounded-2xl p-8">
+                    <h2 className="text-2xl font-bold text-foreground mb-4">
                         12. Hubungi Kami
                     </h2>
-                    <p className="text-gray-600 mb-6">
+                    <p className="text-muted-foreground mb-6">
                         Jika Anda memiliki pertanyaan tentang Syarat dan Ketentuan ini,
                         silakan hubungi kami:
                     </p>
-                    <div className="space-y-2 text-gray-600 mb-6">
+                    <div className="space-y-2 text-muted-foreground mb-6">
                         <p><strong>Email:</strong> legal@eventmusic.id</p>
                         <p><strong>Alamat:</strong> Jl. Sudirman No. 123, Jakarta Pusat</p>
                         <p><strong>Telepon:</strong> +62 21 1234 5678</p>
                     </div>
                     <Link
                         href="/contact-us"
-                        className="inline-flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-full hover:bg-purple-700 transition-colors"
+                        className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full hover:bg-primary transition-colors"
                     >
                         <Mail className="w-5 h-5" />
                         Hubungi Kami
@@ -354,8 +354,8 @@ export default function Page() {
                 </div>
 
                 {/* Agreement Notice */}
-                <div className="mt-8 p-6 bg-gray-100 rounded-lg">
-                    <p className="text-gray-600 text-sm text-center">
+                <div className="mt-8 p-6 bg-muted rounded-lg">
+                    <p className="text-muted-foreground text-sm text-center">
                         Dengan menggunakan layanan Event Music Indonesia, Anda menyatakan
                         telah membaca, memahami, dan menyetujui Syarat dan Ketentuan ini.
                     </p>

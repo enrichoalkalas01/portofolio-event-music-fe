@@ -163,8 +163,8 @@ export default function Page() {
             {/* Content */}
             <div className="w-full max-w-4xl mx-auto py-16 px-4">
                 {/* Last Updated */}
-                <div className="bg-purple-50 rounded-lg p-4 mb-8">
-                    <p className="text-gray-600">
+                <div className="bg-primary/15 rounded-lg p-4 mb-8">
+                    <p className="text-muted-foreground">
                         <span className="font-semibold">
                             Terakhir diperbarui:
                         </span>{" "}
@@ -174,7 +174,7 @@ export default function Page() {
 
                 {/* Introduction */}
                 <div className="mb-12">
-                    <p className="text-gray-600 text-lg leading-relaxed">
+                    <p className="text-muted-foreground text-lg leading-relaxed">
                         Event Music Indonesia (&quot;kami&quot;,
                         &quot;kita&quot;, atau &quot;milik kami&quot;)
                         berkomitmen untuk melindungi privasi pengguna kami.
@@ -193,10 +193,10 @@ export default function Page() {
                             className="border-b border-gray-200 pb-8"
                         >
                             <div className="flex items-center gap-4 mb-6">
-                                <div className="p-3 bg-purple-100 rounded-full">
-                                    <section.icon className="w-6 h-6 text-purple-600" />
+                                <div className="p-3 bg-primary/15 rounded-full">
+                                    <section.icon className="w-6 h-6 text-primary" />
                                 </div>
-                                <h2 className="text-2xl font-bold text-gray-800">
+                                <h2 className="text-2xl font-bold text-foreground">
                                     {section.title}
                                 </h2>
                             </div>
@@ -204,17 +204,17 @@ export default function Page() {
                                 {section.content.map((item: any, itemIndex) => (
                                     <div key={itemIndex}>
                                         {item?.subtitle && (
-                                            <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                                            <h3 className="text-lg font-semibold text-foreground mb-2">
                                                 {item?.subtitle}
                                             </h3>
                                         )}
                                         {item?.text && (
-                                            <p className="text-gray-600 mb-3">
+                                            <p className="text-muted-foreground mb-3">
                                                 {item?.text}
                                             </p>
                                         )}
                                         {item?.list && (
-                                            <ul className="list-disc list-inside space-y-2 text-gray-600">
+                                            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
                                                 {item?.list.map(
                                                     (
                                                         listItem: any,
@@ -236,10 +236,10 @@ export default function Page() {
 
                 {/* Data Retention */}
                 <div className="mt-12 border-b border-gray-200 pb-8">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                    <h2 className="text-2xl font-bold text-foreground mb-4">
                         7. Penyimpanan Data
                     </h2>
-                    <p className="text-gray-600 leading-relaxed">
+                    <p className="text-muted-foreground leading-relaxed">
                         Kami menyimpan data pribadi Anda selama diperlukan untuk
                         menyediakan layanan yang Anda minta, atau selama
                         diwajibkan oleh hukum. Data transaksi disimpan selama 5
@@ -251,10 +251,10 @@ export default function Page() {
 
                 {/* Children Privacy */}
                 <div className="mt-12 border-b border-gray-200 pb-8">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                    <h2 className="text-2xl font-bold text-foreground mb-4">
                         8. Privasi Anak-Anak
                     </h2>
-                    <p className="text-gray-600 leading-relaxed">
+                    <p className="text-muted-foreground leading-relaxed">
                         Layanan kami tidak ditujukan untuk anak-anak di bawah 13
                         tahun. Kami tidak secara sengaja mengumpulkan informasi
                         pribadi dari anak-anak di bawah 13 tahun. Jika Anda
@@ -266,10 +266,10 @@ export default function Page() {
 
                 {/* Policy Changes */}
                 <div className="mt-12 border-b border-gray-200 pb-8">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                    <h2 className="text-2xl font-bold text-foreground mb-4">
                         9. Perubahan Kebijakan
                     </h2>
-                    <p className="text-gray-600 leading-relaxed">
+                    <p className="text-muted-foreground leading-relaxed">
                         Kami dapat memperbarui Kebijakan Privasi ini dari waktu
                         ke waktu. Perubahan signifikan akan diberitahukan
                         melalui email atau pemberitahuan di website kami. Kami
@@ -279,16 +279,16 @@ export default function Page() {
                 </div>
 
                 {/* Contact Section */}
-                <div className="mt-12 bg-purple-50 rounded-2xl p-8">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                <div className="mt-12 bg-primary/15 rounded-2xl p-8">
+                    <h2 className="text-2xl font-bold text-foreground mb-4">
                         10. Hubungi Kami
                     </h2>
-                    <p className="text-gray-600 mb-6">
+                    <p className="text-muted-foreground mb-6">
                         Jika Anda memiliki pertanyaan tentang Kebijakan Privasi
                         ini atau ingin menggunakan hak-hak Anda terkait data
                         pribadi, silakan hubungi kami:
                     </p>
-                    <div className="space-y-2 text-gray-600 mb-6">
+                    <div className="space-y-2 text-muted-foreground mb-6">
                         <p>
                             <strong>Email:</strong> privacy@eventmusic.id
                         </p>
@@ -302,7 +302,7 @@ export default function Page() {
                     </div>
                     <Link
                         href="/contact-us"
-                        className="inline-flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-full hover:bg-purple-700 transition-colors"
+                        className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full hover:bg-primary transition-colors"
                     >
                         <Mail className="w-5 h-5" />
                         Hubungi Kami
