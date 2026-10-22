@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 
 const ADMIN_ROLES = ["admin", "super_admin"];
 
+// Next 16 "proxy" convention (replaces middleware.ts); wraps next-auth withAuth.
 export default withAuth(
     function middleware(req) {
         const role = (req.nextauth.token as any)?.role as string | undefined;

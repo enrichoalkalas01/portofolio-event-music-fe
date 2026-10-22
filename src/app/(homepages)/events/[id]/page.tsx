@@ -22,6 +22,7 @@ import {
 
 import EventsItem2 from "@/components/pages/homepages/events-item-2";
 import AvailabilityBadge from "@/components/pages/events/availability-badge";
+import EventGallery from "@/components/pages/events/event-gallery";
 import EmptyState from "@/components/generals/empty-state";
 import SectionHeader from "@/components/generals/section-header";
 import { EventDetailSkeleton } from "@/components/pages/events/event-skeletons";
@@ -141,7 +142,10 @@ export default function Page() {
         availability.capacity > 0
             ? Math.min(100, Math.round(((event.tickets_sold ?? 0) / availability.capacity) * 100))
             : 0;
-    const gallery = (event.images || []).map((img) => getImageUrl(img)).filter((src) => src !== thumbnail);
+    // Thumbnail first, then the rest of the uploaded images (deduplicated).
+    const gallery = Array.from(
+        new Set([thumbnail, ...(event.images || []).map((img) => getImageUrl(img))]),
+    ).filter((src) => src && src !== "/no-image-available.jpg");
     const isMultiDay = !date.compare.isSameDay;
 
     const BuyButton = (
@@ -263,18 +267,13 @@ export default function Page() {
 
                     {gallery.length > 0 && (
                         <section className="flex flex-col gap-4">
-                            <h2 className="text-xl font-bold tracking-tight">Galeri</h2>
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                {gallery.map((src) => (
-                                    <img
-                                        key={src}
-                                        src={src}
-                                        alt=""
-                                        loading="lazy"
-                                        className="w-full aspect-video object-cover rounded-xl border border-border"
-                                    />
-                                ))}
+                            <div className="flex items-end justify-between">
+                                <h2 className="text-xl font-bold tracking-tight">Galeri</h2>
+                                <span className="text-xs text-muted-foreground">
+                                    {gallery.length} foto · klik untuk memperbesar
+                                </span>
                             </div>
+                            <EventGallery images={gallery} title={event.title} />
                         </section>
                     )}
                 </div>

@@ -89,30 +89,37 @@ export default function EventsItem({ data }: { data: EventRecord }) {
                         </p>
                     )}
 
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                        <span className="inline-flex items-center gap-1.5">
-                            <Users className="size-3.5" />
-                            {availability.isSoldOut
-                                ? "Tiket habis"
-                                : `${availability.remaining.toLocaleString("id-ID")} tiket tersisa`}
-                        </span>
-                        {data?.vendor && <span>oleh {data.vendor}</span>}
-                    </div>
+                    {(data?.vendor || availability.isSoldOut) && (
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                            {availability.isSoldOut && (
+                                <span className="inline-flex items-center gap-1.5">
+                                    <Users className="size-3.5" /> Tiket habis
+                                </span>
+                            )}
+                            {data?.vendor && <span>Diselenggarakan oleh {data.vendor}</span>}
+                        </div>
+                    )}
                 </div>
 
-                <div className="flex md:flex-col items-center md:items-stretch justify-between md:justify-center gap-3 px-4 pb-4 md:p-5 md:pl-0 md:w-48 md:border-l md:border-border/60">
-                    <div className="flex flex-col md:items-end">
-                        <span className="text-[11px] uppercase tracking-wider text-muted-foreground">Mulai dari</span>
-                        <span className="text-lg font-bold text-foreground tabular-nums">
+                <div className="flex items-center justify-between gap-4 border-t border-border/60 bg-muted/20 px-4 py-3 md:w-56 md:flex-col md:items-stretch md:justify-center md:gap-4 md:border-t-0 md:border-l md:px-5 md:py-5">
+                    <div className="flex flex-col md:items-start">
+                        <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                            {data?.price > 0 ? "Mulai dari" : "Harga"}
+                        </span>
+                        <span className="text-xl font-bold leading-tight text-foreground tabular-nums">
                             {data?.price > 0 ? ConverterCurrency({ amount: data.price }) : "Gratis"}
                         </span>
+                        {!availability.isSoldOut && !availability.isPast && (
+                            <span className="mt-0.5 text-[11px] text-muted-foreground">
+                                {availability.remaining.toLocaleString("id-ID")} tiket tersisa
+                            </span>
+                        )}
                     </div>
-                    <div className="flex md:flex-col gap-2 w-auto md:w-full">
+                    <div className="flex items-center gap-2 md:flex-col md:items-stretch">
                         <Button
                             disabled={isLoading || !availability.canBuy}
                             onClick={buy}
-                            className="cursor-pointer"
-                            size="default"
+                            className="cursor-pointer md:h-10 md:w-full"
                         >
                             {isLoading ? (
                                 <LoadingComponent type="icon" />
@@ -123,9 +130,9 @@ export default function EventsItem({ data }: { data: EventRecord }) {
                                 </>
                             )}
                         </Button>
-                        <Button variant="outline" asChild className="cursor-pointer">
+                        <Button variant="ghost" asChild className="cursor-pointer text-muted-foreground hover:text-foreground md:h-9 md:w-full">
                             <Link href={detailHref}>
-                                <Eye className="size-4" /> Detail
+                                <Eye className="size-4" /> Lihat detail
                             </Link>
                         </Button>
                     </div>

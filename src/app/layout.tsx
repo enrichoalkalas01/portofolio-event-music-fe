@@ -17,6 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+    metadataBase: new URL(process.env.NEXTAUTH_URL || "http://localhost:6500"),
     title: {
         default: `${SITE_NAME} - ${SITE_TAGLINE}`,
         template: `%s | ${SITE_NAME}`,
