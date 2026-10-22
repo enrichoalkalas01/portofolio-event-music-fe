@@ -1,7 +1,7 @@
 @Library('deployment-library@main') _
 
 // portofolio-event-music-fe — DEV (ns portofolio)
-// NEXT_PUBLIC_* baked at build time from Vault `portofolio/portofolio-event-music-fe`;
+// NEXT_PUBLIC_* baked at build time from Vault `endless-creative-corps/portofolio-event-music-fe`;
 // the same path feeds runtime secrets (NEXTAUTH_SECRET) via ESO (vaultRuntime in values). NodePort dev 31183.
 deployPipelineVaultV2(
     gitRepository: 'https://github.com/enrichoalkalas01/portofolio-event-music-fe.git',
@@ -18,6 +18,6 @@ deployPipelineVaultV2(
     servicePort: '31183',
 
     vaultMode: 'build',
-    vaultSecretPath: 'portofolio/data/portofolio-event-music-fe',
+    vaultSecretPath: 'endless-creative-corps/data/portofolio-event-music-fe',
     vaultAddr: 'http://192.168.20.16:30220',
 )

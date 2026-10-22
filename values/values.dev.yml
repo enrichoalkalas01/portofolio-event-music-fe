@@ -1,7 +1,7 @@
 # ==============================================================
 # portofolio-event-music-fe — DEV
 # Pipeline: deployPipelineVaultV2 (vaultMode 'build', chart: generic-app-vault)
-# Build-time: NEXT_PUBLIC_* from Vault `portofolio/portofolio-event-music-fe`.
+# Build-time: NEXT_PUBLIC_* from Vault `endless-creative-corps/portofolio-event-music-fe`.
 # Runtime   : the same Vault path synced by ESO (vaultRuntime below) -> NEXTAUTH_SECRET.
 # Keys set under `env:` here WIN over the same key in Vault.
 # ==============================================================
@@ -69,7 +69,7 @@ vaultRuntime:
     enabled: true
     path: portofolio-event-music-fe
     dataFrom: true
-    storeName: vault-backend
+    storeName: vault-backend-endless
     storeKind: ClusterSecretStore
     refreshInterval: 1m
 
