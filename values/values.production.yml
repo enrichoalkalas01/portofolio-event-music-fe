@@ -74,18 +74,19 @@ autoscaling:
     targetMemoryUtilizationPercentage: 80
 
 # Environment Variables
-# env: []
+# NEXT_PUBLIC_* are baked at build time (build-arg from Vault build path).
+# NEXTAUTH_URL / NEXTAUTH_SECRET injected at runtime from the same Vault path via ESO.
 env:
     - name: PORT
       value: "3000"
-    - name: NEXTAUTH_SECRET
-      value: "K7gNU3sdo+OL0wNhqoVWhr3g6s1xYv72ol/pe/Unols="
-    - name: NEXTAUTH_URL
-      value: "https://endlessapp.my.id/"
-    - name: NEXT_PUBLIC_URL_API
-      value: "https://endlessapp.my.id/server-api/portofolio-event-music-be/api/v1"
-    - name: NEXT_PUBLIC_URL_IMAGE
-      value: "https://minio-api.enrichoalkalas.my.id/portofolio-event-music/"
+
+vaultRuntime:
+    enabled: true
+    path: portofolio-event-music-fe
+    dataFrom: true
+    storeName: vault-backend-endless
+    storeKind: ClusterSecretStore
+    refreshInterval: 1m
 
 # Environment from ConfigMap/Secret
 envFrom: []

@@ -1,9 +1,10 @@
 @Library('deployment-library@main') _
 
-// portofolio-event-music-fe — DEV (ns portofolio)
-// NEXT_PUBLIC_* baked at build time from Vault `endless-creative-corps/portofolio-event-music-fe`;
-// the same path feeds runtime secrets (NEXTAUTH_SECRET) via ESO (vaultRuntime in values). NodePort dev 31183.
-deployPipelineVaultV2(
+// portofolio-event-music-fe — PROD (ns portofolio)
+// NEXT_PUBLIC_* baked at build time from Vault endless-creative-corps/portofolio-event-music-fe
+// (build-arg allowlist in Dockerfile); NEXTAUTH_* injected at runtime from the same path via ESO.
+// Served at https://endlessapp.my.id/ (ingress nginx-endlessapp).
+deployPipelineVaultBuildEso(
     gitRepository: 'https://github.com/enrichoalkalas01/portofolio-event-music-fe.git',
     gitBranch: 'master',
     gitCredentialsId: 'github-credentials',
@@ -14,10 +15,13 @@ deployPipelineVaultV2(
     imageFolder: 'other',
 
     namespace: 'portofolio',
-    helmValuesFile: 'values/values.dev.yml',
-    servicePort: '31183',
+    helmValuesFile: 'values/values.production.yml',
+    servicePort: '30802',
 
-    vaultMode: 'build',
-    vaultSecretPath: 'endless-creative-corps/data/portofolio-event-music-fe',
+    vaultBuildPath: 'endless-creative-corps/data/portofolio-event-music-fe',
     vaultAddr: 'http://192.168.20.16:30220',
+
+    vaultRuntimePath: 'portofolio-event-music-fe',
+    vaultRuntimeStoreName: 'vault-backend-endless',
+    vaultRuntimeRefreshInterval: '1m',
 )
