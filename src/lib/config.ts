@@ -3,7 +3,7 @@ export const API_URL =
 
 export const IMAGE_BASE_URL = (
     process.env.NEXT_PUBLIC_IMAGE_BASE_URL ||
-    "https://minio-api.enrichoalkalas.my.id/portofolio-event-music"
+    "https://files.enrichoalkalas.my.id/portofolio-event-music"
 ).replace(/\/+$/, "");
 
 export const FALLBACK_IMAGE = "/no-image-available.jpg";
